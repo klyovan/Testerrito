@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class DemoApplication {
 
-	@GetMapping("/")
-	String home() {
-		return "Spring is here!";
-	}
+    @GetMapping("/")
+    String home() {
+        return "Spring is here!";
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
 }
