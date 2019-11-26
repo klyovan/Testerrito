@@ -58,13 +58,9 @@ heroku:
  - git push -f heroku master
  - echo "Deployed to Staging Server https://testeritto.herokuapp.com"
  
-environment:
-    name: staging
-    url: environment:
+ environment:
     name: staging
     url: https://testeritto.herokuapp.com/
   only:
     - master
 
-  only:
-    - master
