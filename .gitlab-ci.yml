@@ -50,12 +50,14 @@ master_build:
       - target/*.jar
       
 
-staging:
-  type: deploy
+deploy_staging:
+  stage: deploy
   script:
-  - apt-get update -qy
-  - apt-get install -y ruby-dev
-  - gem install dpl
-  - dpl --provider=heroku --testeritto-staging --api-key=$HEROKU_API_KEY
+    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/testeritto.git
+    - git push -f heroku HEAD:master
+    - echo "Deployed to Staging Server https://testeritto.herokuapp.com/"
+  environment:
+    name: staging
+    url: https://testeritto.herokuapp.com/
   only:
-  - master
+    - master
