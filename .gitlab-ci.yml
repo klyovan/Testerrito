@@ -50,15 +50,11 @@ master_build:
       - target/*.jar
       
 
-deploy_staging:
-  stage: deploy
-  script:
+heroku:
+ stage: deploy
+ only:
+ - master
+ script:
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/testeritto.git
-    - git push heroku master
-    - echo "Deployed to Staging Server https://testeritto.herokuapp.com/"
-  environment:
-    name: staging
-    url: https://testeritto.herokuapp.com/
-  only:
-    - master
-
+    - git push -f heroku master
+  
