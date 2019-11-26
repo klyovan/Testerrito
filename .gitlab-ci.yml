@@ -50,7 +50,7 @@ master_build:
       - target/*.jar
       
 
-eploy_staging:
+deploy_staging:
   stage: deploy
   script:
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/testeritto.git
