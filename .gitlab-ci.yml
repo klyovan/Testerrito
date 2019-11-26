@@ -51,7 +51,11 @@ master_build:
       
 
 staging:
-  stage: deploy
+  type: deploy
   script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
   - gem install dpl
-  - dpl --provider=heroku --app=testeritto-staging --api-key=$HEROKU_API_KEY
+  - dpl --provider=heroku --testeritto-staging --api-key=$HEROKU_API_KEY
+  only:
+  - master
