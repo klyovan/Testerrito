@@ -11,5 +11,4 @@ public class ApplicationConfiguration {
         Locale.setDefault(Locale.ENGLISH);
         SpringApplication.run(ApplicationConfiguration.class, args);
     }
-
 }
