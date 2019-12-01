@@ -7,6 +7,10 @@ cache:
 
 variables: 
   MAVEN_OPTS: "-Dmaven.repo.local=.m2" 
+  ORACLE_DB: $DB_URL
+  ORACLE_USER: $DB_LOGIN
+  ORACLE_PASSWORD: $DB_PASSWORD
+
 
 stages:
   - test
