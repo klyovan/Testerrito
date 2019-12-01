@@ -19,6 +19,8 @@ stages:
 
 unit_test:
   stage: test
+  variables:
+    export DB_URL="$DB_URL" 
   script:
     - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$ORACLE_DB",--spring.datasource.username="$ORACLE_USER",--spring.datasource.password="$ORACLE_PASSWORD"  -B
 
