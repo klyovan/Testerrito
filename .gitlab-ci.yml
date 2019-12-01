@@ -1,5 +1,7 @@
 image: maven:3.3-jdk-8-alpine
 
+services:
+  - oracle
 
 
 
@@ -56,6 +58,15 @@ master_build:
     paths:
       - target/*.jar
       
+connect:
+  image: oracle
+  script:
+  # official way to provide password to psql: http://www.postgresql.org/docs/9.3/static/libpq-envars.html
+  - export PGPASSWORD=$ORACLE_PASSWORD
+  - psql -h "postgres" -U "$DB_LOGIN" -d "$DB_URL" -c "SELECT 'OK' AS status;"
+
+
+
       
 deploy:
   stage: deploy
