@@ -1,7 +1,6 @@
 image: maven:3.3-jdk-8-alpine
 
-services:
-  - oracle:11XE
+
 
 
 cache:
