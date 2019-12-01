@@ -52,10 +52,7 @@ master_build:
     expire_in: 1 month
     paths:
       - target/*.jar
-run:
-  stage: run
-  script:
-    - mvn $MAVEN_CLI_OPTS spring-boot:run
+
 
       
 deploy:
