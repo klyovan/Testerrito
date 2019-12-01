@@ -1,7 +1,9 @@
 package com.netcracker.testerritto.controllers;
 
 import com.netcracker.testerritto.models.Category;
+import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.service.CategoryService;
+import com.netcracker.testerritto.service.GradeCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private GradeCategoryService gradeCategoryService;
 
     @GetMapping("/category/{categoryId}")
     public Category getCategory(@PathVariable("categoryId") int id) {
@@ -28,5 +33,15 @@ public class TestController {
     @PostMapping("/category")
     public int createCategory(Category newCategory) {
         return categoryService.createCategory(newCategory);
+    }
+
+    @GetMapping("/category/grade/{id}")
+    public GradeCategory getGradeCategory(@PathVariable int id) {
+        return gradeCategoryService.getCategoryById(id);
+    }
+
+    @PostMapping("/category/grade")
+    public int createGradeCategory(GradeCategory newGradeCategory) {
+        return gradeCategoryService.createGradeCategory(newGradeCategory);
     }
 }
