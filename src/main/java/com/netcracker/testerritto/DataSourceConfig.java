@@ -26,7 +26,6 @@ public class DataSourceConfig {
     dataSourceBuilder.url(java.lang.System.getenv("DB_URL"));
     dataSourceBuilder.username(java.lang.System.getenv("DB_LOGIN"));
     dataSourceBuilder.password(java.lang.System.getenv("DB_PASSWORD"));
-    System.out.println("## DataSource: " + dataSourceBuilder);
     return dataSourceBuilder.build();
   }
 
