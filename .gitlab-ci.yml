@@ -5,12 +5,6 @@ cache:
   paths:
     - .m2/
 
-variables: 
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2" 
-  ORACLE_DB: $DB_URL
-  ORACLE_USER: $DB_LOGIN
-  ORACLE_PASSWORD: $DB_PASSWORD
-
 
 stages:
   - test
@@ -20,7 +14,11 @@ stages:
 unit_test:
   stage: test
   script:
-    - mvn clean test -B
+    - export DB_URL="$DB_URL"
+    - export DB_LOGIN="$DB_LOGIN"
+    - export DB_PASSWORD="$DB_PASSWORD"
+    - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD"  -B
+
 
 check_style:
   stage: test
@@ -52,8 +50,9 @@ master_build:
     expire_in: 1 month
     paths:
       - target/*.jar
-      
 
+
+      
 deploy:
   stage: deploy
   image: ruby:latest
@@ -63,4 +62,4 @@ deploy:
   - gem install dpl
   - dpl --provider=heroku --app=testeritto --api-key=$HEROKU_API_KEY
   only:
-  - master
+  - dev
