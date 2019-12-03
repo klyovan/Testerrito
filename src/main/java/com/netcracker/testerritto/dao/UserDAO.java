@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,9 @@ import java.util.List;
 
 @Repository
 @Transactional
-
 public class UserDAO {
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -221,6 +223,13 @@ public class UserDAO {
     return result;
   }
 
+  public User getUserByEmail(String s) {
+    User testUserForJwt = new User();
+    testUserForJwt.setId(21);
+    testUserForJwt.setEmail("testUserForJwt@gmail.com");
+    testUserForJwt.setPassword(passwordEncoder.encode("user12345"));
+    return testUserForJwt;
+  }
 }
 
 
