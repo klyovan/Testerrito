@@ -23,9 +23,9 @@ public class DataSourceConfig {
     Locale.setDefault(Locale.ENGLISH);
     DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
     dataSourceBuilder.driverClassName(environment.getProperty("spring.datasource.driver-class-name"));
-    dataSourceBuilder.url(java.lang.System.getenv("DB_URL"));
-    dataSourceBuilder.username(java.lang.System.getenv("DB_LOGIN"));
-    dataSourceBuilder.password(java.lang.System.getenv("DB_PASSWORD"));
+    dataSourceBuilder.url(environment.getProperty("spring.datasource.url"));
+    dataSourceBuilder.username(environment.getProperty("spring.datasource.username"));
+    dataSourceBuilder.password(environment.getProperty("spring.datasource.password"));
     return dataSourceBuilder.build();
   }
 
