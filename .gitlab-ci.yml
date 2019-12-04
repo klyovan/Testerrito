@@ -19,9 +19,9 @@ variables:
 unit_test:
   stage: test
   before_script:
-  - echo $ORACLE_URL
-  - echo $ORACLE_PASSWORD
-  - echo $ORACLE_LOGIN
+  - echo ${ORACLE_URL}
+  - echo ${ORACLE_PASSWORD}
+  - echo ${ORACLE_LOGIN}
   script:
     - mvn clean test -B
 
