@@ -12,9 +12,9 @@ stages:
   - deploy
   
 variables:
-    DB_URL: "$DB_URL"
-    DB_PASSWORD: "$DB_PASSWORD"
-    DB_LOGIN: "$DB_LOGIN"
+    DB_URL: $DB_URL
+    DB_PASSWORD: $DB_PASSWORD
+    DB_LOGIN: $DB_LOGIN
 
 unit_test:
   stage: test
