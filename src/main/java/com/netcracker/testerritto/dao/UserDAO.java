@@ -224,11 +224,38 @@ public class UserDAO {
   }
 
   public User getUserByEmail(String s) {
-    User testUserForJwt = new User();
-    testUserForJwt.setId(21);
-    testUserForJwt.setEmail("testUserForJwt@gmail.com");
-    testUserForJwt.setPassword(passwordEncoder.encode("user12345"));
-    return testUserForJwt;
+    String email = "'" + s + "'\n";
+    String sql = "SELECT user_last_name.value, user_first_name.value,\n"
+        + "       user_password.value, user_phone.value, user_last_name.object_id \n"
+        + "FROM   attributes user_last_name, attributes user_first_name, attributes users_email,\n"
+        + "       attributes user_password, attributes user_phone\n"
+        + "WHERE  USERS_EMAIL.value = " + email + "\n"
+        + "       AND user_last_name.attr_id = 1                         /*LAST_NAME*/     \n"
+        + "       AND user_last_name.object_id = users_email.object_id                     \n"
+        + "       AND user_first_name.attr_id = 2                        /*FIRST_NAME*/    \n"
+        + "       AND user_first_name.object_id = users_email.object_id                     \n"
+        + "       AND user_password.attr_id = 4                          /*PASSWORD*/      \n"
+        + "       AND user_password.object_id = users_email.object_id                      \n"
+        + "       AND user_phone.attr_id = 5                             /*PHONE*/         \n"
+        + "       AND user_phone.object_id = users_email.object_id";
+
+    return jdbcTemplate.query(sql, new ResultSetExtractor<User>() {
+      @Override
+      public User extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+
+        if (resultSet.next()) {
+          User user = new User();
+          user.setLast_name(resultSet.getString(1));
+          user.setFirst_name(resultSet.getString(2));
+          user.setPassword(passwordEncoder.encode(resultSet.getString(3)));
+          user.setPhone(resultSet.getString(4));
+          user.setId(resultSet.getInt(5));
+          user.setEmail(s);
+          return user;
+        }
+        return null;
+      }
+    });
   }
 }
 

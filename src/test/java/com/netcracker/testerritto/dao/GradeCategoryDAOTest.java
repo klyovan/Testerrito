@@ -1,28 +1,22 @@
 package com.netcracker.testerritto.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.netcracker.testerritto.ApplicationConfiguration;
-import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.comparators.GradeCategoryIdComparator;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.Assert.*;
 
 @SpringBootTest(classes = ApplicationConfiguration.class)
 @RunWith(SpringRunner.class)
