@@ -10,6 +10,11 @@ stages:
   - test
   - build
   - deploy
+  
+variables:
+    DB_URL: "$DB_URL"
+    DB_PASSWORD: "$DB_PASSWORD"
+    DB_LOGIN: "$DB_LOGIN"
 
 unit_test:
   stage: test
@@ -18,7 +23,7 @@ unit_test:
   - echo ${DB_PASSWORD}
   - echo ${DB_LOGIN}
   script:
-    - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD" -B
+    - mvn clean test -B
 
 
 check_style:
