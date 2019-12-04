@@ -14,10 +14,7 @@ stages:
 unit_test:
   stage: test
   script:
-    - export DB_URL="$DB_URL"
-    - export DB_LOGIN="$DB_LOGIN"
-    - export DB_PASSWORD="$DB_PASSWORD"
-    - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD"  -B
+    - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD" -B
 
 
 check_style:
