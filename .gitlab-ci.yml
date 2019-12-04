@@ -12,16 +12,16 @@ stages:
   - deploy
   
 variables:
-    DB_URL: $DB_URL
-    DB_PASSWORD: $DB_PASSWORD
-    DB_LOGIN: $DB_LOGIN
+    ORACLE_URL: $DB_URL
+    ORACLE_PASSWORD: $DB_PASSWORD
+    ORACLE_LOGIN: $DB_LOGIN
 
 unit_test:
   stage: test
   before_script:
-  - echo ${DB_URL}
-  - echo ${DB_PASSWORD}
-  - echo ${DB_LOGIN}
+  - echo $ORACLE_URL
+  - echo $ORACLE_PASSWORD
+  - echo $ORACLE_LOGIN
   script:
     - mvn clean test -B
 
