@@ -11,18 +11,18 @@ stages:
   - build
   - deploy
   
-variables:
-    DB_URL: "$DB_URL"
-    DB_LOGIN: "$DB_LOGIN"
-    DB_PASSWORD: "$DB_PASSWORD"
+# variables:
+#     DB_URL: "$DB_URL"
+#     DB_LOGIN: "$DB_LOGIN"
+#     DB_PASSWORD: "$DB_PASSWORD"
 
 unit_test:
   stage: test
   script:
     # - mvn clean test -B
-#    - export DB_URL="$DB_URL"
-#    - export DB_LOGIN="$DB_LOGIN"
-#    - export DB_PASSWORD="$DB_PASSWORD"
+    - export DB_URL="$DB_URL"
+    - export DB_LOGIN="$DB_LOGIN"
+    - export DB_PASSWORD="$DB_PASSWORD"
 #    - export SSL_PASSWORD="$SSL_PASSWORD"
 #    - export SSL_KEY_TYPE="$SSL_KEY_TYPE"
 #    - export SSL_KEY_ALIAS="$SSL_KEY_ALIAS"
