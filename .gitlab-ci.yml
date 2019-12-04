@@ -26,7 +26,7 @@ unit_test:
 #    - export SSL_PASSWORD="$SSL_PASSWORD"
 #    - export SSL_KEY_TYPE="$SSL_KEY_TYPE"
 #    - export SSL_KEY_ALIAS="$SSL_KEY_ALIAS"
-     - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver" -B 
+     - mvn clean test -Drun.arguments=--spring.datasource.driver-class-name="oracle.jdbc.OracleDriver",--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD" -B 
     # , --server.ssl.key-store-password="$SSL_PASSWORD", --server.ssl.keyStoreType="$SSL_KEY_TYPE", --server.ssl.keyAlias="SSL_KEY_ALIAS" -B
 
 
