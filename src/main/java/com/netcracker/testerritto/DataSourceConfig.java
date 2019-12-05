@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
+import java.util.Locale;
 
 @Configuration
 @PropertySource("classpath:application.properties")
@@ -18,6 +19,7 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource getDataSource() {
+        Locale.setDefault(Locale.ENGLISH);
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName(environment.getProperty("spring.datasource.driver-class-name"));
         dataSourceBuilder.url(java.lang.System.getenv("DB_URL"));//(environment.getProperty("spring.datasource.url"));
