@@ -14,7 +14,7 @@ stages:
 unit_test:
   stage: test
   script:
-    - mvn clean test -Drun.arguments=--spring.datasource.url="$DB_URL",--spring.datasource.username="$DB_LOGIN",--spring.datasource.password="$DB_PASSWORD" -B
+    - mvn clean test -Drun.arguments=--spring.datasource.url=$DB_URL,--spring.datasource.username=$DB_LOGIN,--spring.datasource.password=$DB_PASSWORD -B
 
 
 
