@@ -12,12 +12,12 @@ public class GradeCategoryMapper implements RowMapper<GradeCategory> {
   @Override
   public GradeCategory mapRow(ResultSet resultSet, int i) throws SQLException {
     GradeCategory gradeCategory = new GradeCategory();
-    gradeCategory.setId(resultSet.getInt("GRADE_ID"));
-    gradeCategory.setTestId(resultSet.getInt("TEST_ID"));
-    gradeCategory.setMinScore(resultSet.getInt("MIN_VALUE"));
-    gradeCategory.setMaxScore(resultSet.getInt("MAX_VALUE"));
-    gradeCategory.setMeaning(resultSet.getString("MEANING"));
-    gradeCategory.setCategoryId(resultSet.getInt("CATEGORY_ID"));
+    gradeCategory.setId(resultSet.getInt("grade_id"));
+    gradeCategory.setTestId(resultSet.getInt("test_id"));
+    gradeCategory.setMinScore(resultSet.getInt("min_value"));
+    gradeCategory.setMaxScore(resultSet.getInt("max_value"));
+    gradeCategory.setMeaning(resultSet.getString("meaning"));
+    gradeCategory.setCategoryId(resultSet.getInt("category_id"));
     return gradeCategory;
   }
 }
