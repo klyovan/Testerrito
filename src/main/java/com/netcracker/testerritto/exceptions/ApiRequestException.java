@@ -1,4 +1,4 @@
-package com.netcracker.testerritto.exception;
+package com.netcracker.testerritto.exceptions;
 
 public class ApiRequestException extends RuntimeException {
 

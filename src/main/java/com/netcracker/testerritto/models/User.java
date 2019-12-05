@@ -100,6 +100,7 @@ public class User {
     this.createdGroups = createdGroups;
   }
 
+
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
@@ -121,6 +122,5 @@ public class User {
         || (password != null && password.equals(user.getPassword())))
         && (phone == user.phone
         || (phone != null && phone.equals(user.getPhone())));
-
   }
 }

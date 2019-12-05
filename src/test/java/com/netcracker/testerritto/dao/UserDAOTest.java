@@ -102,7 +102,7 @@ public class UserDAOTest {
     if (groups.size() != 0) {
       userDAO.deleteCreatedGroup(user1.getId(), groups.get(0).getId());
       user1.setGroups(userDAO.getCreatedGroups(user1.getId()));
-      assertTrue(user1.getGroups().size()+1 == createdGroupCount );
+      assertTrue(user1.getGroups().size() + 1 == createdGroupCount);
     }
 
   }

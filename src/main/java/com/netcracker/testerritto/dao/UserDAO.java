@@ -7,22 +7,26 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 @Transactional
-
 public class UserDAO {
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public User getUser(int user_id) {
+  //there is not object whit id on db
+  public User getUser(int user_id)  {
 
     String sql = "SELECT user_last_name.value, user_firs_name.value, user_email.value,\n" +
         "            user_password.value, user_phone.value\n" +
@@ -42,7 +46,7 @@ public class UserDAO {
 
     return jdbcTemplate.query(sql, new ResultSetExtractor<User>() {
       @Override
-      public User extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+      public User extractData (ResultSet resultSet) throws SQLException, DataAccessException {
 
         if (resultSet.next()) {
           User user = new User();
@@ -60,10 +64,13 @@ public class UserDAO {
     });
   }
 
+
+
   public void deleteUser(int user_id) {
     String sql = "DELETE FROM objects WHERE object_id = ?";
-    jdbcTemplate.update(sql, user_id);
-
+    try {
+      jdbcTemplate.update(sql, user_id);
+    }catch (DataAccessException ex){}
   }
 
 
@@ -94,6 +101,7 @@ public class UserDAO {
         email, password, phone);
     return user;
   }
+
 
   public void updateLast_name(int user_id, String last_name) {
     String sql = "update attributes set value = ? \n" +
@@ -148,7 +156,7 @@ public class UserDAO {
 
       public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
         Group group = new Group();
-        group.setGroup_id(rs.getInt(1));
+        group.setId(new BigInteger(rs.getString(1)));
         group.setName(rs.getString(2));
         group.setLink(rs.getString(3));
         return group;
@@ -167,7 +175,7 @@ public class UserDAO {
         "       and groups_name.attr_id = 6                                       /*groupName*/\n" +
         "       and groups_link.object_id = GROUPS.object_id     \n" +
         "       and groups_link.attr_id = 7                                       /*groupLink*/\n" +
-        "       and groups_2_user.attr_id = 25                              /*CREATE_GROUP_BY*/\n"+
+        "       and groups_2_user.attr_id = 25                              /*CREATE_GROUP_BY*/\n" +
         "       and groups_2_user.object_id = GROUPS.object_id\n" +
         "       and groups_2_user.reference = USERS.object_id ";
 
@@ -175,7 +183,7 @@ public class UserDAO {
 
       public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
         Group group = new Group();
-        group.setGroup_id(rs.getInt(1));
+        group.setId(new BigInteger(rs.getString(1)));
         group.setName(rs.getString(2));
         group.setLink(rs.getString(3));
         return group;
@@ -184,7 +192,8 @@ public class UserDAO {
     return listGroups;
   }
 
-  public void deleteCreatedGroup(int user_id, int createdGroup_id) {
+  public void deleteCreatedGroup(int user_id, BigInteger createdGroup_id) {
+
     String sql = "DELETE FROM objects groups              \n" +
         "WHERE groups.object_id =                         \n" +
         "(                                                \n" +
@@ -194,9 +203,8 @@ public class UserDAO {
         "            AND groups_2_creator.reference = ?   \n" +                  /* User_id */
         "            AND groups_2_creator.object_id = ?   \n" +                  /* group_ id */
         ")";
-    jdbcTemplate.update(sql, user_id, createdGroup_id);
+    jdbcTemplate.update(sql, user_id, createdGroup_id.toString());
   }
-
 
   public void enterInGroup(int user_id, int group_id) {
     String sql = "INSERT INTO objreference (attr_id, object_id ,reference) VALUES (22, ? , ?)";
@@ -204,7 +212,7 @@ public class UserDAO {
   }
 
   public void exitFromGroup(int user_id, int group_id) {
-    String sql = "DELETE FROM objreference where attr_id = 22 and object_id = ? AND reference = ? ";
+    String sql = "DELETE FROM objreference where attr_id = 22 and object_id = ? and reference = ? ";
     jdbcTemplate.update(sql, user_id, group_id);
   }
 
@@ -212,7 +220,7 @@ public class UserDAO {
     String sql = " SELECT object_id_pr.NEXTVAL FROM dual";
 
     int result = jdbcTemplate.queryForObject(
-        sql, Integer.class);
+        "SELECT object_id_pr.NEXTVAL from dual", Integer.class);
     return result;
   }
 
@@ -240,7 +248,7 @@ public class UserDAO {
           User user = new User();
           user.setLast_name(resultSet.getString(1));
           user.setFirst_name(resultSet.getString(2));
-          user.setPassword(resultSet.getString(3));
+          user.setPassword(passwordEncoder.encode(resultSet.getString(3)));
           user.setPhone(resultSet.getString(4));
           user.setId(resultSet.getInt(5));
           user.setEmail(s);
@@ -251,10 +259,4 @@ public class UserDAO {
     });
   }
 }
-
-
-
-
-
-
 
