@@ -23,7 +23,7 @@ unit_test:
     - export ORACLE_URL="$DB_URL"
     - export ORACLE_PASSWORD="$DB_PASSWORD"
     - export ORACLE_LOGIN="$DB_LOGIN"
-    - mvn clean test -Drun.arguments=--spring.datasource.url="$ORACLE_URL",--spring.datasource.username="$ORACLE_LOGIN",--spring.datasource.password="$ORACLE_PASSWORD"  -B
+    - mvn clean test -Drun.arguments=--spring.datasource.url="${ORACLE_URL}",--spring.datasource.username="${ORACLE_LOGIN}",--spring.datasource.password="${ORACLE_PASSWORD}"  -B
 
 
 
