@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { ApplicationConfiguration.class, DataSourceConfig.class })
-public class TestRemarkDAO {
+public class RemarkDAOTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -42,7 +42,7 @@ public class TestRemarkDAO {
     public void setup(){
         Locale.setDefault(Locale.ENGLISH);
         String sql =
-                        "insert all\n" +
+                "insert all\n" +
                         "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
                         "        values(object_id_pr.nextval, ?, ?, ?, null)\n" +
                         "select * from dual";
@@ -54,7 +54,7 @@ public class TestRemarkDAO {
         groupId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
 
         jdbcTemplate.update(
-                    "insert all\n" +
+                "insert all\n" +
                         "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
                         "        values(object_id_pr.nextval, ?, 4, 'TEST '|| object_id_pr.currval, null)\n" +
                         "    into objreference(attr_id, object_id, reference) /* CREATE_TEST_BY */\n" +
@@ -72,10 +72,10 @@ public class TestRemarkDAO {
     @After
     public void setDown(){
         String sql =
-               "delete from\n" +
-               "    objects\n" +
-               "where\n" +
-               "    object_id = ?";
+                "delete from\n" +
+                        "    objects\n" +
+                        "where\n" +
+                        "    object_id = ?";
         jdbcTemplate.update(sql, authorId.toString());
         jdbcTemplate.update(sql, groupId.toString());
         jdbcTemplate.update(sql, testId.toString());

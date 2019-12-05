@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { ApplicationConfiguration.class, DataSourceConfig.class })
-public class TestGroupDAO {
+public class GroupDAOTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
