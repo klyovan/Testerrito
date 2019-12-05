@@ -11,19 +11,20 @@ stages:
   - build
   - deploy
   
-variables:
-    ORACLE_URL: $DB_URL
-    ORACLE_PASSWORD: $DB_PASSWORD
-    ORACLE_LOGIN: $DB_LOGIN
+# variables:
+#     ORACLE_URL: $DB_URL
+#     ORACLE_PASSWORD: $DB_PASSWORD
+#     ORACLE_LOGIN: $DB_LOGIN
 
 unit_test:
   stage: test
-  before_script:
-  - echo ${ORACLE_URL}
-  - echo ${ORACLE_PASSWORD}
-  - echo ${ORACLE_LOGIN}
+  
   script:
-    - mvn clean test -B
+    - export ORACLE_URL="$DB_URL"
+    - export ORACLE_PASSWORD="$DB_PASSWORD"
+    - export ORACLE_LOGIN="$DB_LOGIN"
+    - mvn clean test -Drun.arguments=--spring.datasource.url="$ORACLE_URL",--spring.datasource.username="$ORACLE_LOGIN",--spring.datasource.password="$ORACLE_PASSWORD"  -B
+
 
 
 check_style:
