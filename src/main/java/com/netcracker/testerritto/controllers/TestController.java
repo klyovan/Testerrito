@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("test")
 public class TestController {
   @Autowired
   private CategoryService categoryService;
@@ -43,5 +44,10 @@ public class TestController {
   @PostMapping("/category/grade")
   public int createGradeCategory(GradeCategory newGradeCategory) {
     return gradeCategoryService.createGradeCategory(newGradeCategory);
+  }
+
+  @GetMapping("/hello")
+  public String getHello() {
+    return "Hello";
   }
 }
