@@ -15,6 +15,8 @@ unit_test:
   stage: test
   script:
     - echo ${DB_URL}
+    - echo ${DB_LOGIN}
+    - echo ${DB_PASSWORD}
     - mvn clean test -B
 
 
