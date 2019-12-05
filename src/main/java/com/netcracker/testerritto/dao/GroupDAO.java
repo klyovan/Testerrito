@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Repository
 public class GroupDAO{
@@ -23,65 +26,104 @@ public class GroupDAO{
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Group getGroupById(Integer groupId) {
+    private static Logger log=Logger.getLogger(GroupDAO.class.getName());
+
+    public Group getGroupById(BigInteger groupId) {
+        if(groupId == null){
+            IllegalArgumentException exception = new IllegalArgumentException("GroupId can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage(), groupId);
+            throw exception;
+        }
         String query =
-                        "SELECT groups.object_id AS id, group_name.value AS name, \n" +
-                        "       group_link.value AS link, creator.reference AS creatorId\n" +
-                        "FROM\t\n" +
-                        "\tobjects groups,\n" +
-                        "\tattributes group_name,\n" +
+                        "select\n" +
+                        "    groups.object_id as id,\n" +
+                        "    group_name.value as name,\n" +
+                        "    group_link.value as link,\n" +
+                        "    creator.reference as creatorId\n" +
+                        "from\n" +
+                        "    objects groups,\n" +
+                        "    attributes group_name,\n" +
                         "    attributes group_link,\n" +
                         "    objreference creator\n" +
-                        "WHERE\n" +
-                        "\tgroups.object_id = ? /* groupId */\n" +
-                        "AND groups.object_id = group_name.object_id\n" +
-                        "AND group_name.attr_id = 6 /* NAME_GROUP */\n" +
-                        "AND groups.object_id = group_link.object_id\n" +
-                        "AND group_link.attr_id = 7 /* LINK */\n" +
-                        "AND groups.object_id = creator.object_id\n" +
-                        "AND creator.attr_id = 25 /* CREATE_GROUP_BY */";
-        return jdbcTemplate.queryForObject(query, new Object[]{groupId}, new GroupRowMapper());
+                        "where\n" +
+                        "    groups.object_id = ? /* groupId */\n" +
+                        "and groups.object_id = group_name.object_id\n" +
+                        "and group_name.attr_id = 6 /* NAME_GROUP */\n" +
+                        "and groups.object_id = group_link.object_id\n" +
+                        "and group_link.attr_id = 7 /* LINK */\n" +
+                        "and groups.object_id = creator.object_id\n" +
+                        "and creator.attr_id = 25 /* CREATE_GROUP_BY */";
+        return jdbcTemplate.queryForObject(query, new Object[]{groupId.toString()}, new GroupRowMapper());
     }
 
-    public void createGroup(Integer userId, String link, String name) {
+    public void createGroup(BigInteger userId, String link, String name) {
+        if(userId == null || link.equals("") || name.equals("")){
+            IllegalArgumentException exception = new IllegalArgumentException("UserId OR Link OR Name can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage());
+            throw exception;
+        }
         String query =
-                "INSERT ALL\n" +
-                        "\tINTO objects(object_id, parent_id, object_type_id, name, description)\n" +
-                        "\t\t valueS(object_id_PR.NEXTVAL, null, 2, 'GROUP '|| object_id_PR.CURRVAL, null)\n" +
-                        "\tINTO attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        valueS(object_id_PR.CURRVAL, 6, ?, null, null) /* name */\n" +
-                        "\tINTO attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        valueS(object_id_PR.CURRVAL, 7, ?, null, null) /* link */\n" +
-                        "\tINTO objreference(attr_id, object_id, reference) /* CREATE_GROUP_BY */\n" +
-                        "        valueS(25, object_id_PR.CURRVAL, ?) /* userId */\n" +
-                        "\tINTO objreference(attr_id, object_id, reference) /* CONSIST */\n" +
-                        "        valueS(22, ?, object_id_PR.CURRVAL) /* userId */\n" +
-                        "SELECT * FROM DUAL";
-        jdbcTemplate.update(query, name, link, userId, userId);
+                        "insert all\n" +
+                        "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
+                        "        values(object_id_pr.nextval, null, 2, 'GROUP '|| object_id_pr.currval, null)\n" +
+                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
+                        "        values(object_id_pr.currval, 6, ?, null, null) /* name */\n" +
+                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
+                        "        values(object_id_pr.currval, 7, ?, null, null) /* link */\n" +
+                        "    into objreference(attr_id, object_id, reference) /* CREATE_GROUP_BY */\n" +
+                        "        values(25, object_id_pr.currval, ?) /* userId */\n" +
+                        "    into objreference(attr_id, object_id, reference) /* CONSIST */\n" +
+                        "        values(22, ?, object_id_pr.currval) /* userId */\n" +
+                        "select * from dual";
+        jdbcTemplate.update(query, name, link, userId.toString(), userId.toString());
     }
 
-    public void updateGroup(Integer groupId, String newName) {
+    public void updateGroup(BigInteger groupId, String newName) {
+        if(groupId == null || newName.equals("")){
+            IllegalArgumentException exception = new IllegalArgumentException("GroupId OR NewName can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage(), groupId);
+            throw exception;
+        }
         String query =
-                "UPDATE attributes \n" +
-                        "    SET value = ? /* newname */\n" +
-                        "        WHERE object_id = ? /* groupId */\n" +
-                        "            AND attr_id = 6 /* name_GROUP */";
-        jdbcTemplate.update(query, newName, groupId);
+                        "update\n" +
+                        "    attributes \n" +
+                        "set\n" +
+                        "    value = ? /* new_name */\n" +
+                        "where\n" +
+                        "    object_id = ? /* groupId */\n" +
+                        "and attr_id = 6 /* NAME_GROUP */";
+        jdbcTemplate.update(query, newName, groupId.toString());
     }
 
-    public void deleteGroup(Integer groupId) {
+    public void deleteGroup(BigInteger groupId) {
+        if(groupId == null){
+            IllegalArgumentException exception = new IllegalArgumentException("GroupId can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage(), groupId);
+            throw exception;
+        }
         String query =
-                "DELETE FROM objects \n" +
-                        "\tWHERE object_id = ? /* groupId */";
-        jdbcTemplate.update(query, groupId);
+                        "delete from\n" +
+                        "    objects\n" +
+                        "where\n" +
+                        "    object_id = ? /* groupId */";
+        jdbcTemplate.update(query, groupId.toString());
     }
 
-    public List<User> getUsersInGroup(Integer groupId) {
+    public List<User> getUsersInGroup(BigInteger groupId) {
+        if(groupId == null){
+            IllegalArgumentException exception = new IllegalArgumentException("GroupId can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage(), groupId);
+            throw exception;
+        }
         String query =
-                "SELECT users.object_id AS id, user_lastname.value AS lastName,\n" +
-                        "       user_firstname.value AS firstName, user_email.value AS email,\n" +
-                        "        user_password.value AS password, user_phone.value AS phone\n" +
-                        "FROM\n" +
+                        "select\n" +
+                        "    users.object_id as id,\n" +
+                        "    user_lastname.value as lastName,\n" +
+                        "    user_firstname.value as firstName,\n" +
+                        "    user_email.value as email,\n" +
+                        "    user_password.value as password,\n" +
+                        "    user_phone.value as phone\n" +
+                        "from\n" +
                         "    objreference group2users,\n" +
                         "    objects users,\n" +
                         "    attributes user_lastname,\n" +
@@ -89,39 +131,51 @@ public class GroupDAO{
                         "    attributes user_email,  \n" +
                         "    attributes user_password,\n" +
                         "    attributes user_phone\n" +
-                        "WHERE\n" +
+                        "where\n" +
                         "    group2users.reference = ? /* groupId */\n" +
-                        "AND group2users.attr_id = 22 /* CONSIST */\n" +
-                        "AND group2users.object_id = users.object_id\n" +
-                        "AND users.object_id = user_lastname.object_id\n" +
-                        "AND user_lastname.attr_id = 1 /* LAST_NAME */\n" +
-                        "AND users.object_id = user_firstname.object_id\n" +
-                        "AND user_firstname.attr_id = 2 /* FIRST_NAME */\n" +
-                        "AND users.object_id = user_email.object_id\n" +
-                        "AND user_email.attr_id = 3 /* EMAIL */\n" +
-                        "AND users.object_id = user_password.object_id\n" +
-                        "AND user_password.attr_id = 4 /* PASSWORD */\n" +
-                        "AND users.object_id = user_phone.object_id\n" +
-                        "AND user_phone.attr_id = 5 /* PHONE */";
-        return jdbcTemplate.query(query, new Object[]{groupId}, new UserRowMapper());
+                        "and group2users.attr_id = 22 /* CONSIST */\n" +
+                        "and group2users.object_id = users.object_id\n" +
+                        "and users.object_id = user_lastname.object_id\n" +
+                        "and user_lastname.attr_id = 1 /* LAST_NAME */\n" +
+                        "and users.object_id = user_firstname.object_id\n" +
+                        "and user_firstname.attr_id = 2 /* FIRST_NAME */\n" +
+                        "and users.object_id = user_email.object_id\n" +
+                        "and user_email.attr_id = 3 /* EMAIL */\n" +
+                        "and users.object_id = user_password.object_id\n" +
+                        "and user_password.attr_id = 4 /* PASSWORD */\n" +
+                        "and users.object_id = user_phone.object_id\n" +
+                        "and user_phone.attr_id = 5 /* PHONE */";
+        return jdbcTemplate.query(query, new Object[]{groupId.toString()}, new UserRowMapper());
     }
 
-    public List<Test> getAllTestsInGroup(Integer groupId) {
+    public List<Test> getAllTestsInGroup(BigInteger groupId) {
+        if(groupId == null){
+            IllegalArgumentException exception = new IllegalArgumentException("GroupId can not be NULL.");
+            log.log(Level.SEVERE, exception.getMessage(), groupId);
+            throw exception;
+        }
         String query =
-                "SELECT tests.object_id AS id, test_name.value as testName,\n" +
-                        "       test2creator.reference AS testCreator, \n" +
-                        "       case when test2expert.reference is not null then test2expert.reference end as testExpert\n" +
-                        "FROM\t\n" +
-                        "    objects tests left join objreference test2expert \n" +
-                        "                    on (tests.object_id = test2expert.object_id AND test2expert.attr_id = 23),\n" +
+                        "select\n" +
+                        "    tests.object_id as id,\n" +
+                        "    test_name.value as testName,\n" +
+                        "    test2creator.reference as testCreator, \n" +
+                        "case when\n" +
+                        "    test2expert.reference is not null\n" +
+                        "then\n" +
+                        "    test2expert.reference\n" +
+                        "end as testExpert\n" +
+                        "from\n" +
+                        "    objects tests\n" +
+                        "left join objreference test2expert\n" +
+                        "on (tests.object_id = test2expert.object_id and test2expert.attr_id = 23),\n" +
                         "    attributes test_name,\n" +
                         "    objreference test2creator\n" +
-                        "WHERE\n" +
-                        "    tests.PARENT_ID = ? /* groupId */\n" +
-                        "AND tests.object_id = test_name.object_id\n" +
-                        "AND test_name.attr_id = 9 /* NAME_TEST */\n" +
-                        "AND tests.object_id = test2creator.object_id\n" +
-                        "AND test2creator.attr_id = 24 /* CREATE_TEST_BY */";
-        return jdbcTemplate.query(query, new Object[]{groupId}, new TestRowMapper());
+                        "where\n" +
+                        "    tests.parent_id = ? /* groupId */\n" +
+                        "and tests.object_id = test_name.object_id\n" +
+                        "and test_name.attr_id = 9 /* NAME_TEST */\n" +
+                        "and tests.object_id = test2creator.object_id\n" +
+                        "and test2creator.attr_id = 24 /* CREATE_TEST_BY */";
+        return jdbcTemplate.query(query, new Object[]{groupId.toString()}, new TestRowMapper());
     }
 }

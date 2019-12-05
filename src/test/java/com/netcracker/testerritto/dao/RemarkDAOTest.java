@@ -92,11 +92,7 @@ public class RemarkDAOTest {
 
         Remark remark = remarkDAO.getRemarkById(sequenceId);
 
-        Remark remarkExpected = new Remark();
-        remarkExpected.setText("New Remark Text");
-        remarkExpected.setQuestionId(questionId);
-        remarkExpected.setUserSenderId(remarkerId);
-        remarkExpected.setId(sequenceId);
+        Remark remarkExpected = new Remark(sequenceId, "New Remark Text", remarkerId, questionId);
 
         assertEquals(remarkExpected, remark);
     }

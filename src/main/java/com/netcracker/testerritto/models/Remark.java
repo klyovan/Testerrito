@@ -10,6 +10,15 @@ public class Remark {
     private BigInteger userSenderId;
     private BigInteger questionId;
 
+    public Remark(){}
+
+    public Remark(BigInteger id, String text, BigInteger userSenderId, BigInteger questionId){
+        this.id = id;
+        this.text = text;
+        this.userSenderId = userSenderId;
+        this.questionId = questionId;
+    }
+
     public void setId(BigInteger id) {
         this.id = id;
     }

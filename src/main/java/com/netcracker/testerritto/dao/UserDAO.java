@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -155,7 +156,7 @@ public class UserDAO {
 
       public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
         Group group = new Group();
-        group.setGroup_id(rs.getInt(1));
+        group.setId(new BigInteger(rs.getString(1)));
         group.setName(rs.getString(2));
         group.setLink(rs.getString(3));
         return group;
@@ -182,7 +183,7 @@ public class UserDAO {
 
       public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
         Group group = new Group();
-        group.setGroup_id(rs.getInt(1));
+        group.setId(new BigInteger(rs.getString(1)));
         group.setName(rs.getString(2));
         group.setLink(rs.getString(3));
         return group;
@@ -191,7 +192,7 @@ public class UserDAO {
     return listGroups;
   }
 
-  public void deleteCreatedGroup(int user_id, int createdGroup_id) {
+  public void deleteCreatedGroup(int user_id, BigInteger createdGroup_id) {
     String sql = "DELETE FROM objects groups              \n" +
         "WHERE groups.object_id =                         \n" +
         "(                                                \n" +
@@ -201,7 +202,7 @@ public class UserDAO {
         "            and groups_2_creator.reference = ?   \n" +                  /* User_id */
         "            and groups_2_creator.object_id = ?   \n" +                  /* group_ id */
         ")";
-    jdbcTemplate.update(sql, user_id, createdGroup_id);
+    jdbcTemplate.update(sql, user_id, createdGroup_id.toString());
   }
 
 
