@@ -1,25 +1,20 @@
 package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
-import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.User;
+import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -38,23 +33,23 @@ public class UserDAOTest {
   @Before
   public void init() {
     user1 = userDAO.createUser("Allina", "Verde",
-        "@gmail", "1111", "12345");
+        "verde.@gmail", "1111", "12345");
+
   }
 
   @Test
   public void creatUserAndGetUserTest() {
     User user2 = userDAO.getUser(user1.getId());
-
     assertNotNull(user1);
+
     assertTrue(user1.equals(user2));
 
   }
 
-  @Test
+  @Test(expected = EmptyResultDataAccessException.class)
   public void deleteUserTest() {
     userDAO.deleteUser(user1.getId());
     User user3 = userDAO.getUser(user1.getId());
-    assertTrue(user3 == null);
   }
 
   @Test
@@ -70,11 +65,11 @@ public class UserDAOTest {
 
     userDAO.updateLast_name(user1.getId(), userNewFildes.get(1));
     testUser = userDAO.getUser(user1.getId());
-    assertTrue(testUser.getLast_name().equals(userNewFildes.get(1)));
+    assertTrue(testUser.getLastName().equals(userNewFildes.get(1)));
 
     userDAO.updateFirst_name(user1.getId(), userNewFildes.get(0));
     testUser = userDAO.getUser(user1.getId());
-    assertTrue(testUser.getFirst_name().equals(userNewFildes.get(0)));
+    assertTrue(testUser.getFirstName().equals(userNewFildes.get(0)));
 
     userDAO.updateEmail(user1.getId(), userNewFildes.get(2));
     testUser = userDAO.getUser(user1.getId());
@@ -91,7 +86,7 @@ public class UserDAOTest {
   }
 
   @Test
-  public void CreatedGroupAndDeleteGroupTest() {
+  public void getCreatedGroupAndDeleteCreatedGroupTest() {
     int createdGroupCount = 0;
 
     List<Group> groups = new ArrayList<>();
@@ -106,6 +101,39 @@ public class UserDAOTest {
     }
 
   }
+
+  @Test
+  public void enterInGroupAndExitFromGroupTest() {
+    int groupsCountBeforeDelete = 0;
+    int groupsCountAfterDelte = 0;
+    int groupsCountAfterEnter = 0;
+    BigInteger tempGroupId;
+    user1.setGroups(userDAO.getGroups(user1.getId()));
+    List<Group> groupsList = user1.getGroups();
+    groupsCountBeforeDelete = groupsList.size();
+
+    if (groupsCountBeforeDelete > 0) {
+      tempGroupId = groupsList.get(0).getId();
+
+      userDAO.exitFromGroup(user1.getId(), groupsList.get(0).getId());
+      user1.setGroups(userDAO.getGroups(user1.getId()));
+      groupsCountAfterDelte = user1.getGroups().size();
+
+      userDAO.enterInGroup(user1.getId(), tempGroupId);
+      user1.setGroups(userDAO.getGroups(user1.getId()));
+      groupsCountAfterEnter = user1.getGroups().size();
+
+      assertTrue(groupsCountBeforeDelete == groupsCountAfterDelte + 1);
+      assertTrue(groupsCountAfterEnter == groupsCountBeforeDelete);
+    }
+  }
+    @Test
+    public void getUserByEmailTest() {
+    User user2 = userDAO.getUserByEmail(user1.getEmail());
+    assertTrue(user2.equals(user1));
+
+    }
+
 
   @After
   public void tearDown() throws Exception {
