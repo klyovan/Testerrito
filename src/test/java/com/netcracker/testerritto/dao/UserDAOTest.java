@@ -127,13 +127,14 @@ public class UserDAOTest {
       assertTrue(groupsCountAfterEnter == groupsCountBeforeDelete);
     }
   }
+  /*
     @Test
     public void getUserByEmailTest() {
     User user2 = userDAO.getUserByEmail(user1.getEmail());
     assertTrue(user2.equals(user1));
 
     }
-
+*/
 
   @After
   public void tearDown() throws Exception {
