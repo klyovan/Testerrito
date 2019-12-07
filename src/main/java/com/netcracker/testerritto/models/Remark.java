@@ -1,15 +1,25 @@
 package com.netcracker.testerritto.models;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 public class Remark {
 
-    private Integer id;
+    private BigInteger id;
     private String text;
-    private Integer userId;
-    private Integer questionId;
+    private BigInteger userSenderId;
+    private BigInteger questionId;
 
-    public void setId(Integer id) {
+    public Remark(){}
+
+    public Remark(BigInteger id, String text, BigInteger userSenderId, BigInteger questionId){
+        this.id = id;
+        this.text = text;
+        this.userSenderId = userSenderId;
+        this.questionId = questionId;
+    }
+
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -17,7 +27,7 @@ public class Remark {
         this.text = text;
     }
 
-    public Integer getId() {
+    public BigInteger getId() {
         return id;
     }
 
@@ -25,19 +35,19 @@ public class Remark {
         return text;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public BigInteger getUserSenderId() {
+        return userSenderId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUserSenderId(BigInteger userSenderId) {
+        this.userSenderId = userSenderId;
     }
 
-    public Integer getQuestionId() {
+    public BigInteger getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Integer questionId) {
+    public void setQuestionId(BigInteger questionId) {
         this.questionId = questionId;
     }
 
@@ -48,13 +58,23 @@ public class Remark {
         Remark remark = (Remark) o;
         return id.equals(remark.id) &&
                 text.equals(remark.text) &&
-                userId.equals(remark.userId) &&
+                userSenderId.equals(remark.userSenderId) &&
                 questionId.equals(remark.questionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, userId, questionId);
+        return Objects.hash(id, text, userSenderId, questionId);
+    }
+
+    @Override
+    public String toString() {
+        return "Remark{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", userId=" + userSenderId +
+                ", questionId=" + questionId +
+                '}';
     }
 }
 
