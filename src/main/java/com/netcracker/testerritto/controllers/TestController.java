@@ -4,6 +4,7 @@ import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.services.CategoryService;
 import com.netcracker.testerritto.services.GradeCategoryService;
+import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,12 @@ public class TestController {
   private GradeCategoryService gradeCategoryService;
 
   @GetMapping("/category/{categoryId}")
-  public Category getCategory(@PathVariable("categoryId") int id) {
+  public Category getCategory(@PathVariable("categoryId") BigInteger id) {
     return categoryService.getCategoryById(id);
   }
 
   @DeleteMapping("/category/{categoryId}")
-  public void deleteCategory(@PathVariable("categoryId") int id) {
+  public void deleteCategory(@PathVariable("categoryId") BigInteger id) {
     categoryService.deleteCategoryById(id);
   }
 
@@ -32,17 +33,17 @@ public class TestController {
   }
 
   @PostMapping("/category")
-  public int createCategory(Category newCategory) {
+  public BigInteger createCategory(Category newCategory) {
     return categoryService.createCategory(newCategory);
   }
 
   @GetMapping("/category/grade/{id}")
-  public GradeCategory getGradeCategory(@PathVariable int id) {
+  public GradeCategory getGradeCategory(@PathVariable BigInteger id) {
     return gradeCategoryService.getCategoryById(id);
   }
 
   @PostMapping("/category/grade")
-  public int createGradeCategory(GradeCategory newGradeCategory) {
+  public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
     return gradeCategoryService.createGradeCategory(newGradeCategory);
   }
 

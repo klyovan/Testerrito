@@ -4,9 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
-import com.netcracker.testerritto.comparators.GradeCategoryIdComparator;
+import com.netcracker.testerritto.comparators.ObjectEavIdComparator;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -38,10 +39,10 @@ public class GradeCategoryDAOTest {
   @Test
   public void getGradeCategoryByTestId() {
     expGradeCategories = createGradeCategoriesForTest();
-    expGradeCategories.sort(new GradeCategoryIdComparator());
+    expGradeCategories.sort(new ObjectEavIdComparator());
 
     List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByTestId(expGradeCategories.get(0).getTestId());
-    selectedGradeCategories.sort(new GradeCategoryIdComparator());
+    selectedGradeCategories.sort(new ObjectEavIdComparator());
 
     assertEquals(expGradeCategories.size(), selectedGradeCategories.size());
 
@@ -62,7 +63,7 @@ public class GradeCategoryDAOTest {
 
   @Test
   public void getGradeCategoryByTestId_TestIdDoesntExistINDB() {
-    List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByTestId(-1);
+    List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByTestId(new BigInteger("-1"));
     assertTrue(selectedGradeCategories.isEmpty());
   }
 
@@ -86,11 +87,11 @@ public class GradeCategoryDAOTest {
   @Test
   public void getGradeCategoryByCategoryId() {
     expGradeCategories = createGradeCategoriesForTest();
-    expGradeCategories.sort(new GradeCategoryIdComparator());
+    expGradeCategories.sort(new ObjectEavIdComparator());
 
     List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByCategoryId(expGradeCategories.get(0).getCategoryId());
     System.out.println(selectedGradeCategories.toString());
-    selectedGradeCategories.sort(new GradeCategoryIdComparator());
+    selectedGradeCategories.sort(new ObjectEavIdComparator());
 
     assertEquals(expGradeCategories.size(), selectedGradeCategories.size());
 
@@ -163,56 +164,58 @@ public class GradeCategoryDAOTest {
 
   }
 
-  private int createCategoryForTest() {
+  private BigInteger createCategoryForTest() {
     Category categoryExampleForTesting = new Category();
     categoryExampleForTesting.setNameCategory("Test Category");
     return categoryDAO.createCategory(categoryExampleForTesting);
   }
 
   private GradeCategory createGradeCategoryForTest() {
+    BigInteger testId = new BigInteger("-10025");
     gradeCategoryExampleForTest = new GradeCategory();
-    gradeCategoryExampleForTest.setTestId(-10025);
+    gradeCategoryExampleForTest.setTestId(testId);
     gradeCategoryExampleForTest.setMinScore(2);
     gradeCategoryExampleForTest.setMaxScore(22);
     gradeCategoryExampleForTest.setMeaning("Все не так плохо");
     gradeCategoryExampleForTest.setCategoryId(createCategoryForTest());
-    int gradeCategoryId = gradeCategoryDAO.createGradeCategory(gradeCategoryExampleForTest);
+    BigInteger gradeCategoryId = gradeCategoryDAO.createGradeCategory(gradeCategoryExampleForTest);
     gradeCategoryExampleForTest.setId(gradeCategoryId);
     return gradeCategoryExampleForTest;
   }
 
   private List<GradeCategory> createGradeCategoriesForTest() {
     // DELETE ALL GRADE CATEGORIES WHERE TEST_ID = -10025
-    gradeCategoryDAO.deleteGradeCategoryByTestId(-10025);
+    BigInteger testId = new BigInteger("-10025");
+    gradeCategoryDAO.deleteGradeCategoryByTestId(testId);
     GradeCategory gradeCategory1 = new GradeCategory();
     GradeCategory gradeCategory2 = new GradeCategory();
     GradeCategory gradeCategory3 = new GradeCategory();
     GradeCategory gradeCategory4 = new GradeCategory();
-    int category = createCategoryForTest();
+    BigInteger category = createCategoryForTest();
     List<GradeCategory> gradeCategories = new ArrayList<>();
 
-    gradeCategory1.setTestId(-10025);
+    gradeCategory1.setTestId(testId);
     gradeCategory1.setMinScore(2);
     gradeCategory1.setMaxScore(4);
     gradeCategory1.setMeaning("Grade1");
     gradeCategory1.setCategoryId(category);
     gradeCategory1.setId(gradeCategoryDAO.createGradeCategory(gradeCategory1));
 
-    gradeCategory2.setTestId(-10025);
+    gradeCategory2.setTestId(testId);
     gradeCategory2.setMinScore(5);
     gradeCategory2.setMaxScore(7);
     gradeCategory2.setMeaning("Grade2");
     gradeCategory2.setCategoryId(category);
     gradeCategory2.setId(gradeCategoryDAO.createGradeCategory(gradeCategory2));
 
-    gradeCategory3.setTestId(-10025);
+    gradeCategory3.setTestId(testId);
     gradeCategory3.setMinScore(8);
     gradeCategory3.setMaxScore(10);
     gradeCategory3.setMeaning("Grade3");
     gradeCategory3.setCategoryId(category);
     gradeCategory3.setId(gradeCategoryDAO.createGradeCategory(gradeCategory3));
 
-    gradeCategory4.setTestId(-10025);
+    gradeCategory4.setTestId(testId);
     gradeCategory4.setMinScore(11);
     gradeCategory4.setMaxScore(13);
     gradeCategory4.setMeaning("Grade4");
