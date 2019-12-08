@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ObjectEavBuilder {
+
     private BigInteger objectId;
     private BigInteger objectTypeId;
     private BigInteger parentId;
@@ -24,7 +25,7 @@ public class ObjectEavBuilder {
         private ObjectEavBuilder objectEav;
 
         private String OBJECTS_INSERT = "insert all\n into objects(object_id, parent_id, object_type_id, name, description)\n" +
-                "    values(object_id_PR.nextval, ?, ?, ?  || object_id_PR.currval, ?)\n";
+                "    values(object_id_PR.nextval, ?, ?, ? || ' ' || object_id_PR.currval, ?)\n";
 
         private String ATTRIBUTES_INSERT = "into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
                 "    values(object_id_PR.currval, ?, ?, ?, ?)\n";
@@ -102,7 +103,7 @@ public class ObjectEavBuilder {
         }
 
         @Transactional
-        public BigInteger  create(){
+        public BigInteger create(){
             String query = this.OBJECTS_INSERT;
             ArrayList<Object> objects = new ArrayList<>();
             objects.add(checkNull(this.objectEav.parentId));
@@ -125,7 +126,8 @@ public class ObjectEavBuilder {
             this.jdbcTemplate.update(query, objects.toArray());
             return this.jdbcTemplate.queryForObject(GET_ID, BigInteger.class);
         }
-        /* @Transactional
+
+        @Transactional
         public void update(){
              String query = "begin\n";
              ArrayList<Object> objects = new ArrayList<>();
@@ -145,10 +147,10 @@ public class ObjectEavBuilder {
                  objects.add(this.objectEav.objectId.toString());
                  objects.add(attribute.attributeId.toString());
              }
-             query += "end;\n /";
-             this.jdbcTemplate.update(query, objects);
-         }
- */
+             query += "end;";
+             this.jdbcTemplate.update(query, objects.toArray());
+        }
+
         @Transactional
         public void delete(){
             String query = this.OBJECTS_DELETE;
