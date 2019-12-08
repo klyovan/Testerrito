@@ -1,6 +1,7 @@
 package com.netcracker.testerritto.dao;
 
 
+import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.mappers.QuestionRowMapper;
 import com.netcracker.testerritto.mappers.ReplyRowMapper;
 import com.netcracker.testerritto.mappers.ResultRowMapper;
@@ -8,6 +9,7 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ListsValues;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,8 +31,7 @@ public class ResultDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-
-
+    BigInteger status = null;
 
     public Result getResult(BigInteger resultId) {
         String sql = "select  results.object_id id, result2test.reference test_id,\n" +
@@ -172,7 +173,7 @@ public class ResultDAO {
             .delete();
     }
 
-    public BigInteger createResult(Result result) throws ParseException {
+    public BigInteger createResult(Result result) throws ParseException, IllegalArgumentException {
         String sql = " insert all \n" +
             "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
             "        values(object_id_pr.nextval, null, 5, 'result', null)\n" +
@@ -188,23 +189,56 @@ public class ResultDAO {
             "        values(30, object_id_pr.currval, 147) /*testid*/\n" +
             "    select * from dual;";
 
-         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
-         Date date = new Date();
-        String formatedDate =   dateFormat.format(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        Date date = new Date();
+        String formatedDate = dateFormat.format(date);
+
+        if (result.getStatus().equals(ListsValues.STATUS_PASSED)) {
+            status = BigInteger.valueOf(ListsValues.STATUS_PASSED_ID);
+        } else if (result.getStatus().equals(ListsValues.STATUS_NOT_PASSED)) {
+            status = BigInteger.valueOf(ListsValues.STATUS_NOT_PASSED_ID);
+        } else {
+            throw new IllegalArgumentException("Not found result with that status !");
+        }
+
 
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName("Result " + result.getId())
             .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
             .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), dateFormat.parse(formatedDate))
             .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)),)
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), status)
+            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
+            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
             .create();
 
     }
 
-    public void updateResult(Result result) {
+    public BigInteger updateResult(Result result) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        String formatedDate = dateFormat.format(result.getDate());
 
 
+
+        if (result.getStatus().equals(ListsValues.STATUS_PASSED)) {
+            status = BigInteger.valueOf(ListsValues.STATUS_PASSED_ID);
+        } else if (result.getStatus().equals(ListsValues.STATUS_NOT_PASSED)) {
+            status = BigInteger.valueOf(ListsValues.STATUS_NOT_PASSED_ID);
+        } else {
+            throw new IllegalArgumentException("Not found result with that status !");
+        }
+
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(result.getId())
+            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
+            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), dateFormat.parse(formatedDate))
+            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), status)
+            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
+            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
+            .update();
+
+        return result.getId();
 
     }
 
