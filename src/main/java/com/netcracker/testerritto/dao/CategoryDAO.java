@@ -40,15 +40,10 @@ public class CategoryDAO {
   }
 
   public Category updateCategory(Category category) {
-    String queryUpdateAttributes =
-      "update " +
-        "attributes category " +
-      "set " +
-        "category.value = ? " +
-      "where " +
-        "category.object_id = ? " +
-        "and category.attr_id = " + AttrtypeProperties.NAME_CATEGORY;
-    jdbcTemplate.update(queryUpdateAttributes, new Object[]{category.getNameCategory(), (category.getId()).toString()});
+    new ObjectEavBuilder.Builder(jdbcTemplate)
+      .setObjectId(category.getId())
+      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_CATEGORY)), category.getNameCategory())
+      .update();
     return getCategoryById(category.getId());
   }
 

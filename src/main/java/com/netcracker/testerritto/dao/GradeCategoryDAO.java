@@ -8,9 +8,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -145,38 +143,12 @@ public class GradeCategoryDAO {
   }
 
   public GradeCategory updateGradeCategory(GradeCategory gradeCategory) {
-    String queryUpdateMinValue =
-      "update " +
-        "attributes grade_category_min_value " +
-      "set " +
-        "grade_category_min_value.value = :min_value " +
-      "where " +
-        "grade_category_min_value.object_id = :grade_category_id " +
-        "and grade_category_min_value.attr_id = 15 /* min_score */";
-    String queryUpdateMaxValue =
-      "update " +
-        "attributes grade_category_max_value " +
-      "set " +
-        "grade_category_max_value.value = :max_value " +
-      "where " +
-        "grade_category_max_value.object_id = :grade_category_id " +
-        "and grade_category_max_value.attr_id = 16 /* max_score */";
-    String queryUpdateMeaningValue =
-      "update " +
-        "attributes grade_category_meaning_value " +
-      "set " +
-        "grade_category_meaning_value.value = :meaning " +
-      "where " +
-        "grade_category_meaning_value.object_id = :grade_category_id " +
-        "and grade_category_meaning_value.attr_id = 17 /* meaning */";
-    SqlParameterSource namedParameters = new MapSqlParameterSource()
-        .addValue("min_value", gradeCategory.getMinScore())
-        .addValue("max_value", gradeCategory.getMaxScore())
-        .addValue("meaning", gradeCategory.getMeaning())
-        .addValue("grade_category_id", (gradeCategory.getId()).toString());
-    namedParameterJdbcTemplate.update(queryUpdateMinValue, namedParameters);
-    namedParameterJdbcTemplate.update(queryUpdateMaxValue, namedParameters);
-    namedParameterJdbcTemplate.update(queryUpdateMeaningValue, namedParameters);
+    new ObjectEavBuilder.Builder(jdbcTemplate)
+      .setObjectId(gradeCategory.getId())
+      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MIN_SCORE)), String.valueOf(gradeCategory.getMinScore()))
+      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MAX_SCORE)), String.valueOf(gradeCategory.getMaxScore()))
+      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MEANING)), gradeCategory.getMeaning())
+      .update();
     return getGradeCategoryById(gradeCategory.getId());
   }
 }
