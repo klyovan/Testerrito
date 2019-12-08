@@ -28,7 +28,7 @@ public class CategoryDAO {
       "where " +
         "category.object_id = ? " +
         "and category.object_id = category_attr.object_id " +
-        "and category_attr.attr_id = " + new AttrtypeProperties().NAME_CATEGORY;
+        "and category_attr.attr_id = " + AttrtypeProperties.NAME_CATEGORY;
     return jdbcTemplate.queryForObject(query, new Object[]{id.toString()}, categoryRowMapper);
   }
 
@@ -38,7 +38,7 @@ public class CategoryDAO {
         "objects category " +
       "where " +
         "category.object_id = ? " +
-        "and category.object_type_id = " + new AttrtypeProperties().TEXT;
+        "and category.object_type_id = " + AttrtypeProperties.TEXT;
     jdbcTemplate.update(query, new Object[]{id.toString()});
   }
 
@@ -50,7 +50,7 @@ public class CategoryDAO {
         "category.value = ? " +
       "where " +
         "category.object_id = ? " +
-        "and category.attr_id = " + new AttrtypeProperties().NAME_CATEGORY;
+        "and category.attr_id = " + AttrtypeProperties.NAME_CATEGORY;
     jdbcTemplate.update(queryUpdateAttributes, new Object[]{category.getNameCategory(), (category.getId()).toString()});
     return getCategoryById(category.getId());
   }
@@ -60,10 +60,10 @@ public class CategoryDAO {
       "insert all " +
         "into " +
           "objects(object_id, object_type_id, name) " +
-          "values (object_id_pr.nextval, "+ new AttrtypeProperties().TEXT +", 'Category ' || object_id_pr.currval) /* category */" +
+          "values (object_id_pr.nextval, "+ AttrtypeProperties.TEXT +", 'Category ' || object_id_pr.currval) /* category */" +
         "into " +
           "attributes(attr_id, object_id, value) " +
-          "values (" + new AttrtypeProperties().NAME_CATEGORY + ", object_id_pr.currval, ?) /* name_category */" +
+          "values (" + AttrtypeProperties.NAME_CATEGORY + ", object_id_pr.currval, ?) /* name_category */" +
       "select * from dual";
     String queryRetrieveId = "select object_id_pr.currval from dual";
     jdbcTemplate.update(queryInsert, new Object[]{newCategory.getNameCategory()});
