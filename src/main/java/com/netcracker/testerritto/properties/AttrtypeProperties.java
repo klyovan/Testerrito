@@ -1,0 +1,41 @@
+package com.netcracker.testerritto.properties;
+
+public class AttrtypeProperties {
+  public static final byte LAST_NAME = 1;
+  public static final byte FIRST_NAME = 2;
+  public static final byte EMAIL = 3;
+  public static final byte PASSWORD = 4;
+  public static final byte PHONE = 5;
+  public static final byte NAME_GROUP = 6;
+  public static final byte LINK = 7;
+  public static final byte TEXT = 8;
+  public static final byte NAME_TEST = 9;
+  public static final byte DATE = 10;
+  public static final byte SCORE_RESULT = 11;
+  public static final byte STATUS = 12;
+  public static final byte URL = 13;
+  public static final byte NAME_CATEGORY = 14;
+  public static final byte MIN_SCORE = 15;
+  public static final byte MAX_SCORE = 16;
+  public static final byte MEANING = 17;
+  public static final byte TEXT_QUESTION = 18;
+  public static final byte TYPE_QUESTION = 19;
+  public static final byte TEXT_ANSWER = 20;
+  public static final byte SCORE_ANSWER = 21;
+  public static final byte CONSIST = 22;
+  public static final byte RATE_BY = 23;
+  public static final byte CREATE_TEST_BY = 24;
+  public static final byte CREATE_GROUP_BY = 25;
+  public static final byte SEND = 26;
+  public static final byte PROCESS_BY = 27;
+  public static final byte CAUSED_BY = 28;
+  public static final byte LOOK_BY = 29;
+  public static final byte RESULT_BELONGS = 30;
+  public static final byte REPLY_BELONGS = 31;
+  public static final byte ANSWER_BELONGS = 32;
+  public static final byte GRADE_BELONGS = 33;
+  public static final byte MATCH_CATEGORY = 34;
+  public static final byte QUESTION_IMAGE = 35;
+  public static final byte ANSWER_IMAGE = 36;
+  public static final byte NEXT_QUESTION = 37;
+}

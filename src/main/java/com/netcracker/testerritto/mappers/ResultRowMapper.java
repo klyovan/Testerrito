@@ -1,9 +1,10 @@
 package com.netcracker.testerritto.mappers;
 
 import com.netcracker.testerritto.models.Result;
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.RowMapper;
 
 public class ResultRowMapper implements RowMapper<Result> {
   @Override
@@ -17,6 +18,4 @@ public class ResultRowMapper implements RowMapper<Result> {
     result.setUserId(resultSet.getBigDecimal("user_id").toBigInteger());
     return result;
   }
-
-
 }

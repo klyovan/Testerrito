@@ -2,6 +2,7 @@ package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.mappers.GradeCategoryMapper;
 import com.netcracker.testerritto.models.GradeCategory;
+import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,7 +25,7 @@ public class GradeCategoryDAO {
   @Autowired
   private GradeCategoryMapper gradeCategoryMapper;
 
-  public List<GradeCategory> getGradeCategoryByTestId(int id) {
+  public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) {
     String query =
       "select " +
         "grade_category.object_id grade_id, " +
@@ -51,10 +52,10 @@ public class GradeCategoryDAO {
         "and grade_category_meaning.object_id = grade_category.object_id " +
         "and grade_category_ref_on_category.object_id = grade_category.object_id " +
         "and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
-    return jdbcTemplate.query(query, new Object[]{id}, gradeCategoryMapper);
+    return jdbcTemplate.query(query, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
-  public List<GradeCategory> getGradeCategoryByCategoryId(int id) {
+  public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) {
     String query =
       "select " +
         "grade_category.object_id grade_id, " +
@@ -81,10 +82,10 @@ public class GradeCategoryDAO {
         "and grade_category_max_value.object_id = grade_category.object_id " +
         "and grade_category_meaning.attr_id = 17 /* meaning */ " +
         "and grade_category_meaning.object_id = grade_category.object_id";
-    return jdbcTemplate.query(query, new Object[]{id}, gradeCategoryMapper);
+    return jdbcTemplate.query(query, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
-  public GradeCategory getGradeCategoryById(int id) {
+  public GradeCategory getGradeCategoryById(BigInteger id) {
     String query =
       "select " +
         "grade_category.object_id grade_id, " +
@@ -110,10 +111,10 @@ public class GradeCategoryDAO {
         "grade_category_meaning.object_id = grade_category.object_id and " +
         "grade_category_ref_on_category.object_id = grade_category.object_id and " +
         "grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
-    return jdbcTemplate.queryForObject(query, new Object[]{id}, gradeCategoryMapper);
+    return jdbcTemplate.queryForObject(query, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
-  public int createGradeCategory(GradeCategory newGradeCategory) {
+  public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
     String queryInsert =
       "insert all " +
         "into " +
@@ -132,34 +133,35 @@ public class GradeCategoryDAO {
           "objreference(attr_id, object_id, reference) " +
           "values(33, object_id_pr.currval, :category_id) /* grade_belongs */" +
       "select * from dual";
-    SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("test_id",  newGradeCategory.getTestId())
+    SqlParameterSource namedParameters = new MapSqlParameterSource()
+        .addValue("test_id",  (newGradeCategory.getTestId()).toString())
         .addValue("min_value", newGradeCategory.getMinScore())
         .addValue("max_value", newGradeCategory.getMaxScore())
         .addValue("meaning", newGradeCategory.getMeaning())
-        .addValue("category_id", newGradeCategory.getCategoryId());
+        .addValue("category_id", (newGradeCategory.getCategoryId()).toString());
     String queryRetrieveId = "select object_id_pr.currval from dual";
     namedParameterJdbcTemplate.update(queryInsert, namedParameters);
-    return jdbcTemplate.queryForObject(queryRetrieveId, Integer.class);
+    return jdbcTemplate.queryForObject(queryRetrieveId, BigInteger.class);
   }
 
-  public void deleteGradeCategoryById(int id) {
+  public void deleteGradeCategoryById(BigInteger id) {
     String query =
       "delete from " +
         "objects grade_category " +
       "where " +
         "grade_category.object_id = ? " +
         "and grade_category.object_type_id = 9 /* grade_category */";
-    jdbcTemplate.update(query, new Object[]{id});
+    jdbcTemplate.update(query, new Object[]{id.toString()});
   }
 
-  public void deleteGradeCategoryByTestId(int id) {
+  public void deleteGradeCategoryByTestId(BigInteger id) {
     String query =
       "delete from " +
         "objects grade_category " +
       "where " +
         "grade_category.parent_id = ? " +
         "and grade_category.object_type_id = 9 /* grade_category */";
-    jdbcTemplate.update(query, new Object[]{id});
+    jdbcTemplate.update(query, new Object[]{id.toString()});
   }
 
   public GradeCategory updateGradeCategory(GradeCategory gradeCategory) {
@@ -187,10 +189,11 @@ public class GradeCategoryDAO {
       "where " +
         "grade_category_meaning_value.object_id = :grade_category_id " +
         "and grade_category_meaning_value.attr_id = 17 /* meaning */";
-    SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("min_value", gradeCategory.getMinScore())
+    SqlParameterSource namedParameters = new MapSqlParameterSource()
+        .addValue("min_value", gradeCategory.getMinScore())
         .addValue("max_value", gradeCategory.getMaxScore())
         .addValue("meaning", gradeCategory.getMeaning())
-        .addValue("grade_category_id", gradeCategory.getId());
+        .addValue("grade_category_id", (gradeCategory.getId()).toString());
     namedParameterJdbcTemplate.update(queryUpdateMinValue, namedParameters);
     namedParameterJdbcTemplate.update(queryUpdateMaxValue, namedParameters);
     namedParameterJdbcTemplate.update(queryUpdateMeaningValue, namedParameters);

@@ -1,7 +1,6 @@
 package com.netcracker.testerritto.security;
 
 import com.netcracker.testerritto.dao.UserDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -34,18 +33,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-        // remove csrf and state in session because in jwt we do not need them
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        // add jwt filters (1. authentication, 2. authorization)
         .addFilter(new JwtAuthenticationFilter(authenticationManager()))
         .addFilter(new JwtAuthorizationFilter(authenticationManager(),  this.userDAO))
         .authorizeRequests()
-        // configure access rules
         .antMatchers(HttpMethod.POST, "/login").permitAll()
         .antMatchers("test/*").hasRole("USER")
-//        .antMatchers("/api/public/admin/*").hasRole("ADMIN")
         .anyRequest().authenticated();
   }
 
