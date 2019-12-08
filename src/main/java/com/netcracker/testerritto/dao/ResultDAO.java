@@ -8,6 +8,7 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +28,8 @@ public class ResultDAO {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+
 
 
     public Result getResult(BigInteger resultId) {
@@ -84,10 +90,10 @@ public class ResultDAO {
             "    and tests.object_id = questions.parent_id\n" +
             "    and results.object_id = ?";
 
-        jdbcTemplate.query(sql, new Object[]{new AttrtypeProperties().REPLY_BELONGS, new AttrtypeProperties().ANSWER_BELONGS,resultId.toString()}, new RowMapper<Map<BigInteger, BigInteger>>() {
+        jdbcTemplate.query(sql, new Object[]{AttrtypeProperties.REPLY_BELONGS, AttrtypeProperties.ANSWER_BELONGS, resultId.toString()}, new RowMapper<Map<BigInteger, BigInteger>>() {
                 @Override
                 public Map<BigInteger, BigInteger> mapRow(ResultSet resultSet, int i) throws SQLException {
-                    resultHashMapId.put( BigInteger.valueOf(resultSet.getInt("rep_id")), BigInteger.valueOf(resultSet.getInt("ques_id")));
+                    resultHashMapId.put(BigInteger.valueOf(resultSet.getInt("rep_id")), BigInteger.valueOf(resultSet.getInt("ques_id")));
                     return resultHashMapId;
                 }
             }
@@ -157,30 +163,48 @@ public class ResultDAO {
     }
 
     public void deleteResult(BigInteger resultId) {
-        String sql = "DELETE FROM objects WHERE object_id = ?";
+//        String sql = "DELETE FROM objects WHERE object_id = ?";
+//
+//        jdbcTemplate.update(sql, resultId);
 
-        jdbcTemplate.update(sql, resultId);
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(resultId)
+            .delete();
     }
 
-    public void createResult(Result result) {
+    public BigInteger createResult(Result result) throws ParseException {
         String sql = " insert all \n" +
             "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
             "        values(object_id_pr.nextval, null, 5, 'result', null)\n" +
             "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 10,null, sys.date, null)  --date\n" +
+            "        values(object_id_pr.currval, 10,null, sysdate, null)  /*date*/\n" +
             "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 11, 5, null, null) --score\n" +
+            "        values(object_id_pr.currval, 11, 5, null, null) /*score*/\n" +
             "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 12, null, null, 7) --status\n" +
-            "    into objreference(attr_id, object_id, reference)\t-- look by \n" +
-            "        values(29, object_id_, ?) --userid\n" +
-            "    into objreference(attr_id, object_id, reference)\t--result_belong\n" +
-            "        values(30, object_id_pr.currval, 147)--testid\n" +
-            "    select * from dual";
+            "        values(object_id_pr.currval, 12, null, null, 7) /*status*/\n" +
+            "    into objreference(attr_id, object_id, reference)\t/*look by*/ \n" +
+            "        values(29, object_id_pr.currval, 2) /*userid*/\n" +
+            "    into objreference(attr_id, object_id, reference)\t/*result_belong*/\n" +
+            "        values(30, object_id_pr.currval, 147) /*testid*/\n" +
+            "    select * from dual;";
+
+         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+         Date date = new Date();
+        String formatedDate =   dateFormat.format(date);
+
+        return new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setName("Result " + result.getId())
+            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
+            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), dateFormat.parse(formatedDate))
+            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)),)
+            .create();
 
     }
 
-    public void updateResult(BigInteger resultId) {
+    public void updateResult(Result result) {
+
+
 
     }
 

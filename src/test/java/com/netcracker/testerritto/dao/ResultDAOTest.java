@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -44,6 +45,8 @@ public class ResultDAOTest {
 
     @Test
     public void deleteResult() {
+        Date date = new Date();
+        System.out.println(date);
     }
 
     @Test

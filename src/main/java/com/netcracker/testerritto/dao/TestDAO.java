@@ -8,11 +8,14 @@ import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
+import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -116,43 +119,31 @@ public class TestDAO {
 
 
     public void deleteTest(BigInteger testId) {
-        String sql = "delete from objects where object_id = ?";
-
-        jdbcTemplate.update(sql, testId.toString());
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(testId)
+            .delete();
     }
 
     public BigInteger createTest(Test test) {
-        String sql = "insert all  " +
-            "    into objects(object_id, parent_id, object_type_id, name, description)" +
-            "    values(?, ?, 4,? , null)" +
-            "    into attributes(object_id, attr_id, value, date_value, list_value_id)  /*test_name*/" +
-            "    values(?, 9, ?, null, null)" +
-            "    into objreference(attr_id, object_id, reference) /*test2creator*/" +
-            "    values(24,?, ?)" +
-            "    select * from dual";
 
-        jdbcTemplate.update(sql, test.getId().toString(), test.getGroupId().toString(), test.getNameTest(), test.getId().toString(), test.getNameTest(), test.getId().toString(), test.getCreatorUserId().toString());
+        return new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setName(test.getNameTest())
+            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
+            .setParentId(test.getGroupId())
+            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), test.getNameTest())
+            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), test.getCreatorUserId())
+            .create();
+    }
+
+
+    public BigInteger updateTest(Test test) {
+
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(test.getId())
+            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), test.getNameTest())
+            .update();
 
         return test.getId();
+
     }
-
-
-    public void updateTest(Test test, BigInteger attrId) {
-        String sql = "update attributes \n" +
-            "set\n" +
-            "    value = ? /* new_name */\n" +
-            "where object_id = ? /* group_Id */\n" +
-            "and attr_id = ? /* name_test */";
-
-        jdbcTemplate.update(sql, test.getNameTest(), test.getId().toString(), attrId.toString());
-    }
-
-
-    private BigInteger getObjectSequenceCount() {
-        String sql = "SELECT object_id_pr.NEXTVAL from dual";
-
-        return jdbcTemplate.queryForObject(sql, BigInteger.class);
-    }
-
-
 }
