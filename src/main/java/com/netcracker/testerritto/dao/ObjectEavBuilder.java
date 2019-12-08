@@ -42,7 +42,9 @@ public class ObjectEavBuilder {
         private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "update attributes set list_value_id = ?\n" +
                 "    where object_id = ? and attr_id = ?;\n";
 
-        private String OBJECTS_DELETE = "delete from objects where object_id = ?";
+        private String DELETE_BY_OBJECT_ID = "delete from objects where object_id = ?";
+
+        private String DELETE_BY_PARENT_ID_AND_TYPE = "delete from objects where parent_id = ? and object_type_id = ?";
 
         private String GET_ID = "select object_id_pr.currval from dual";
 
@@ -153,8 +155,14 @@ public class ObjectEavBuilder {
 
         @Transactional
         public void delete(){
-            String query = this.OBJECTS_DELETE;
-            this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+            if(objectEav.objectId != null){
+                String query = this.DELETE_BY_OBJECT_ID;
+                this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+            }
+            else if(objectEav.parentId != null && objectEav.objectTypeId != null){
+                String query = this.DELETE_BY_PARENT_ID_AND_TYPE;
+                this.jdbcTemplate.update(query, this.objectEav.parentId.toString(), this.objectEav.objectTypeId.toString());
+            }
         }
 
         private String checkNull(BigInteger id){
