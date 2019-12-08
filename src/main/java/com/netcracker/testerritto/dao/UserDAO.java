@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +21,8 @@ import java.util.List;
 @Repository
 @Transactional
 public class UserDAO {
-  // @Autowired
-  //private PasswordEncoder passwordEncoder;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -244,8 +245,7 @@ public class UserDAO {
           User user = new User();
           user.setLastName(resultSet.getString(1));
           user.setFirstName(resultSet.getString(2));
-       //   user.setPassword(passwordEncoder.encode(resultSet.getString(3))); prod
-          user.setPassword(resultSet.getString(3));
+          user.setPassword(passwordEncoder.encode(resultSet.getString(3)));
           user.setPhone(resultSet.getString(4));
           user.setId(new BigInteger(resultSet.getString(5)));
           user.setEmail(email);

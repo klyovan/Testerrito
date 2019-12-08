@@ -1,5 +1,5 @@
 package com.netcracker.testerritto.dao;
 
-public class TestDAO {
+public class ReplyDAOTest {
 
 }
