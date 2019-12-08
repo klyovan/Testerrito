@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.security.SecurityConfiguration;
+import java.math.BigInteger;
 import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class CategoryDAOTest {
   public void setUp() throws Exception {
     Locale.setDefault(Locale.ENGLISH);
     categoryExampleForTesting.setNameCategory("Test Category");
-    int categoryId = categoryDAO.createCategory(categoryExampleForTesting);
+    BigInteger categoryId = categoryDAO.createCategory(categoryExampleForTesting);
     categoryExampleForTesting.setId(categoryId);
   }
 

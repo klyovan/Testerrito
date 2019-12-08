@@ -1,11 +1,13 @@
 package com.netcracker.testerritto.models;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class User {
-  private int id;
-  private String last_name;
-  private String first_name;
+
+  private BigInteger id;
+  private String lastName;
+  private String firstName;
   private String email;
   private String password;
   private String phone;
@@ -16,38 +18,38 @@ public class User {
   public User() {
   }
 
-  public User(int id, String last_name, String first_name, String email,
+  public User(BigInteger id, String lastName, String firstName, String email,
       String password, String phone) {
     this.id = id;
-    this.last_name = last_name;
-    this.first_name = first_name;
+    this.lastName = lastName;
+    this.firstName = firstName;
     this.email = email;
     this.password = password;
     this.phone = phone;
   }
 
-  public int getId() {
+  public BigInteger getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(BigInteger id) {
     this.id = id;
   }
 
-  public String getLast_name() {
-    return last_name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setLast_name(String last_name) {
-    this.last_name = last_name;
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
-  public String getFirst_name() {
-    return first_name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setFirst_name(String first_name) {
-    this.first_name = first_name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
   }
 
   public String getEmail() {
@@ -83,6 +85,22 @@ public class User {
     this.groups = groups;
   }
 
+  public List<Result> getResults() {
+    return results;
+  }
+
+  public void setResults(List<Result> results) {
+    this.results = results;
+  }
+
+  public List<Group> getCreatedGroups() {
+    return createdGroups;
+  }
+
+  public void setCreatedGroups(List<Group> createdGroups) {
+    this.createdGroups = createdGroups;
+  }
+
 
   @Override
   public boolean equals(Object obj) {
@@ -95,16 +113,16 @@ public class User {
 
     User user = (User) obj;
     return id == user.id
-        && (first_name == user.first_name
-        || (first_name != null && first_name.equals(user.getFirst_name())))
-        && (last_name == user.last_name
-        || (last_name != null && last_name .equals(user.getLast_name())))
+        || (id != null && id.compareTo(user.getId()) == 0)
+        && (firstName == user.firstName
+        || (firstName != null && firstName.equals(user.getFirstName())))
+        && (lastName == user.lastName
+        || (lastName != null && lastName.equals(user.getLastName())))
         && (email == user.email
         || (email != null && email.equals(user.getEmail())))
         && (password == user.password
         || (password != null && password.equals(user.getPassword())))
         && (phone == user.phone
-        || (phone!= null && phone.equals(user.getPhone())));
-
+        || (phone != null && phone.equals(user.getPhone())));
   }
 }
