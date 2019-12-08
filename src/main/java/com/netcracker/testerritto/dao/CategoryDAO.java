@@ -3,6 +3,7 @@ package com.netcracker.testerritto.dao;
 import com.netcracker.testerritto.mappers.CategoryRowMapper;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ObjtypeProperties;
 import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,27 +20,23 @@ public class CategoryDAO {
   private CategoryRowMapper categoryRowMapper;
 
   public Category getCategoryById(BigInteger id) {
-    String query =
+    String getCategoryByIdQuery =
       "select " +
-        "category.object_id category_id, " +
-        "category_attr.value name_category " +
+      "  category.object_id id, " +
+      "  category_attr.value name_category " +
       "from " +
-        "objects category, attributes category_attr " +
+      "  objects category, attributes category_attr " +
       "where " +
-        "category.object_id = ? " +
-        "and category.object_id = category_attr.object_id " +
-        "and category_attr.attr_id = " + AttrtypeProperties.NAME_CATEGORY;
-    return jdbcTemplate.queryForObject(query, new Object[]{id.toString()}, categoryRowMapper);
+      "  category.object_id = ? " +
+      "  and category.object_id = category_attr.object_id " +
+      "  and category_attr.attr_id = " + AttrtypeProperties.NAME_CATEGORY;
+    return jdbcTemplate.queryForObject(getCategoryByIdQuery, new Object[]{id.toString()}, categoryRowMapper);
   }
 
   public void deleteCategoryById(BigInteger id) {
-    String query =
-      "delete from " +
-        "objects category " +
-      "where " +
-        "category.object_id = ? " +
-        "and category.object_type_id = " + AttrtypeProperties.TEXT;
-    jdbcTemplate.update(query, new Object[]{id.toString()});
+    new ObjectEavBuilder.Builder(jdbcTemplate)
+      .setObjectId(id)
+      .delete();
   }
 
   public Category updateCategory(Category category) {
@@ -56,17 +53,11 @@ public class CategoryDAO {
   }
 
   public BigInteger createCategory(Category newCategory) {
-    String queryInsert =
-      "insert all " +
-        "into " +
-          "objects(object_id, object_type_id, name) " +
-          "values (object_id_pr.nextval, "+ AttrtypeProperties.TEXT +", 'Category ' || object_id_pr.currval) /* category */" +
-        "into " +
-          "attributes(attr_id, object_id, value) " +
-          "values (" + AttrtypeProperties.NAME_CATEGORY + ", object_id_pr.currval, ?) /* name_category */" +
-      "select * from dual";
-    String queryRetrieveId = "select object_id_pr.currval from dual";
-    jdbcTemplate.update(queryInsert, new Object[]{newCategory.getNameCategory()});
-    return jdbcTemplate.queryForObject(queryRetrieveId, BigInteger.class);
+    BigInteger newCategoryId = new ObjectEavBuilder.Builder(jdbcTemplate)
+      .setName(newCategory.getNameCategory())
+      .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.CATEGORY)))
+      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_CATEGORY)), newCategory.getNameCategory())
+      .create();
+    return newCategoryId;
   }
 }

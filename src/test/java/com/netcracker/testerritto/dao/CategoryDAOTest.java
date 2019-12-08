@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.models.Category;
-import com.netcracker.testerritto.security.SecurityConfiguration;
 import java.math.BigInteger;
 import java.util.Locale;
 import org.junit.After;
@@ -13,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,7 +27,7 @@ public class CategoryDAOTest {
   @Before
   public void setUp() throws Exception {
     Locale.setDefault(Locale.ENGLISH);
-    categoryExampleForTesting.setNameCategory("Test Category");
+    categoryExampleForTesting.setNameCategory("Introvert");
     BigInteger categoryId = categoryDAO.createCategory(categoryExampleForTesting);
     categoryExampleForTesting.setId(categoryId);
   }
@@ -49,7 +46,7 @@ public class CategoryDAOTest {
 
   @Test
   public void updateCategory() {
-    String newAttrNameCategory = "new value";
+    String newAttrNameCategory = "Introvert with a tendency to depression";
     categoryExampleForTesting.setNameCategory(newAttrNameCategory);
     Category updatedCategory = categoryDAO.updateCategory(categoryExampleForTesting);
     assertEquals(categoryExampleForTesting.getId(), updatedCategory.getId());
