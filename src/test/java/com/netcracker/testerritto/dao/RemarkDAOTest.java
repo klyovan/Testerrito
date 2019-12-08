@@ -3,6 +3,8 @@ package com.netcracker.testerritto.dao;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.models.Remark;
+import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,26 +44,26 @@ public class RemarkDAOTest {
     public void setup(){
         Locale.setDefault(Locale.ENGLISH);
         authorId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger("1"))
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.USER)))
                 .setName("USER_AUTHOR")
                 .create();
         groupId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger("2"))
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GROUP)))
                 .setName("GROUP")
                 .create();
         testId = new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setParentId(groupId)
-                .setObjectTypeId(new BigInteger("4"))
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
                 .setName("TEST")
-                .setReference(new BigInteger("24"), groupId)
+                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), groupId)
                 .create();
         questionId = new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setParentId(testId)
-                .setObjectTypeId(new BigInteger("10"))
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.QUESTION)))
                 .setName("QUESTION")
                 .create();
         remarkerId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger("1"))
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.USER)))
                 .setName("USER_REMARKER")
                 .create();
     }
