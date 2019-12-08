@@ -6,7 +6,9 @@ import com.netcracker.testerritto.models.Question;
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QuestionRowMapper implements RowMapper<Question> {
     @Override
     public Question mapRow(ResultSet resultSet, int i) throws SQLException {
