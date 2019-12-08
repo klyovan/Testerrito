@@ -166,7 +166,7 @@ public class GradeCategoryDAOTest {
 
   private BigInteger createCategoryForTest() {
     Category categoryExampleForTesting = new Category();
-    categoryExampleForTesting.setNameCategory("Темперамент");
+    categoryExampleForTesting.setNameCategory("Темперамент ");
     return categoryDAO.createCategory(categoryExampleForTesting);
   }
 

@@ -48,11 +48,10 @@ public class CategoryDAO {
   }
 
   public BigInteger createCategory(Category newCategory) {
-    BigInteger newCategoryId = new ObjectEavBuilder.Builder(jdbcTemplate)
+    return new ObjectEavBuilder.Builder(jdbcTemplate)
       .setName(newCategory.getNameCategory())
       .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.CATEGORY)))
       .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_CATEGORY)), newCategory.getNameCategory())
       .create();
-    return newCategoryId;
   }
 }

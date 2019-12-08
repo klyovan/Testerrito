@@ -114,7 +114,7 @@ public class GradeCategoryDAO {
   }
 
   public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
-    BigInteger newGradeCategoryId = new ObjectEavBuilder.Builder(jdbcTemplate)
+    return new ObjectEavBuilder.Builder(jdbcTemplate)
       .setName(newGradeCategory.getMeaning())
       .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GRADE_CATEGORY)))
       .setParentId(newGradeCategory.getTestId())
@@ -123,7 +123,6 @@ public class GradeCategoryDAO {
       .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MEANING)), String.valueOf(newGradeCategory.getMeaning()))
       .setReference(new BigInteger(String.valueOf(AttrtypeProperties.GRADE_BELONGS)), newGradeCategory.getCategoryId())
       .create();
-    return newGradeCategoryId;
   }
 
   public void deleteGradeCategoryById(BigInteger id) {
@@ -133,13 +132,10 @@ public class GradeCategoryDAO {
   }
 
   public void deleteGradeCategoryByTestId(BigInteger id) {
-    String query =
-      "delete from " +
-        "objects grade_category " +
-      "where " +
-        "grade_category.parent_id = ? " +
-        "and grade_category.object_type_id = 9 /* grade_category */";
-    jdbcTemplate.update(query, new Object[]{id.toString()});
+    new ObjectEavBuilder.Builder(jdbcTemplate)
+      .setParentId(id)
+      .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GRADE_CATEGORY)))
+      .delete();
   }
 
   public GradeCategory updateGradeCategory(GradeCategory gradeCategory) {
