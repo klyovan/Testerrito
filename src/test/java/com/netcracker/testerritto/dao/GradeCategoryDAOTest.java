@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -37,7 +38,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void getGradeCategoryByTestId() {
+  public void getGradeCategoryByTestId() throws DataAccessException {
     expGradeCategories = createGradeCategoriesForTest();
     expGradeCategories.sort(new ObjectEavIdComparator());
 
@@ -68,7 +69,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void getGradeCategoryById() {
+  public void getGradeCategoryById() throws DataAccessException {
     gradeCategoryExampleForTest = createGradeCategoryForTest();
     GradeCategory gradeCategoryFromDB = gradeCategoryDAO.getGradeCategoryById(gradeCategoryExampleForTest.getId());
 
@@ -85,7 +86,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void getGradeCategoryByCategoryId() {
+  public void getGradeCategoryByCategoryId() throws DataAccessException {
     expGradeCategories = createGradeCategoriesForTest();
     expGradeCategories.sort(new ObjectEavIdComparator());
 
@@ -111,7 +112,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void createGradeCategory() {
+  public void createGradeCategory() throws DataAccessException {
     gradeCategoryExampleForTest = createGradeCategoryForTest();
     GradeCategory gradeCategoryFromDB = gradeCategoryDAO.getGradeCategoryById(gradeCategoryExampleForTest.getId());
 
@@ -127,7 +128,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test(expected = EmptyResultDataAccessException.class)
-  public void deleteGradeCategoryById() {
+  public void deleteGradeCategoryById() throws DataAccessException {
     gradeCategoryExampleForTest = createGradeCategoryForTest();
     gradeCategoryDAO.deleteGradeCategoryById(gradeCategoryExampleForTest.getId());
     categoryDAO.deleteCategoryById(gradeCategoryExampleForTest.getCategoryId());
@@ -135,7 +136,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void deleteGradeCategoryByTestId() {
+  public void deleteGradeCategoryByTestId() throws DataAccessException {
     expGradeCategories = createGradeCategoriesForTest();
     gradeCategoryDAO.deleteGradeCategoryByTestId(expGradeCategories.get(0).getTestId());
     categoryDAO.deleteCategoryById(expGradeCategories.get(0).getCategoryId());
@@ -144,7 +145,7 @@ public class GradeCategoryDAOTest {
   }
 
   @Test
-  public void updateGradeCategory() {
+  public void updateGradeCategory() throws DataAccessException {
     gradeCategoryExampleForTest = createGradeCategoryForTest();
     gradeCategoryExampleForTest.setMeaning("Холерик");
     gradeCategoryExampleForTest.setMinScore(100);
@@ -164,13 +165,13 @@ public class GradeCategoryDAOTest {
 
   }
 
-  private BigInteger createCategoryForTest() {
+  private BigInteger createCategoryForTest() throws DataAccessException {
     Category categoryExampleForTesting = new Category();
     categoryExampleForTesting.setNameCategory("Темперамент ");
     return categoryDAO.createCategory(categoryExampleForTesting);
   }
 
-  private GradeCategory createGradeCategoryForTest() {
+  private GradeCategory createGradeCategoryForTest() throws DataAccessException {
     BigInteger testId = new BigInteger("-10025");
     gradeCategoryExampleForTest = new GradeCategory();
     gradeCategoryExampleForTest.setTestId(testId);
@@ -183,7 +184,7 @@ public class GradeCategoryDAOTest {
     return gradeCategoryExampleForTest;
   }
 
-  private List<GradeCategory> createGradeCategoriesForTest() {
+  private List<GradeCategory> createGradeCategoriesForTest() throws DataAccessException {
     // DELETE ALL GRADE CATEGORIES WHERE TEST_ID = -10025
     BigInteger testId = new BigInteger("-10025");
     gradeCategoryDAO.deleteGradeCategoryByTestId(testId);
