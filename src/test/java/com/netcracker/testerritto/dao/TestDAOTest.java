@@ -84,8 +84,8 @@ public class TestDAOTest {
 
     private com.netcracker.testerritto.models.Test getNewTest() {
 
-        BigInteger a = BigInteger.valueOf(-88);
-        BigInteger b = BigInteger.valueOf(-77);
+        BigInteger a = new BigInteger("-88");
+        BigInteger b = new BigInteger("-77");
 
         List<GradeCategory> grades = new ArrayList<>();
 

@@ -18,22 +18,22 @@ public class TestController {
   private GradeCategoryService gradeCategoryService;
 
   @GetMapping("/category/{categoryId}")
-  public Category getCategory(@PathVariable("categoryId") BigInteger id) {
+  public Category getCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
     return categoryService.getCategoryById(id);
   }
 
   @DeleteMapping("/category/{categoryId}")
-  public void deleteCategory(@PathVariable("categoryId") BigInteger id) {
+  public void deleteCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
     categoryService.deleteCategoryById(id);
   }
 
   @PutMapping("/category")
-  public Category updateCategory(Category updateCategory) {
+  public Category updateCategory(Category updateCategory) throws Exception {
     return categoryService.updateCategory(updateCategory);
   }
 
   @PostMapping("/category")
-  public BigInteger createCategory(Category newCategory) {
+  public BigInteger createCategory(Category newCategory) throws Exception {
     return categoryService.createCategory(newCategory);
   }
 

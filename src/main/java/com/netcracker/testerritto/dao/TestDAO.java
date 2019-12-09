@@ -10,13 +10,11 @@ import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
+import java.math.BigInteger;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.List;
 
 @Repository
 public class TestDAO {
@@ -40,8 +38,8 @@ public class TestDAO {
             "    and creator.object_id = test2creator.reference";
 
 
-        Test test = jdbcTemplate.queryForObject(sql, new Object[]{testId.toString(), AttrtypeProperties.NAME_TEST,
-            AttrtypeProperties.CREATE_TEST_BY}, new TestRowMapper());
+        Test test = jdbcTemplate.queryForObject(sql, new Object[]{testId.toString(), AttrtypeProperties.NAME_TEST.toString(),
+            AttrtypeProperties.CREATE_TEST_BY.toString()}, new TestRowMapper());
 
         test.setExperts(getExperts(testId));
         test.setGradesCategory(getGradesCategory(testId));
@@ -78,9 +76,9 @@ public class TestDAO {
             "    and phone.attr_id = ?          /*phone*/ \n" +
             "    and phone.object_id = expert.object_id\n";
 
-        return jdbcTemplate.query(sql, new Object[]{testId.toString(), AttrtypeProperties.RATE_BY, AttrtypeProperties.FIRST_NAME,
-            AttrtypeProperties.LAST_NAME, AttrtypeProperties.EMAIL,
-            AttrtypeProperties.PASSWORD, AttrtypeProperties.PHONE}, new UserRowMapper());
+        return jdbcTemplate.query(sql, new Object[]{testId.toString(), AttrtypeProperties.RATE_BY.toString(), AttrtypeProperties.FIRST_NAME.toString(),
+            AttrtypeProperties.LAST_NAME.toString(), AttrtypeProperties.EMAIL.toString(),
+            AttrtypeProperties.PASSWORD.toString(), AttrtypeProperties.PHONE.toString()}, new UserRowMapper());
     }
 
     private List<Question> getQuestions(BigInteger testId) {
@@ -96,8 +94,8 @@ public class TestDAO {
             "    and questions_type.attr_id = ?           /*type_question*/" +
             "    and questions_type.object_id = questions.object_id";
 
-        return jdbcTemplate.query(sql, new Object[]{testId.toString(), ObjtypeProperties.QUESTION,
-            AttrtypeProperties.TEXT_QUESTION, AttrtypeProperties.TYPE_QUESTION}, new QuestionRowMapper());
+        return jdbcTemplate.query(sql, new Object[]{testId.toString(), ObjtypeProperties.QUESTION.toString(),
+            AttrtypeProperties.TEXT_QUESTION.toString(), AttrtypeProperties.TYPE_QUESTION.toString()}, new QuestionRowMapper());
     }
 
     private List<GradeCategory> getGradesCategory(BigInteger testId) {
@@ -120,8 +118,8 @@ public class TestDAO {
             "    and grade_category_ref_on_category.object_id = grade_category.object_id " +
             "    and grade_category_ref_on_category.attr_id = ?/*grade_belongs*/";
 
-        return jdbcTemplate.query(sql, new Object[]{testId.toString(), ObjtypeProperties.GRADE_CATEGORY, AttrtypeProperties.MIN_SCORE,
-            AttrtypeProperties.MAX_SCORE, AttrtypeProperties.MEANING, AttrtypeProperties.GRADE_BELONGS}, new GradeCategoryMapper());
+        return jdbcTemplate.query(sql, new Object[]{testId.toString(), ObjtypeProperties.GRADE_CATEGORY.toString(), AttrtypeProperties.MIN_SCORE.toString(),
+            AttrtypeProperties.MAX_SCORE.toString(), AttrtypeProperties.MEANING.toString(), AttrtypeProperties.GRADE_BELONGS.toString()}, new GradeCategoryMapper());
     }
 
 
@@ -135,10 +133,10 @@ public class TestDAO {
 
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName(test.getNameTest())
-            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
+            .setObjectTypeId(ObjtypeProperties.TEST)
             .setParentId(test.getGroupId())
-            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), test.getNameTest())
-            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), test.getCreatorUserId())
+            .setStringAttribute(AttrtypeProperties.NAME_TEST, test.getNameTest())
+            .setReference(AttrtypeProperties.CREATE_TEST_BY, test.getCreatorUserId())
             .create();
     }
 
@@ -147,7 +145,7 @@ public class TestDAO {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(test.getId())
-            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), test.getNameTest())
+            .setStringAttribute(AttrtypeProperties.NAME_TEST, test.getNameTest())
             .update();
 
         return test.getId();
