@@ -4,6 +4,8 @@ import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.User;
+import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,96 +38,49 @@ public class GroupDAOTest {
 
     private BigInteger sequenceId;
     private BigInteger creatorId;
-    private static String CURRENT_SEQUENCE = "select object_id_pr.currval from dual";
 
     @Before
     public void setUp(){
         Locale.setDefault(Locale.ENGLISH);
-        jdbcTemplate.update(
-                    "insert all\n" +
-                        "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
-                        "        values(object_id_pr.nextval, null, 1, 'USER_CREATOR '|| object_id_pr.currval, null)\n" +
-                        "select * from dual");
-        creatorId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
+        creatorId = new ObjectEavBuilder.Builder(jdbcTemplate)
+                .setObjectTypeId(new BigInteger("1"))
+                .setName("USER_CREATOR")
+                .create();
     }
 
     @After
     public void setDown(){
-        String sql =
-                        "delete from\n" +
-                        "    objects\n" +
-                        "where\n" +
-                        "    object_id = ?";
-        jdbcTemplate.update(sql, creatorId.toString());
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+                .setObjectId(creatorId)
+                .delete();
         if(sequenceId != null)
-            jdbcTemplate.update(sql, sequenceId.toString());
+            new ObjectEavBuilder.Builder(jdbcTemplate)
+                    .setObjectId(sequenceId)
+                    .delete();
     }
 
     @Test
     public void insertGetGroup() throws Exception{
-        groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        sequenceId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
-
+        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
         Group groupExpected = new Group(sequenceId, creatorId, "Very cool group","New Link http...", null, null);
-
         Group group = groupDAO.getGroupById(sequenceId);
-
         assertEquals(groupExpected, group);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void insertGroupByCreatorIdNull() throws Exception{
-        groupDAO.createGroup(null, "New Link http...", "Very cool group");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void insertGroupByLinkNull() throws Exception{
-        groupDAO.createGroup(creatorId, "", "Very cool group");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void insertGroupByNameNull() throws Exception{
-        groupDAO.createGroup(creatorId, "New Link http...", "");
     }
 
     @Test
     public void updateGroupById() throws Exception{
-        groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        sequenceId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
-
+        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
         groupDAO.updateGroup(sequenceId, "New very-very cool name");
         Group group = groupDAO.getGroupById(sequenceId);
-
         Group groupExpected = new Group(sequenceId, creatorId, "New very-very cool name", "New Link http...", null, null);
-
         assertEquals(groupExpected, group);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void updateGroupByGroupIdNull() throws Exception{
-        groupDAO.updateGroup(null, "New very-very cool name");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void updateGroupByNewNameNull() throws Exception{
-        groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        sequenceId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
-        groupDAO.updateGroup(sequenceId, "");
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void deleteGroupById() throws Exception{
-        groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        sequenceId = jdbcTemplate.queryForObject(CURRENT_SEQUENCE, BigInteger.class);
-
+        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
         groupDAO.deleteGroup(sequenceId);
-
         Group group = groupDAO.getGroupById(sequenceId);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void deleteGroupByIdNull() throws Exception{
-        groupDAO.deleteGroup(null);
     }
 
     @Ignore//пока не поменятться сущность User не открывтаь тест
@@ -159,27 +114,25 @@ public class GroupDAOTest {
         assertEquals(usersExpected, users);
     }
 
-    @Ignore//пока не поменятться сущность Test не открывтаь тест
     @Test
     public void getAllTestsInGroup() throws Exception{
-        jdbcTemplate.update(
-                    "insert all\n" +
-                        "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
-                        "        values(object_id_pr.nextval, ?, 4, 'MyTest', null)\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(object_id_pr.currval, 9, 'MyTest', null, null)\n" +
-                        "    into objreference(attr_id, object_id, reference)\n" +
-                        "        values(24, object_id_pr.currval, ?)\n" +
-                        "select * from dual", sequenceId, creatorId);
-        Integer testId = jdbcTemplate.queryForObject("select object_id_pr.currval from dual", Integer.class);
+        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
+        BigInteger testId = new ObjectEavBuilder.Builder(jdbcTemplate)
+                .setParentId(sequenceId)
+                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
+                .setName("MyTest")
+                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), "MyTest")
+                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), creatorId)
+                .create();
         List<com.netcracker.testerritto.models.Test> tests = groupDAO.getAllTestsInGroup(sequenceId);
 
         List<com.netcracker.testerritto.models.Test> testsExpected = new ArrayList<>();
         com.netcracker.testerritto.models.Test test = new com.netcracker.testerritto.models.Test();
-     //   test.setId(testId);
-     //   test.setTestName("MyTest");
-      //  test.setTestCreator(creatorId);
-       // testsExpected.add(test);
+        test.setId(testId);
+        test.setGroupId(sequenceId);
+        test.setNameTest("MyTest");
+        test.setCreatorUserId(creatorId);
+        testsExpected.add(test);
 
         assertEquals(testsExpected, tests);
     }
