@@ -33,14 +33,20 @@ public class ObjectEavBuilder {
         private String REFERENCES_INSERT = "into objreference(attr_id, object_id, reference)\n" +
                 "    values(?, object_id_PR.currval, ?)\n";
 
-        private String ATTRIBUTES_VALUE_UPDATE = "update attributes set value = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String MERGE_FIRST_PART = "merge into attributes att\n" +
+                "    using (select object_id from objects where object_id= ? ) obj\n" +
+                "        on (att.object_id = obj.object_id and att.attr_id= ? )\n" +
+                "when matched then\n";
 
-        private String ATTRIBUTES_DATE_VALE_UPDATE = "update attributes set date_value = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String ATTRIBUTES_VALUE_UPDATE = "    update set att.value = ?\n";
 
-        private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "update attributes set list_value_id = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String ATTRIBUTES_DATE_VALE_UPDATE = "    update set att.date_value = ?\n";
+
+        private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "    update set att.list_value_id = ?\n";
+
+        private String MERGE_SECOND_PART = "when not matched then\n" +
+                "    insert (object_id, attr_id, value,date_value,list_value_id)\n" +
+                "        values(?, ?, ?, ?, ?);\n";
 
         private String DELETE_BY_OBJECT_ID = "delete from objects where object_id = ?";
 
@@ -136,20 +142,37 @@ public class ObjectEavBuilder {
              String query = "begin\n";
              ArrayList<Object> objects = new ArrayList<>();
              for(Attribute attribute : this.objectEav.attributes){
+                 query += this.MERGE_FIRST_PART;
+                 objects.add(this.objectEav.objectId.toString());
+                 objects.add(attribute.attributeId.toString());
                  if(attribute.value != null){
                      query += this.ATTRIBUTES_VALUE_UPDATE;
                      objects.add(attribute.value);
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(attribute.value);
+                     objects.add(null);
+                     objects.add(null);
                  }
                  else if(attribute.dateValue != null){
                      query += this.ATTRIBUTES_DATE_VALE_UPDATE;
                      objects.add(attribute.dateValue);
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(null);
+                     objects.add(attribute.dateValue);
+                     objects.add(null);
                  }
                  else {
                      query += this.ATTRIBUTES_LIST_VALUE_ID_UPDATE;
                      objects.add(attribute.listValueId.toString());
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(null);
+                     objects.add(null);
+                     objects.add(attribute.listValueId.toString());
                  }
-                 objects.add(this.objectEav.objectId.toString());
-                 objects.add(attribute.attributeId.toString());
+                 query += this.MERGE_SECOND_PART;
              }
              query += "end;";
              this.jdbcTemplate.update(query, objects.toArray());
