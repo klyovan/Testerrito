@@ -154,8 +154,9 @@ public class ResultDAO {
                     ObjtypeProperties.USER, ObjtypeProperties.RESULT,
                     ObjtypeProperties.GROUP, AttrtypeProperties.CONSIST, entry.getKey().toString(),
                     ObjtypeProperties.REPLY, AttrtypeProperties.REPLY_BELONGS,
-                    ObjtypeProperties.ANSWER, AttrtypeProperties.ANSWER_BELONGS}, new ReplyRowMapper()),    //TODO change with replyDao.createReply();
-                jdbcTemplate.queryForObject(sqlForQues, new Object[]{entry.getValue().toString(), AttrtypeProperties.TYPE_QUESTION, AttrtypeProperties.TEXT_QUESTION}, new QuestionRowMapper())
+                    ObjtypeProperties.ANSWER, AttrtypeProperties.ANSWER_BELONGS}, new ReplyRowMapper()),    //TODO change with ReplyDao.createReply();
+                jdbcTemplate.queryForObject(sqlForQues, new Object[]{entry.getValue().toString(), AttrtypeProperties.TYPE_QUESTION,
+                    AttrtypeProperties.TEXT_QUESTION}, new QuestionRowMapper())                             //TODO change with QuestionDao.createQuestion();
             );
         }
         return resultHashMap;
@@ -169,7 +170,7 @@ public class ResultDAO {
             .delete();
     }
 
-    public BigInteger createResult(Result result) throws ParseException, IllegalArgumentException {
+    public BigInteger createResult(Result result) throws IllegalArgumentException {
 
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName("Result " + result.getId())
@@ -182,7 +183,7 @@ public class ResultDAO {
             .create();
     }
 
-    public BigInteger updateResult(Result result) throws ParseException {
+    public BigInteger updateResult(Result result) {
 
 
         new ObjectEavBuilder.Builder(jdbcTemplate)

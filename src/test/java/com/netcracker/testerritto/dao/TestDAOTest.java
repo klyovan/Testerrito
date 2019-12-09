@@ -76,7 +76,6 @@ public class TestDAOTest {
     public void updateTest() {
         String changeName = "Changed";
         createdTest.setNameTest(changeName);
-        BigInteger attrId = BigInteger.valueOf(9);
         testDAO.updateTest(createdTest);
         expectedTest = testDAO.getTest(createdTest.getId());
         Assert.assertEquals(changeName, testDAO.getTest(createdTest.getId()).getNameTest());

@@ -7,10 +7,12 @@ import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.ListsAttr;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,8 +21,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -34,53 +34,77 @@ public class ResultDAOTest {
     private ResultDAO resultDAO;
 
 
-    BigInteger isCreated;
-    Result createdResult;
-    Result expectedResult;
-
+    private BigInteger isCreated;
+    private Result createdResult;
+    private Result expectedResult;
 
 
     @Before
     public void setUp() throws Exception {
-       // createdResult =
+        createdResult = getNewResult();
+        isCreated = resultDAO.createResult(createdResult);
+        createdResult.setId(isCreated);
     }
 
     @After
     public void tearDown() throws Exception {
-//       resultDAO.deleteResult(createdResult.getId());
+        resultDAO.deleteResult(createdResult.getId());
     }
 
     @Test
     public void getResult() {
 
-   Result result = resultDAO.getResult(BigInteger.valueOf(120));
+        expectedResult = resultDAO.getResult(isCreated);
 
+        Assert.assertEquals(expectedResult.getId(), createdResult.getId());
+        Assert.assertEquals(expectedResult.getScore(), createdResult.getScore());
+        Assert.assertEquals(expectedResult.getTestId(), createdResult.getTestId());
+        Assert.assertEquals(expectedResult.getUserId(), createdResult.getUserId());
+        Assert.assertEquals(expectedResult.getReplies(), createdResult.getReplies());
     }
 
-    @Test
-    public void getReplies() {
-
-        HashMap<Reply, Question> replies = resultDAO.getReplies(BigInteger.valueOf(120));
-
-    }
-
-    @Test
+    @Test(expected = EmptyResultDataAccessException.class)
     public void deleteResult() {
+        Result resultDeleted = getNewResult();
+        BigInteger deletedId = resultDAO.createResult(resultDeleted);
+        resultDAO.deleteResult(deletedId);
+        resultDAO.getResult(deletedId);
 
     }
 
     @Test
     public void createResult() {
-
+        Assert.assertNotEquals(null, createdResult.getId());
     }
 
     @Test
     public void updateResult() {
+        int changedScore = 8;
+        createdResult.setScore(changedScore);
+        createdResult.setStatus(ListsAttr.NOT_PASSED);
+        resultDAO.updateResult(createdResult);
+        expectedResult = resultDAO.getResult(createdResult.getId());
+
+        Assert.assertEquals(expectedResult.getScore(), createdResult.getScore());
+        Assert.assertEquals(expectedResult.getStatus(),createdResult.getStatus());
+
+
     }
 
 
-    private Result getNewResult(){
-return null;
-      //  return new Result(null,new Date,10,"Passed",);
+    private Result getNewResult() {
+
+        Date date = new Date();
+        HashMap<Reply, Question> replies = new HashMap<>();
+
+        Result result = new Result();
+        result.setDate(date);
+        result.setScore(10);
+        result.setStatus(ListsAttr.PASSED);
+        result.setTestId(BigInteger.valueOf(-10025));
+        result.setUserId(BigInteger.valueOf(-88));
+        result.setReplies(replies);
+
+        return result;
     }
 }
