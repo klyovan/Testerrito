@@ -3,9 +3,8 @@ package com.netcracker.testerritto.models;
 import java.math.BigInteger;
 import java.util.Objects;
 
-public class Remark {
+public class Remark extends ObjectEav{
 
-    private BigInteger id;
     private String text;
     private BigInteger userSenderId;
     private BigInteger questionId;
@@ -19,16 +18,8 @@ public class Remark {
         this.questionId = questionId;
     }
 
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
-
     public void setText(String text) {
         this.text = text;
-    }
-
-    public BigInteger getId() {
-        return id;
     }
 
     public String getText() {
