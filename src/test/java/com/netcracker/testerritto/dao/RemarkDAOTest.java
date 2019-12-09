@@ -44,26 +44,26 @@ public class RemarkDAOTest {
     public void setup(){
         Locale.setDefault(Locale.ENGLISH);
         authorId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.USER)))
+                .setObjectTypeId(ObjtypeProperties.USER)
                 .setName("USER_AUTHOR")
                 .create();
         groupId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GROUP)))
+                .setObjectTypeId(ObjtypeProperties.GROUP)
                 .setName("GROUP")
                 .create();
         testId = new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setParentId(groupId)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
+                .setObjectTypeId(ObjtypeProperties.TEST)
                 .setName("TEST")
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), groupId)
+                .setReference(AttrtypeProperties.CREATE_TEST_BY, groupId)
                 .create();
         questionId = new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setParentId(testId)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.QUESTION)))
+                .setObjectTypeId(ObjtypeProperties.QUESTION)
                 .setName("QUESTION")
                 .create();
         remarkerId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.USER)))
+                .setObjectTypeId(ObjtypeProperties.USER)
                 .setName("USER_REMARKER")
                 .create();
     }

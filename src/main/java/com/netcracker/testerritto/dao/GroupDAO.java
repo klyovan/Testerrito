@@ -51,19 +51,19 @@ public class GroupDAO{
 
     public BigInteger createGroup(BigInteger userId, String link, String name) {
         return  new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GROUP)))
+                .setObjectTypeId(ObjtypeProperties.GROUP)
                 .setName("Group")
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_GROUP)), name)
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.LINK)), link)
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_GROUP_BY)), userId)
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CONSIST)), userId)
+                .setStringAttribute(AttrtypeProperties.NAME_GROUP, name)
+                .setStringAttribute(AttrtypeProperties.LINK, link)
+                .setReference(AttrtypeProperties.CREATE_GROUP_BY, userId)
+                .setReference(AttrtypeProperties.CONSIST, userId)
                 .create();
     }
 
     public void updateGroup(BigInteger groupId, String newName) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setObjectId(groupId)
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_GROUP)), newName)
+                .setStringAttribute(AttrtypeProperties.NAME_GROUP, newName)
                 .update();
     }
 
