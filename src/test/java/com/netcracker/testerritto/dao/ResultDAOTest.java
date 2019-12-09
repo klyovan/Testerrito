@@ -86,7 +86,7 @@ public class ResultDAOTest {
         expectedResult = resultDAO.getResult(createdResult.getId());
 
         Assert.assertEquals(expectedResult.getScore(), createdResult.getScore());
-        Assert.assertEquals(expectedResult.getStatus(),createdResult.getStatus());
+        Assert.assertEquals(expectedResult.getStatus(), createdResult.getStatus());
 
 
     }

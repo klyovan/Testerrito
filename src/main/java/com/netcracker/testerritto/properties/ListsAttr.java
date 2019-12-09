@@ -8,10 +8,10 @@ import java.util.Map;
 public enum ListsAttr {
     OPEN(BigInteger.valueOf(1), "open"),
     ONE_ANSWER(BigInteger.valueOf(2), "one-answer test"),
-    MULTIPLE_ANSWER(BigInteger.valueOf(3),"multiple answer"),
-    NEGATIVE_TEXT_ANSWER(BigInteger.valueOf(4),"нет, это совсем не так"),
-    POSITIVE_TEXT_ANSWER(BigInteger.valueOf(5),"пожалуй так"),
-    RIGHT_TEXT_ANSWER(BigInteger.valueOf(6),"верно"),
+    MULTIPLE_ANSWER(BigInteger.valueOf(3), "multiple answer"),
+    NEGATIVE_TEXT_ANSWER(BigInteger.valueOf(4), "нет, это совсем не так"),
+    POSITIVE_TEXT_ANSWER(BigInteger.valueOf(5), "пожалуй так"),
+    RIGHT_TEXT_ANSWER(BigInteger.valueOf(6), "верно"),
     PASSED(BigInteger.valueOf(7), "Passed"),
     NOT_PASSED(BigInteger.valueOf(8), "Not passed");
 
@@ -24,15 +24,15 @@ public enum ListsAttr {
         this.value = value;
     }
 
-    public BigInteger getid() {
+    public BigInteger getId() {
         return id;
     }
 
-    public String getvalue() {
+    public String getValue() {
         return value;
     }
 
-    public static ListsAttr getvalueByid(BigInteger id) {
+    public static ListsAttr getValueById(BigInteger id) {
 
         if (idToEnum.containsKey(id)) {
             return idToEnum.get(id);

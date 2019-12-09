@@ -177,7 +177,7 @@ public class ResultDAO {
             .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
             .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
             .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getid())
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
             .create();
@@ -191,7 +191,7 @@ public class ResultDAO {
             .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
             .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
             .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getid())
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
             .update();
