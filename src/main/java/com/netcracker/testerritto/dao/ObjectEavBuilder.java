@@ -33,18 +33,29 @@ public class ObjectEavBuilder {
         private String REFERENCES_INSERT = "into objreference(attr_id, object_id, reference)\n" +
                 "    values(?, object_id_PR.currval, ?)\n";
 
-        private String ATTRIBUTES_VALUE_UPDATE = "update attributes set value = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String REFERENCES_INSERT_WITH_ID = "into objreference(attr_id, object_id, reference)\n" +
+                "    values(?, ?, ?)\n";
 
-        private String ATTRIBUTES_DATE_VALE_UPDATE = "update attributes set date_value = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String MERGE_FIRST_PART = "merge into attributes att\n" +
+                "    using (select object_id from objects where object_id= ? ) obj\n" +
+                "        on (att.object_id = obj.object_id and att.attr_id= ? )\n" +
+                "when matched then\n";
 
-        private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "update attributes set list_value_id = ?\n" +
-                "    where object_id = ? and attr_id = ?;\n";
+        private String ATTRIBUTES_VALUE_UPDATE = "    update set att.value = ?\n";
+
+        private String ATTRIBUTES_DATE_VALE_UPDATE = "    update set att.date_value = ?\n";
+
+        private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "    update set att.list_value_id = ?\n";
+
+        private String MERGE_SECOND_PART = "when not matched then\n" +
+                "    insert (object_id, attr_id, value,date_value,list_value_id)\n" +
+                "        values(?, ?, ?, ?, ?);\n";
 
         private String DELETE_BY_OBJECT_ID = "delete from objects where object_id = ?";
 
         private String DELETE_BY_PARENT_ID_AND_TYPE = "delete from objects where parent_id = ? and object_type_id = ?";
+
+        private String DELETE_REFERENCE = "delete from objreference where attr_id = ? and object_id = ? and reference = ?";
 
         private String GET_ID = "select object_id_pr.currval from dual";
 
@@ -130,24 +141,55 @@ public class ObjectEavBuilder {
         }
 
         @Transactional
+        public void createReference(){
+            String query = "insert all\n";
+            ArrayList<Object> objects = new ArrayList<>();
+            for(Reference reference : this.objectEav.references){
+                query += this.REFERENCES_INSERT_WITH_ID;
+                objects.add(reference.attributeId.toString());
+                objects.add(this.objectEav.objectId.toString());
+                objects.add(reference.referenceId.toString());
+            }
+            query += "select * from dual";
+            this.jdbcTemplate.update(query, objects.toArray());
+        }
+
+        @Transactional
         public void update(){
              String query = "begin\n";
              ArrayList<Object> objects = new ArrayList<>();
              for(Attribute attribute : this.objectEav.attributes){
+                 query += this.MERGE_FIRST_PART;
+                 objects.add(this.objectEav.objectId.toString());
+                 objects.add(attribute.attributeId.toString());
                  if(attribute.value != null){
                      query += this.ATTRIBUTES_VALUE_UPDATE;
                      objects.add(attribute.value);
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(attribute.value);
+                     objects.add(null);
+                     objects.add(null);
                  }
                  else if(attribute.dateValue != null){
                      query += this.ATTRIBUTES_DATE_VALE_UPDATE;
                      objects.add(attribute.dateValue);
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(null);
+                     objects.add(attribute.dateValue);
+                     objects.add(null);
                  }
                  else {
                      query += this.ATTRIBUTES_LIST_VALUE_ID_UPDATE;
                      objects.add(attribute.listValueId.toString());
+                     objects.add(this.objectEav.objectId.toString());
+                     objects.add(attribute.attributeId.toString());
+                     objects.add(null);
+                     objects.add(null);
+                     objects.add(attribute.listValueId.toString());
                  }
-                 objects.add(this.objectEav.objectId.toString());
-                 objects.add(attribute.attributeId.toString());
+                 query += this.MERGE_SECOND_PART;
              }
              query += "end;";
              this.jdbcTemplate.update(query, objects.toArray());
@@ -156,8 +198,16 @@ public class ObjectEavBuilder {
         @Transactional
         public void delete(){
             if(objectEav.objectId != null){
-                String query = this.DELETE_BY_OBJECT_ID;
-                this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+                if(this.objectEav.references.size() == 0){
+                    String query = this.DELETE_BY_OBJECT_ID;
+                    this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+                }
+                else{
+                    String query = this.DELETE_REFERENCE;
+                    this.jdbcTemplate.update(query, this.objectEav.references.get(0).attributeId.toString(),
+                                                    this.objectEav.objectId.toString(),
+                                                    this.objectEav.references.get(0).referenceId.toString());
+                }
             }
             else if(objectEav.parentId != null && objectEav.objectTypeId != null){
                 String query = this.DELETE_BY_PARENT_ID_AND_TYPE;

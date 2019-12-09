@@ -2,7 +2,6 @@ package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
-import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.User;
@@ -35,7 +34,6 @@ public class TestDAOTest {
     private TestDAO testDAO;
 
 
-    private BigInteger sequence;
     private BigInteger isCreated;
     private com.netcracker.testerritto.models.Test createdTest;
     private com.netcracker.testerritto.models.Test expectedTest;
@@ -44,6 +42,7 @@ public class TestDAOTest {
     public void setUp() throws Exception {
         createdTest = getNewTest();
         isCreated = testDAO.createTest(createdTest);
+        createdTest.setId(isCreated);
     }
 
     @After
@@ -70,28 +69,23 @@ public class TestDAOTest {
 
     @Test
     public void createTest() {
-        Assert.assertEquals(isCreated, createdTest.getId());
+        Assert.assertNotEquals(null, createdTest.getId());
     }
 
     @Test
     public void updateTest() {
         String changeName = "Changed";
         createdTest.setNameTest(changeName);
-        BigInteger attrId = BigInteger.valueOf(9);
-        testDAO.updateTest(createdTest, attrId);
+        testDAO.updateTest(createdTest);
         expectedTest = testDAO.getTest(createdTest.getId());
         Assert.assertEquals(changeName, testDAO.getTest(createdTest.getId()).getNameTest());
     }
 
-    private BigInteger getObjectSequenceCount() {
-        String sql = "select object_id_pr.NEXTVAL from dual";
-        return jdbcTemplate.queryForObject(sql, BigInteger.class);
-    }
 
     private com.netcracker.testerritto.models.Test getNewTest() {
-        sequence = getObjectSequenceCount();
-        BigInteger a = BigInteger.valueOf(-88);
-        BigInteger b = BigInteger.valueOf(-77);
+
+        BigInteger a = new BigInteger("-88");
+        BigInteger b = new BigInteger("-77");
 
         List<GradeCategory> grades = new ArrayList<>();
 
@@ -99,6 +93,6 @@ public class TestDAOTest {
 
         List<Question> questions = new ArrayList<>();
 
-        return new com.netcracker.testerritto.models.Test(sequence, a, "JustTest", b, grades, experts, questions);
+        return new com.netcracker.testerritto.models.Test(null, a, "JustTest", b, grades, experts, questions);
     }
 }

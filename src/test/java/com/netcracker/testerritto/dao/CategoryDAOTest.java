@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -25,7 +26,7 @@ public class CategoryDAOTest {
   Category categoryExampleForTesting = new Category();
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() throws DataAccessException {
     Locale.setDefault(Locale.ENGLISH);
     categoryExampleForTesting.setNameCategory("Introvert");
     BigInteger categoryId = categoryDAO.createCategory(categoryExampleForTesting);
@@ -38,14 +39,14 @@ public class CategoryDAOTest {
   }
 
   @Test
-  public void getCategoryById() {
+  public void getCategoryById() throws DataAccessException {
     Category selectedCategory = categoryDAO.getCategoryById(categoryExampleForTesting.getId());
     assertEquals(categoryExampleForTesting.getId(), selectedCategory.getId());
     assertEquals(categoryExampleForTesting.getNameCategory(), selectedCategory.getNameCategory());
   }
 
   @Test
-  public void updateCategory() {
+  public void updateCategory() throws DataAccessException {
     String newAttrNameCategory = "Introvert with a tendency to depression";
     categoryExampleForTesting.setNameCategory(newAttrNameCategory);
     Category updatedCategory = categoryDAO.updateCategory(categoryExampleForTesting);
@@ -55,13 +56,13 @@ public class CategoryDAOTest {
   }
 
   @Test(expected = EmptyResultDataAccessException.class)
-  public void deleteCategoryById() {
+  public void deleteCategoryById() throws DataAccessException {
     categoryDAO.deleteCategoryById(categoryExampleForTesting.getId());
     categoryDAO.getCategoryById(categoryExampleForTesting.getId());
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() throws DataAccessException {
     categoryDAO.deleteCategoryById(categoryExampleForTesting.getId());
   }
 }

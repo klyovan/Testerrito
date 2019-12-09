@@ -61,12 +61,12 @@ public class RemarkDAO  {
                 "and test2author.attr_id = 24 /* CREATE_TEST_BY */";
         BigInteger authorId =  jdbcTemplate.queryForObject(query, BigInteger.class, questionId.toString());
         return new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.REMARK)))
+                .setObjectTypeId(ObjtypeProperties.REMARK)
                 .setName("Remark")
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.TEXT)), remarkText)
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.SEND)), userId)
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.PROCESS_BY)), authorId)
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CAUSED_BY)), questionId)
+                .setStringAttribute(AttrtypeProperties.TEXT, remarkText)
+                .setReference(AttrtypeProperties.SEND, userId)
+                .setReference(AttrtypeProperties.PROCESS_BY, authorId)
+                .setReference(AttrtypeProperties.CAUSED_BY, questionId)
                 .create();
     }
 

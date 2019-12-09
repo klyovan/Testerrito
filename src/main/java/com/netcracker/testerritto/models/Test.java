@@ -4,8 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Test {
-    private BigInteger id;
+public class Test extends ObjectEav {
     private BigInteger groupId;
     private String nameTest;
     private BigInteger creatorUserId;
@@ -37,7 +36,7 @@ public class Test {
 
         Test test = (Test) obj;
         return id.equals(test.id) &&
-            groupId.equals( test.groupId) &&
+            groupId.equals(test.groupId) &&
             nameTest.equals(test.nameTest) &&
             creatorUserId.equals(test.creatorUserId) &&
             Objects.equals(experts, test.experts) &&
@@ -49,14 +48,6 @@ public class Test {
     @Override
     public int hashCode() {
         return Objects.hash(id, groupId, nameTest, creatorUserId, experts, questions, gradesCategory);
-    }
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
     }
 
     public BigInteger getGroupId() {

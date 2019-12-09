@@ -1,23 +1,14 @@
 package com.netcracker.testerritto.models;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.List;
 
-public class Reply {
+public class Reply  extends ObjectEav{
 
-  private BigInteger id;
+
   private BigInteger resultId;
   private BigInteger answerId;
   private List<Answer> replyList;
-
- public Reply(BigInteger id, BigInteger resultId, BigInteger answerId) {
-    this.id = id;
-    this.resultId = resultId;
-    this.answerId = answerId;
-  }
-
-  public Reply(){};
 
   public BigInteger getResultId() {
     return resultId;
@@ -39,9 +30,7 @@ public class Reply {
     return id;
   }
 
-  public void setId(BigInteger id) {
-    this.id = id;
-  }
+
 
   public BigInteger getAnswerId() {
     return answerId;

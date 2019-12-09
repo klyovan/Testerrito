@@ -61,7 +61,7 @@ public class UserDAO {
     return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new UserRowMapper());
   }
 
-///////////////////////////////
+  ///////////////////////////////
   public void deleteUser(BigInteger id) {
     /*
     String sql = "delete from objects where object_id = ?";
@@ -315,7 +315,7 @@ public class UserDAO {
   public User getUserByEmail(String email) {
 
     String sql =
-            "select user_last_name.value," +
+        "select user_last_name.value," +
             "       user_first_name.value,\n" +
             "       user_password.value," +
             "       user_phone.value," +
@@ -354,4 +354,3 @@ public class UserDAO {
     });
   }
 }
-
