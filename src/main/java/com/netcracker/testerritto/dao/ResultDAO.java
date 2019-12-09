@@ -9,18 +9,15 @@ import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
+import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Repository
 public class ResultDAO {
@@ -51,8 +48,8 @@ public class ResultDAO {
             "    and result_status.object_id = results.object_id\n" +
             "    and result2user.attr_id = ? /*look by*/\n" +
             "    and result2user.object_id = results.object_id";
-        Result result = jdbcTemplate.queryForObject(sql, new Object[]{resultId.toString(), AttrtypeProperties.RESULT_BELONGS, AttrtypeProperties.DATE,
-            AttrtypeProperties.SCORE_RESULT, AttrtypeProperties.STATUS, AttrtypeProperties.LOOK_BY}, new ResultRowMapper());
+        Result result = jdbcTemplate.queryForObject(sql, new Object[]{resultId.toString(), AttrtypeProperties.RESULT_BELONGS.toString(), AttrtypeProperties.DATE.toString(),
+            AttrtypeProperties.SCORE_RESULT.toString(), AttrtypeProperties.STATUS.toString(), AttrtypeProperties.LOOK_BY.toString()}, new ResultRowMapper());
 
         result.setReplies(getReplies(resultId));
 
@@ -87,7 +84,7 @@ public class ResultDAO {
             "    and tests.object_id = questions.parent_id\n" +
             "    and results.object_id = ?";
 
-        jdbcTemplate.query(sql, new Object[]{AttrtypeProperties.REPLY_BELONGS, AttrtypeProperties.ANSWER_BELONGS, resultId.toString()}, new RowMapper<Map<BigInteger, BigInteger>>() {
+        jdbcTemplate.query(sql, new Object[]{AttrtypeProperties.REPLY_BELONGS.toString(), AttrtypeProperties.ANSWER_BELONGS.toString(), resultId.toString()}, new RowMapper<Map<BigInteger, BigInteger>>() {
                 @Override
                 public Map<BigInteger, BigInteger> mapRow(ResultSet resultSet, int i) throws SQLException {
                     resultHashMapId.put(BigInteger.valueOf(resultSet.getInt("rep_id")), BigInteger.valueOf(resultSet.getInt("ques_id")));
@@ -174,12 +171,12 @@ public class ResultDAO {
 
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName("Result " + result.getId())
-            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
-            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
-            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getId())
-            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
-            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
+            .setObjectTypeId(ObjtypeProperties.RESULT)
+            .setDateAttribute(AttrtypeProperties.DATE, result.getDate())
+            .setStringAttribute(AttrtypeProperties.SCORE_RESULT, String.valueOf(result.getScore()))
+            .setListAttribute(AttrtypeProperties.STATUS, result.getStatus().getId())
+            .setReference(AttrtypeProperties.LOOK_BY, result.getUserId())
+            .setReference(AttrtypeProperties.RESULT_BELONGS, result.getTestId())
             .create();
     }
 
@@ -188,12 +185,12 @@ public class ResultDAO {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(result.getId())
-            .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
-            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
-            .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getId())
-            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
-            .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
+            .setObjectTypeId(ObjtypeProperties.RESULT)
+            .setDateAttribute(AttrtypeProperties.DATE, result.getDate())
+            .setStringAttribute(AttrtypeProperties.SCORE_RESULT, String.valueOf(result.getScore()))
+            .setListAttribute(AttrtypeProperties.STATUS, result.getStatus().getId())
+            .setReference(AttrtypeProperties.LOOK_BY, result.getUserId())
+            .setReference(AttrtypeProperties.RESULT_BELONGS, result.getTestId())
             .update();
 
         return result.getId();
