@@ -1,39 +1,31 @@
 package com.netcracker.testerritto.models;
 
+import com.netcracker.testerritto.properties.ListsAttr;
+
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class Result {
+public class Result extends ObjectEav {
 
-    private BigInteger id;
     private Date date;
     private int score;
-    private String status;
+    private ListsAttr status;
     private BigInteger testId;
-    private HashMap<Question, Reply> replies;
+    private HashMap<Reply, Question> replies;
     private BigInteger userId;
 
     public Result() {
     }
 
-    public Result(BigInteger id, Date date, int score, String status, BigInteger testId, HashMap<Question, Reply> replies, BigInteger userId) {
-        this.id = id;
+    public Result(Date date, int score, ListsAttr status, BigInteger testId, HashMap<Reply, Question> replies, BigInteger userId) {
         this.date = date;
         this.score = score;
         this.status = status;
         this.testId = testId;
         this.replies = replies;
         this.userId = userId;
-    }
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
     }
 
     public Date getDate() {
@@ -52,11 +44,12 @@ public class Result {
         this.score = score;
     }
 
-    public String getStatus() {
+
+    public ListsAttr getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ListsAttr status) {
         this.status = status;
     }
 
@@ -68,11 +61,11 @@ public class Result {
         this.testId = testId;
     }
 
-    public HashMap<Question, Reply> getReplies() {
+    public HashMap<Reply, Question> getReplies() {
         return replies;
     }
 
-    public void setReplies(HashMap<Question, Reply> replies) {
+    public void setReplies(HashMap<Reply, Question> replies) {
         this.replies = replies;
     }
 

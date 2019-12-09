@@ -46,6 +46,8 @@ public class ObjectEavBuilder {
 
         private String DELETE_BY_PARENT_ID_AND_TYPE = "delete from objects where parent_id = ? and object_type_id = ?";
 
+        private String DELETE_REFERENCE = "delete from objreference where attr_id = ? and object_id = ? and reference = ?";
+
         private String GET_ID = "select object_id_pr.currval from dual";
 
         public Builder(JdbcTemplate jdbcTemplate){
@@ -156,8 +158,16 @@ public class ObjectEavBuilder {
         @Transactional
         public void delete(){
             if(objectEav.objectId != null){
-                String query = this.DELETE_BY_OBJECT_ID;
-                this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+                if(this.objectEav.references.size() == 0){
+                    String query = this.DELETE_BY_OBJECT_ID;
+                    this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+                }
+                else{
+                    String query = this.DELETE_REFERENCE;
+                    this.jdbcTemplate.update(query, this.objectEav.references.get(0).attributeId.toString(),
+                                                    this.objectEav.objectId.toString(),
+                                                    this.objectEav.references.get(0).referenceId.toString());
+                }
             }
             else if(objectEav.parentId != null && objectEav.objectTypeId != null){
                 String query = this.DELETE_BY_PARENT_ID_AND_TYPE;
