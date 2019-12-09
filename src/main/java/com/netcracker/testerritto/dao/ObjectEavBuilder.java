@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ObjectEavBuilder {
+
     private BigInteger objectId;
     private BigInteger objectTypeId;
     private BigInteger parentId;
@@ -24,7 +25,7 @@ public class ObjectEavBuilder {
         private ObjectEavBuilder objectEav;
 
         private String OBJECTS_INSERT = "insert all\n into objects(object_id, parent_id, object_type_id, name, description)\n" +
-                "    values(object_id_PR.nextval, ?, ?, ?  || object_id_PR.currval, ?)\n";
+                "    values(object_id_PR.nextval, ?, ?, ? || ' ' || object_id_PR.currval, ?)\n";
 
         private String ATTRIBUTES_INSERT = "into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
                 "    values(object_id_PR.currval, ?, ?, ?, ?)\n";
@@ -41,7 +42,9 @@ public class ObjectEavBuilder {
         private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "update attributes set list_value_id = ?\n" +
                 "    where object_id = ? and attr_id = ?;\n";
 
-        private String OBJECTS_DELETE = "delete from objects where object_id = ?";
+        private String DELETE_BY_OBJECT_ID = "delete from objects where object_id = ?";
+
+        private String DELETE_BY_PARENT_ID_AND_TYPE = "delete from objects where parent_id = ? and object_type_id = ?";
 
         private String GET_ID = "select object_id_pr.currval from dual";
 
@@ -102,7 +105,7 @@ public class ObjectEavBuilder {
         }
 
         @Transactional
-        public BigInteger  create(){
+        public BigInteger create(){
             String query = this.OBJECTS_INSERT;
             ArrayList<Object> objects = new ArrayList<>();
             objects.add(checkNull(this.objectEav.parentId));
@@ -125,7 +128,8 @@ public class ObjectEavBuilder {
             this.jdbcTemplate.update(query, objects.toArray());
             return this.jdbcTemplate.queryForObject(GET_ID, BigInteger.class);
         }
-        /* @Transactional
+
+        @Transactional
         public void update(){
              String query = "begin\n";
              ArrayList<Object> objects = new ArrayList<>();
@@ -145,14 +149,20 @@ public class ObjectEavBuilder {
                  objects.add(this.objectEav.objectId.toString());
                  objects.add(attribute.attributeId.toString());
              }
-             query += "end;\n /";
-             this.jdbcTemplate.update(query, objects);
-         }
- */
+             query += "end;";
+             this.jdbcTemplate.update(query, objects.toArray());
+        }
+
         @Transactional
         public void delete(){
-            String query = this.OBJECTS_DELETE;
-            this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+            if(objectEav.objectId != null){
+                String query = this.DELETE_BY_OBJECT_ID;
+                this.jdbcTemplate.update(query, this.objectEav.objectId.toString());
+            }
+            else if(objectEav.parentId != null && objectEav.objectTypeId != null){
+                String query = this.DELETE_BY_PARENT_ID_AND_TYPE;
+                this.jdbcTemplate.update(query, this.objectEav.parentId.toString(), this.objectEav.objectTypeId.toString());
+            }
         }
 
         private String checkNull(BigInteger id){

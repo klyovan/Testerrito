@@ -15,7 +15,7 @@ public class GroupRowMapper implements RowMapper<Group> {
         group.setId(new BigInteger(resultSet.getString("id")));
         group.setName(resultSet.getString("name"));
         group.setLink(resultSet.getString("link"));
-        group.setCreatorUserId(new BigInteger(resultSet.getString("creatorId")));
+        group.setCreatorUserId(new BigInteger(resultSet.getString("creator_id")));
         return group;
     }
 }

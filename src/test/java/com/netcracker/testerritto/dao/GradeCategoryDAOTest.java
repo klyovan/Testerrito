@@ -146,7 +146,7 @@ public class GradeCategoryDAOTest {
   @Test
   public void updateGradeCategory() {
     gradeCategoryExampleForTest = createGradeCategoryForTest();
-    gradeCategoryExampleForTest.setMeaning("new meaning");
+    gradeCategoryExampleForTest.setMeaning("Холерик");
     gradeCategoryExampleForTest.setMinScore(100);
     gradeCategoryExampleForTest.setMaxScore(200);
 
@@ -166,7 +166,7 @@ public class GradeCategoryDAOTest {
 
   private BigInteger createCategoryForTest() {
     Category categoryExampleForTesting = new Category();
-    categoryExampleForTesting.setNameCategory("Test Category");
+    categoryExampleForTesting.setNameCategory("Темперамент ");
     return categoryDAO.createCategory(categoryExampleForTesting);
   }
 
@@ -176,7 +176,7 @@ public class GradeCategoryDAOTest {
     gradeCategoryExampleForTest.setTestId(testId);
     gradeCategoryExampleForTest.setMinScore(2);
     gradeCategoryExampleForTest.setMaxScore(22);
-    gradeCategoryExampleForTest.setMeaning("Все не так плохо");
+    gradeCategoryExampleForTest.setMeaning("Экстраверт");
     gradeCategoryExampleForTest.setCategoryId(createCategoryForTest());
     BigInteger gradeCategoryId = gradeCategoryDAO.createGradeCategory(gradeCategoryExampleForTest);
     gradeCategoryExampleForTest.setId(gradeCategoryId);
@@ -197,28 +197,28 @@ public class GradeCategoryDAOTest {
     gradeCategory1.setTestId(testId);
     gradeCategory1.setMinScore(2);
     gradeCategory1.setMaxScore(4);
-    gradeCategory1.setMeaning("Grade1");
+    gradeCategory1.setMeaning("Интроверт");
     gradeCategory1.setCategoryId(category);
     gradeCategory1.setId(gradeCategoryDAO.createGradeCategory(gradeCategory1));
 
     gradeCategory2.setTestId(testId);
     gradeCategory2.setMinScore(5);
     gradeCategory2.setMaxScore(7);
-    gradeCategory2.setMeaning("Grade2");
+    gradeCategory2.setMeaning("Экстраверт");
     gradeCategory2.setCategoryId(category);
     gradeCategory2.setId(gradeCategoryDAO.createGradeCategory(gradeCategory2));
 
     gradeCategory3.setTestId(testId);
     gradeCategory3.setMinScore(8);
     gradeCategory3.setMaxScore(10);
-    gradeCategory3.setMeaning("Grade3");
+    gradeCategory3.setMeaning("Сангвиник");
     gradeCategory3.setCategoryId(category);
     gradeCategory3.setId(gradeCategoryDAO.createGradeCategory(gradeCategory3));
 
     gradeCategory4.setTestId(testId);
     gradeCategory4.setMinScore(11);
     gradeCategory4.setMaxScore(13);
-    gradeCategory4.setMeaning("Grade4");
+    gradeCategory4.setMeaning("Флегматик");
     gradeCategory4.setCategoryId(category);
     gradeCategory4.setId(gradeCategoryDAO.createGradeCategory(gradeCategory4));
 
