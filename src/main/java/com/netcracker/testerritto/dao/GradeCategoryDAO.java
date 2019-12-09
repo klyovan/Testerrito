@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class GradeCategoryDAO {
   @Autowired
   private JdbcTemplate jdbcTemplate;
-
-  @Autowired
-  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
   @Autowired
   private GradeCategoryMapper gradeCategoryMapper;
@@ -116,11 +112,11 @@ public class GradeCategoryDAO {
   public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
     return new ObjectEavBuilder.Builder(jdbcTemplate)
       .setName(newGradeCategory.getMeaning())
-      .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GRADE_CATEGORY)))
+      .setObjectTypeId(ObjtypeProperties.GRADE_CATEGORY)
       .setParentId(newGradeCategory.getTestId())
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MIN_SCORE)), String.valueOf(newGradeCategory.getMinScore()))
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MAX_SCORE)), String.valueOf(newGradeCategory.getMaxScore()))
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MEANING)), String.valueOf(newGradeCategory.getMeaning()))
+      .setStringAttribute(AttrtypeProperties.MIN_SCORE, String.valueOf(newGradeCategory.getMinScore()))
+      .setStringAttribute(AttrtypeProperties.MAX_SCORE, String.valueOf(newGradeCategory.getMaxScore()))
+      .setStringAttribute(AttrtypeProperties.MEANING, String.valueOf(newGradeCategory.getMeaning()))
       .setReference(new BigInteger(String.valueOf(AttrtypeProperties.GRADE_BELONGS)), newGradeCategory.getCategoryId())
       .create();
   }
@@ -134,16 +130,16 @@ public class GradeCategoryDAO {
   public void deleteGradeCategoryByTestId(BigInteger id) {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setParentId(id)
-      .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GRADE_CATEGORY)))
+      .setObjectTypeId(ObjtypeProperties.GRADE_CATEGORY)
       .delete();
   }
 
   public GradeCategory updateGradeCategory(GradeCategory gradeCategory) {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setObjectId(gradeCategory.getId())
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MIN_SCORE)), String.valueOf(gradeCategory.getMinScore()))
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MAX_SCORE)), String.valueOf(gradeCategory.getMaxScore()))
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.MEANING)), gradeCategory.getMeaning())
+      .setStringAttribute(AttrtypeProperties.MIN_SCORE, String.valueOf(gradeCategory.getMinScore()))
+      .setStringAttribute(AttrtypeProperties.MAX_SCORE, String.valueOf(gradeCategory.getMaxScore()))
+      .setStringAttribute(AttrtypeProperties.MEANING, gradeCategory.getMeaning())
       .update();
     return getGradeCategoryById(gradeCategory.getId());
   }

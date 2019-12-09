@@ -101,8 +101,8 @@ public class ResultDAOTest {
         result.setDate(date);
         result.setScore(10);
         result.setStatus(ListsAttr.PASSED);
-        result.setTestId(BigInteger.valueOf(-10025));
-        result.setUserId(BigInteger.valueOf(-88));
+        result.setTestId(new BigInteger("-10025"));
+        result.setUserId(new BigInteger("-88"));
         result.setReplies(replies);
 
         return result;
