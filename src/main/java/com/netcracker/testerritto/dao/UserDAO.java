@@ -32,8 +32,8 @@ public class UserDAO {
 
     String sql =
         "select users.object_id id," +
-            " user_last_name.value  lastName," +
-            " user_firs_name.value firstName ," +
+            " user_last_name.value  last_name," +
+            " user_firs_name.value first_name ," +
             " user_email.value email,   " +
             " user_password.value password," +
             " user_phone.value phone " +
