@@ -33,6 +33,9 @@ public class ObjectEavBuilder {
         private String REFERENCES_INSERT = "into objreference(attr_id, object_id, reference)\n" +
                 "    values(?, object_id_PR.currval, ?)\n";
 
+        private String REFERENCES_INSERT_WITH_ID = "into objreference(attr_id, object_id, reference)\n" +
+                "    values(?, ?, ?)\n";
+
         private String MERGE_FIRST_PART = "merge into attributes att\n" +
                 "    using (select object_id from objects where object_id= ? ) obj\n" +
                 "        on (att.object_id = obj.object_id and att.attr_id= ? )\n" +
@@ -135,6 +138,20 @@ public class ObjectEavBuilder {
             query += "select * from dual";
             this.jdbcTemplate.update(query, objects.toArray());
             return this.jdbcTemplate.queryForObject(GET_ID, BigInteger.class);
+        }
+
+        @Transactional
+        public void createReference(){
+            String query = "insert all\n";
+            ArrayList<Object> objects = new ArrayList<>();
+            for(Reference reference : this.objectEav.references){
+                query += this.REFERENCES_INSERT_WITH_ID;
+                objects.add(reference.attributeId.toString());
+                objects.add(this.objectEav.objectId.toString());
+                objects.add(reference.referenceId.toString());
+            }
+            query += "select * from dual";
+            this.jdbcTemplate.update(query, objects.toArray());
         }
 
         @Transactional
