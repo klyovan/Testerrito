@@ -2,17 +2,8 @@ package com.netcracker.testerritto.models;
 
 import java.util.Objects;
 
-public class Category {
-  private int id;
+public class Category extends ObjectEav {
   private String nameCategory;
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
 
   public String getNameCategory() {
     return nameCategory;
@@ -20,9 +11,6 @@ public class Category {
 
   public void setNameCategory(String nameCategory) {
     this.nameCategory = nameCategory;
-  }
-
-  public Category() {
   }
 
   @Override
@@ -35,10 +23,14 @@ public class Category {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Category category = (Category) o;
-    return id == category.id &&
+    return id.equals(category.id) &&
         nameCategory.equals(category.nameCategory);
   }
 

@@ -18,13 +18,13 @@ public class Result {
   public Result() {
   }
 
-  public Result(BigInteger id, Date date, int score, String status, BigInteger testId, HashMap<Question, Reply> replies, BigInteger userId) {
+  public Result(BigInteger id, Date date, int score, String status, BigInteger testId,
+       BigInteger userId) {
     this.id = id;
     this.date = date;
     this.score = score;
     this.status = status;
     this.testId = testId;
-    this.replies = replies;
     this.userId = userId;
   }
 

@@ -1,25 +1,14 @@
 package com.netcracker.testerritto.models;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
-public class GradeCategory {
-  private int id;
+public class GradeCategory extends ObjectEav {
   private int minScore;
   private int maxScore;
   private String meaning;
-  private int categoryId;
-  private int testId;
-
-  public GradeCategory() {
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
+  private BigInteger categoryId;
+  private BigInteger testId;
 
   public int getMinScore() {
     return minScore;
@@ -45,19 +34,19 @@ public class GradeCategory {
     this.meaning = meaning;
   }
 
-  public int getCategoryId() {
+  public BigInteger getCategoryId() {
     return categoryId;
   }
 
-  public void setCategoryId(int categoryId) {
+  public void setCategoryId(BigInteger categoryId) {
     this.categoryId = categoryId;
   }
 
-  public int getTestId() {
+  public BigInteger getTestId() {
     return testId;
   }
 
-  public void setTestId(int testId) {
+  public void setTestId(BigInteger testId) {
     this.testId = testId;
   }
 
@@ -75,15 +64,19 @@ public class GradeCategory {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     GradeCategory that = (GradeCategory) o;
-    return id == that.id &&
-        minScore == that.minScore &&
+    return minScore == that.minScore &&
         maxScore == that.maxScore &&
-        categoryId == that.categoryId &&
-        testId == that.testId &&
-        meaning.equals(that.meaning);
+        id.equals(that.id) &&
+        meaning.equals(that.meaning) &&
+        categoryId.equals(that.categoryId) &&
+        testId.equals(that.testId);
   }
 
   @Override
