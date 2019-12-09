@@ -42,7 +42,7 @@ public class CategoryDAO {
   public Category updateCategory(Category category) {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setObjectId(category.getId())
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_CATEGORY)), category.getNameCategory())
+      .setStringAttribute(AttrtypeProperties.NAME_CATEGORY, category.getNameCategory())
       .update();
     return getCategoryById(category.getId());
   }
@@ -50,8 +50,8 @@ public class CategoryDAO {
   public BigInteger createCategory(Category newCategory) {
     return new ObjectEavBuilder.Builder(jdbcTemplate)
       .setName(newCategory.getNameCategory())
-      .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.CATEGORY)))
-      .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_CATEGORY)), newCategory.getNameCategory())
+      .setObjectTypeId(ObjtypeProperties.CATEGORY)
+      .setStringAttribute(AttrtypeProperties.NAME_CATEGORY, newCategory.getNameCategory())
       .create();
   }
 }
