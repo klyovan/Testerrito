@@ -1,7 +1,6 @@
 package com.netcracker.testerritto.dao;
 
 
-import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.mappers.QuestionRowMapper;
 import com.netcracker.testerritto.mappers.ReplyRowMapper;
 import com.netcracker.testerritto.mappers.ResultRowMapper;
@@ -9,7 +8,6 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
-import com.netcracker.testerritto.properties.ListsValues;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +18,6 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,27 +33,26 @@ public class ResultDAO {
     public Result getResult(BigInteger resultId) {
         String sql = "select  results.object_id id, result2test.reference test_id,\n" +
             "    result_date.date_value result_date, result_score.value result_score ,\n" +
-            "    result_status_list.value result_status, result2user.reference user_id    \n" +
+            "    result_status.list_value_id result_status, result2user.reference user_id    \n" +
             "from  objects results,\n" +
             "    attributes result_date,\n" +
             "    attributes result_score,\n" +
-            "    lists result_status_list,\n" +
             "    attributes result_status,\n" +
             "    objreference result2test,\n" +
             "    objreference result2user                        \n" +
-            "where results.object_id = ? \n" +
-            "    and result2test.attr_id = 30 /*results_belongs*/\n" +
+            "where results.object_id = ?\n" +
+            "    and result2test.attr_id = ? /*results_belongs*/\n" +
             "    and result2test.object_id = results.object_id\n" +
-            "    and result_date.attr_id = 10 /*date*/\n" +
+            "    and result_date.attr_id = ? /*date*/\n" +
             "    and result_date.object_id = results.object_id\n" +
-            "    and result_score.attr_id = 11 /*score*/\n" +
+            "    and result_score.attr_id = ? /*score*/\n" +
             "    and result_score.object_id = results.object_id\n" +
-            "    and result_status.attr_id = 12 /*status*/\n" +
+            "    and result_status.attr_id = ? /*status*/\n" +
             "    and result_status.object_id = results.object_id\n" +
-            "    and result_status.list_value_id = result_status_list.list_value_id\n" +
-            "    and result2user.attr_id = 29 /*look by*/\n" +
-            "    and result2user.object_id = results.object_id\n";
-        Result result = jdbcTemplate.queryForObject(sql, new Object[]{resultId.toString()}, new ResultRowMapper());
+            "    and result2user.attr_id = ? /*look by*/\n" +
+            "    and result2user.object_id = results.object_id";
+        Result result = jdbcTemplate.queryForObject(sql, new Object[]{resultId.toString(), AttrtypeProperties.RESULT_BELONGS, AttrtypeProperties.DATE,
+            AttrtypeProperties.SCORE_RESULT, AttrtypeProperties.STATUS, AttrtypeProperties.LOOK_BY}, new ResultRowMapper());
 
         result.setReplies(getReplies(resultId));
 
@@ -108,9 +104,9 @@ public class ResultDAO {
             "    objects tests\n" +
             "where\n" +
             "    questions.object_id = ?\n" +
-            "    and type_question.attr_id = 19  /*type_question*/\n" +
+            "    and type_question.attr_id = ?  /*type_question*/\n" +
             "    and type_question.object_id = questions.object_id\n" +
-            "    and text_question.attr_id = 18  /*text_question*/\n" +
+            "    and text_question.attr_id = ?  /*text_question*/\n" +
             "    and text_question.object_id = questions.object_id\n" +
             "    and questions.object_id = tests.object_id   /*match_category*/";
 
@@ -128,23 +124,23 @@ public class ResultDAO {
             "objects questions,\n" +
             "objects tests\n" +
             "where  \n" +
-            "    users.object_type_id = 1\n" +
-            "    and results.object_type_id = 5\n" +
+            "    users.object_type_id = ?\n" +
+            "    and results.object_type_id = ?\n" +
             "    and results_2_users.object_id= results.object_id\n" +
             "    and results_2_users.reference = users.object_id\n" +
-            "    and groups.object_type_id = 2\n" +
-            "    and users_2_groups.attr_id =22\n" +
+            "    and groups.object_type_id = ?\n" +
+            "    and users_2_groups.attr_id = ?\n" +
             "    and users_2_groups.object_id = users.object_id\n" +
             "    and users_2_groups.reference = groups.object_id\n" +
             "       \n" +
             "     and reply.object_id = ?  \n" +
-            "    and reply.object_type_id = 6\n" +
-            "    and replys_2_results.attr_id = 31\n" +
+            "    and reply.object_type_id = ?\n" +
+            "    and replys_2_results.attr_id = ?\n" +
             "    and replys_2_results.object_id = reply.object_id\n" +
             "    and replys_2_results.reference = results.object_id\n" +
             "       \n" +
-            "    and answer.object_type_id =11\n" +
-            "    and answer_2_reply.attr_id = 32\n" +
+            "    and answer.object_type_id = ?\n" +
+            "    and answer_2_reply.attr_id = ?\n" +
             "    and answer_2_reply.object_id = answer.object_id\n" +
             "    and answer_2_reply.reference = reply.object_id\n" +
             "       \n" +
@@ -154,8 +150,12 @@ public class ResultDAO {
 
         for (Map.Entry<BigInteger, BigInteger> entry : resultHashMapId.entrySet()) {
             resultHashMap.put(
-                jdbcTemplate.queryForObject(sqlForRep, new Object[]{entry.getKey().toString()}, new ReplyRowMapper()),    //TODO change with replyDao.createReply();
-                jdbcTemplate.queryForObject(sqlForQues, new Object[]{entry.getValue().toString()}, new QuestionRowMapper())
+                jdbcTemplate.queryForObject(sqlForRep, new Object[]{
+                    ObjtypeProperties.USER, ObjtypeProperties.RESULT,
+                    ObjtypeProperties.GROUP, AttrtypeProperties.CONSIST, entry.getKey().toString(),
+                    ObjtypeProperties.REPLY, AttrtypeProperties.REPLY_BELONGS,
+                    ObjtypeProperties.ANSWER, AttrtypeProperties.ANSWER_BELONGS}, new ReplyRowMapper()),    //TODO change with replyDao.createReply();
+                jdbcTemplate.queryForObject(sqlForQues, new Object[]{entry.getValue().toString(), AttrtypeProperties.TYPE_QUESTION, AttrtypeProperties.TEXT_QUESTION}, new QuestionRowMapper())
             );
         }
         return resultHashMap;
@@ -164,76 +164,33 @@ public class ResultDAO {
     }
 
     public void deleteResult(BigInteger resultId) {
-//        String sql = "DELETE FROM objects WHERE object_id = ?";
-//
-//        jdbcTemplate.update(sql, resultId);
-
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(resultId)
             .delete();
     }
 
     public BigInteger createResult(Result result) throws ParseException, IllegalArgumentException {
-        String sql = " insert all \n" +
-            "    into objects(object_id, parent_id, object_type_id, name, description)\n" +
-            "        values(object_id_pr.nextval, null, 5, 'result', null)\n" +
-            "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 10,null, sysdate, null)  /*date*/\n" +
-            "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 11, 5, null, null) /*score*/\n" +
-            "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-            "        values(object_id_pr.currval, 12, null, null, 7) /*status*/\n" +
-            "    into objreference(attr_id, object_id, reference)\t/*look by*/ \n" +
-            "        values(29, object_id_pr.currval, 2) /*userid*/\n" +
-            "    into objreference(attr_id, object_id, reference)\t/*result_belong*/\n" +
-            "        values(30, object_id_pr.currval, 147) /*testid*/\n" +
-            "    select * from dual;";
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
-        Date date = new Date();
-        String formatedDate = dateFormat.format(date);
-
-        if (result.getStatus().equals(ListsValues.STATUS_PASSED)) {
-            status = BigInteger.valueOf(ListsValues.STATUS_PASSED_ID);
-        } else if (result.getStatus().equals(ListsValues.STATUS_NOT_PASSED)) {
-            status = BigInteger.valueOf(ListsValues.STATUS_NOT_PASSED_ID);
-        } else {
-            throw new IllegalArgumentException("Not found result with that status !");
-        }
-
 
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName("Result " + result.getId())
             .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
-            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), dateFormat.parse(formatedDate))
+            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
             .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), status)
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getid())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
             .create();
-
     }
 
     public BigInteger updateResult(Result result) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
-        String formatedDate = dateFormat.format(result.getDate());
 
-
-
-        if (result.getStatus().equals(ListsValues.STATUS_PASSED)) {
-            status = BigInteger.valueOf(ListsValues.STATUS_PASSED_ID);
-        } else if (result.getStatus().equals(ListsValues.STATUS_NOT_PASSED)) {
-            status = BigInteger.valueOf(ListsValues.STATUS_NOT_PASSED_ID);
-        } else {
-            throw new IllegalArgumentException("Not found result with that status !");
-        }
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(result.getId())
             .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.RESULT)))
-            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), dateFormat.parse(formatedDate))
+            .setDateAttribute(new BigInteger(String.valueOf(AttrtypeProperties.DATE)), result.getDate())
             .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_RESULT)), String.valueOf(result.getScore()))
-            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), status)
+            .setListAttribute(new BigInteger(String.valueOf(AttrtypeProperties.STATUS)), result.getStatus().getid())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.LOOK_BY)), result.getUserId())
             .setReference(new BigInteger(String.valueOf(AttrtypeProperties.RESULT_BELONGS)), result.getTestId())
             .update();

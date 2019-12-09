@@ -5,6 +5,9 @@ import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
+import com.netcracker.testerritto.properties.ListsAttr;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +33,28 @@ public class ResultDAOTest {
     @Autowired
     private ResultDAO resultDAO;
 
+
+    BigInteger isCreated;
+    Result createdResult;
+    Result expectedResult;
+
+
+
+    @Before
+    public void setUp() throws Exception {
+       // createdResult =
+    }
+
+    @After
+    public void tearDown() throws Exception {
+//       resultDAO.deleteResult(createdResult.getId());
+    }
+
     @Test
     public void getResult() {
 
-        Result result = resultDAO.getResult(BigInteger.valueOf(120));
+   Result result = resultDAO.getResult(BigInteger.valueOf(120));
+
     }
 
     @Test
@@ -45,15 +66,21 @@ public class ResultDAOTest {
 
     @Test
     public void deleteResult() {
-        Date date = new Date();
-        System.out.println(date);
+
     }
 
     @Test
     public void createResult() {
+
     }
 
     @Test
     public void updateResult() {
+    }
+
+
+    private Result getNewResult(){
+return null;
+      //  return new Result(null,new Date,10,"Passed",);
     }
 }

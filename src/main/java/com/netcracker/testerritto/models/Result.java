@@ -1,5 +1,7 @@
 package com.netcracker.testerritto.models;
 
+import com.netcracker.testerritto.properties.ListsAttr;
+
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,7 +11,7 @@ public class Result extends ObjectEav {
 
     private Date date;
     private int score;
-    private String status;
+    private ListsAttr status;
     private BigInteger testId;
     private HashMap<Reply, Question> replies;
     private BigInteger userId;
@@ -17,8 +19,7 @@ public class Result extends ObjectEav {
     public Result() {
     }
 
-    public Result(BigInteger id, Date date, int score, String status, BigInteger testId, HashMap<Reply, Question> replies, BigInteger userId) {
-        this.id = id;
+    public Result(Date date, int score, ListsAttr status, BigInteger testId, HashMap<Reply, Question> replies, BigInteger userId) {
         this.date = date;
         this.score = score;
         this.status = status;
@@ -26,7 +27,6 @@ public class Result extends ObjectEav {
         this.replies = replies;
         this.userId = userId;
     }
-
 
     public Date getDate() {
         return date;
@@ -44,11 +44,12 @@ public class Result extends ObjectEav {
         this.score = score;
     }
 
-    public String getStatus() {
+
+    public ListsAttr getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ListsAttr status) {
         this.status = status;
     }
 
