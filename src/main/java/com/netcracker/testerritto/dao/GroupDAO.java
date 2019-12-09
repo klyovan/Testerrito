@@ -91,9 +91,9 @@ public class GroupDAO{
                 "    attributes user_password,\n" +
                 "    attributes user_phone\n" +
                 "where\n" +
-                "    group2users.reference = ? /* groupId */\n" +
+                "    group2users.object_id = ? /* groupId */\n" +
                 "and group2users.attr_id = 22 /* CONSIST */\n" +
-                "and group2users.object_id = users.object_id\n" +
+                "and group2users.reference = users.object_id\n" +
                 "and users.object_id = user_lastname.object_id\n" +
                 "and user_lastname.attr_id = 1 /* LAST_NAME */\n" +
                 "and users.object_id = user_firstname.object_id\n" +
