@@ -25,15 +25,15 @@ import static org.junit.Assert.assertTrue;
 public class UserDAOTest {
 
   private User user1;
-  private User userTest;
 
   @Autowired
   private UserDAO userDAO;
 
   @Before
   public void init() {
-    user1 = userDAO.createUser("Allina", "Verde",
+   BigInteger id = userDAO.createUser("Allina", "Verde",
         "verde.@gmail", "1111", "12345");
+    user1 = userDAO.getUser(id);
 
   }
 
@@ -63,11 +63,11 @@ public class UserDAOTest {
     userNewFildes.add("2222");
     userNewFildes.add("7654321");
 
-    userDAO.updateLast_name(user1.getId(), userNewFildes.get(1));
+    userDAO.updateLastName(user1.getId(), userNewFildes.get(1));
     testUser = userDAO.getUser(user1.getId());
     assertTrue(testUser.getLastName().equals(userNewFildes.get(1)));
 
-    userDAO.updateFirst_name(user1.getId(), userNewFildes.get(0));
+    userDAO.updateFirstName(user1.getId(), userNewFildes.get(0));
     testUser = userDAO.getUser(user1.getId());
     assertTrue(testUser.getFirstName().equals(userNewFildes.get(0)));
 
@@ -87,23 +87,26 @@ public class UserDAOTest {
 
   @Test
   public void getCreatedGroupAndDeleteCreatedGroupTest() {
+    BigInteger id = BigInteger.valueOf(2);
+    User user1 = userDAO.getUser(id);
     int createdGroupCount = 0;
 
-    List<Group> groups = new ArrayList<>();
+    List<Group> groupsList = new ArrayList<>();
     user1.setGroups(userDAO.getCreatedGroups(user1.getId()));
-    groups = user1.getGroups();
-    createdGroupCount = groups.size();
+    groupsList = user1.getGroups();
+    createdGroupCount = groupsList.size();
 
-    if (groups.size() != 0) {
-      userDAO.deleteCreatedGroup(user1.getId(), groups.get(0).getId());
+    if (groupsList.size() != 0) {
+      userDAO.deleteCreatedGroup(user1.getId(), groupsList.get(0).getId());
       user1.setGroups(userDAO.getCreatedGroups(user1.getId()));
+      int createdGroupsAfterDelete = user1.getGroups().size();
       assertTrue(user1.getGroups().size() + 1 == createdGroupCount);
     }
-
   }
 
   @Test
   public void enterInGroupAndExitFromGroupTest() {
+
     int groupsCountBeforeDelete = 0;
     int groupsCountAfterDelte = 0;
     int groupsCountAfterEnter = 0;

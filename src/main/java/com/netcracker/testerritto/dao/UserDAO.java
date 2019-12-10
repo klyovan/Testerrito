@@ -32,8 +32,6 @@ public class UserDAO {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  // private String sqlUpdate = "update attributes set value = ? where object_id = ? and attr_id = ?";
-
   public User getUser(BigInteger id) {
     String sql =" select users.object_id id,\n"
         + "         user_last_name.value last_name,\n"
@@ -61,62 +59,19 @@ public class UserDAO {
     return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new UserRowMapper());
   }
 
-  ///////////////////////////////
   public void deleteUser(BigInteger id) {
-    /*
-    String sql = "delete from objects where object_id = ?";
-    jdbcTemplate.update(sql, id.toString());
-     */
 
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
         .delete();
-
-
   }
 
 
   public BigInteger createUser(String firstName, String lastName, String email,
       String password, String phone) {
-    BigInteger sequenceCount = getObjectSequenceCount();
 
     String objectName = firstName + " " + lastName;
-/*
-    String sql =
-        "INSERT ALL                                                           \n" +
-            "    INTO objects(object_id, parent_id, object_type_id, name)     \n" +
-            "        VALUES (?, null, 1, ?)               \n" +
-            "    INTO attributes(object_id, attr_id, value)                   \n" +
-            "        VALUES (?, 1, ?)                      \n" +
-            "    INTO attributes(object_id, attr_id, value)                   \n" +
-            "        VALUES (?, 2, ?)                      \n" +
-            "    INTO attributes(object_id, attr_id, value)                   \n" +
-            "        VALUES (?, 3, ?)                      \n" +
-            "    INTO attributes(object_id, attr_id, value)                   \n" +
-            "        VALUES (?, 4, ?)                      \n" +
-            "    INTO attributes(object_id, attr_id, value)                   \n" +
-            "        VALUES (?, 5, ?)                      \n" +
-            "select * from dual";
 
- */
-   /* jdbcTemplate.update(sql, sequenceCount.toString(), objectName, sequenceCount.toString(),
-        lastName, sequenceCount.toString(), firstName, sequenceCount.toString(), email,
-        sequenceCount.toString(), password, sequenceCount.toString(), phone);
-
-    User user = new User(sequenceCount, lastName, firstName,
-        email, password, phone);
-    return user;*/
-   /*
-   return  return  new ObjectEavBuilder.Builder(jdbcTemplate)
-        .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.GROUP)))
-        .setName("Group")
-        .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_GROUP)), name)
-        .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.LINK)), link)
-        .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_GROUP_BY)), userId)
-        .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CONSIST)), userId)
-        .create();*?
-
-    */
 
     return new ObjectEavBuilder.Builder((jdbcTemplate))
         .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.USER)))
@@ -130,27 +85,23 @@ public class UserDAO {
         .create();
   }
 
-  public void updateLast_name(BigInteger id, String lastName) {
-    //  jdbcTemplate.update(sqlUpdate, lastName, id.toString(), 1);
+  public void updateLastName(BigInteger id, String lastName) {
 
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
-        .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.LAST_NAME)), lastName)
+        .setStringAttribute(AttrtypeProperties.LAST_NAME, lastName)
         .update();
 
   }
 
-  public void updateFirst_name(BigInteger id, String firstName) {
-    // jdbcTemplate.update(sqlUpdate, firstName, id.toString(), 2);
+  public void updateFirstName(BigInteger id, String firstName) {
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
-        .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.FIRST_NAME)),
-            firstName)
+        .setStringAttribute(AttrtypeProperties.FIRST_NAME, firstName)
         .update();
   }
 
   public void updateEmail(BigInteger id, String email) {
-    //  jdbcTemplate.update(sqlUpdate, email, id.toString(), 3);
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
         .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.EMAIL)), email)
@@ -159,7 +110,6 @@ public class UserDAO {
   }
 
   public void updatePassword(BigInteger id, String password) {
-    //  jdbcTemplate.update(sqlUpdate, password, id.toString(), 4);
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
         .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.PASSWORD)), password)
@@ -168,8 +118,6 @@ public class UserDAO {
   }
 
   public void updatePhone(BigInteger id, String phone) {
-    //jdbcTemplate.update(sqlUpdate, phone, id.toString(), 5);
-
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
         .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.PHONE)), phone)
@@ -202,20 +150,6 @@ public class UserDAO {
             + "      and group_2_creator.object_id = groups.object_id\n"
             + "      and creator.object_id = group_2_creator.reference";
 
-/*
-    List<Group> groups = jdbcTemplate.query(sql, new Object[]{id.toString()},
-        new RowMapper<Group>() {
-          public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Group group = new Group();
-            group.setId(new BigInteger(rs.getString(1)));
-            group.setName(rs.getString(2));
-            group.setLink(rs.getString(3));
-            return group;
-          }
-        });
-    return groups;
-
- */
 
     List<Group> groups = jdbcTemplate.query(sql, new Object[]{id.toString()}, new GroupRowMapper());
     return groups;
@@ -239,21 +173,7 @@ public class UserDAO {
             "       and groups_2_user.attr_id = 25      /*CREATE_GROUP_BY*/\n" +
             "       and groups_2_user.object_id = GROUPS.object_id   \n" +
             "       and groups_2_user.reference = USERS.object_id ";
-/*
-    List<Group> listGroups = jdbcTemplate.query(sql, new Object[]{id.toString()},
-        new RowMapper<Group>() {
 
-      public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Group group = new Group();
-        group.setId(new BigInteger(rs.getString(1)));
-        group.setName(rs.getString(2));
-        group.setLink(rs.getString(3));
-        return group;
-      }
-    });
-    return listGroups;
-
- */
     List<Group> listGroups = jdbcTemplate.query(sql,
         new Object[]{id.toString()}, new GroupRowMapper());
 
@@ -262,45 +182,26 @@ public class UserDAO {
 
   public void deleteCreatedGroup(BigInteger userId, BigInteger createdGroupId) {
 
-    String sql =
-        "delete from objects groups                       \n" +
-            "where groups.object_id =                         \n" +
-            "(                                                \n" +
-            "      select object_id                           \n" +
-            "      from objreference groups_2_creator         \n" +
-            "      where groups_2_creator.attr_id = 25        \n" +
-            "            and groups_2_creator.reference = ?   \n" +  /* User_id */
-            "            and groups_2_creator.object_id = ?   \n" +  /* group_ id */
-            ")";
-    jdbcTemplate.update(sql, userId.toString(), createdGroupId.toString());
+    new ObjectEavBuilder.Builder(jdbcTemplate)
+        .setObjectId(createdGroupId)
+        .setReference(AttrtypeProperties.CREATE_GROUP_BY, userId)
+        .delete();
   }
 
   public void enterInGroup(BigInteger userId, BigInteger groupId) {
-    /*String sql = "insert into objreference (attr_id, object_id ,reference) VALUES (22, ? , ?)";*/
-    /*jdbcTemplate.update(sql, userId.toString(), groupId.toString());*/
-
-    /* public void updateGroup(BigInteger groupId, String newName) {
-        new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectId(groupId)
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_GROUP)), newName)
-                .update();
-    }*/
 
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(userId)
-        .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CONSIST)),groupId)
-        .create();
+        .setReference(AttrtypeProperties.CONSIST,groupId)
+        .createReference();
 
   }
 
   public void exitFromGroup(BigInteger userId, BigInteger groupId) {
-    /*
-   String sql = "delete from objreference where attr_id = 22 and object_id = ? and reference = ? ";
-   jdbcTemplate.update(sql, userId.toString(), groupId.toString());
-*/
+
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(userId)
-        .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CONSIST)),groupId)
+        .setReference(AttrtypeProperties.CONSIST, groupId)
         .delete();
 
   }
