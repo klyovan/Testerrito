@@ -36,7 +36,12 @@ public class ObjectEavBuilder {
         private String REFERENCES_INSERT_WITH_ID = "into objreference(attr_id, object_id, reference)\n" +
                 "    values(?, ?, ?)\n";
 
-        private String MERGE_FIRST_PART = "merge into attributes att\n" +
+        private String MERGE_FIRST_PART_ATTRIBUTE = "merge into attributes att\n" +
+                "    using (select object_id from objects where object_id= ? ) obj\n" +
+                "        on (att.object_id = obj.object_id and att.attr_id= ? )\n" +
+                "when matched then\n";
+
+        private String MERGE_FIRST_PART_REFERENCE = "merge into objreference att\n" +
                 "    using (select object_id from objects where object_id= ? ) obj\n" +
                 "        on (att.object_id = obj.object_id and att.attr_id= ? )\n" +
                 "when matched then\n";
@@ -47,9 +52,15 @@ public class ObjectEavBuilder {
 
         private String ATTRIBUTES_LIST_VALUE_ID_UPDATE = "    update set att.list_value_id = ?\n";
 
-        private String MERGE_SECOND_PART = "when not matched then\n" +
+        private String REFERENCE_UPDATE = "    update set att.reference = ?\n";
+
+        private String MERGE_SECOND_PART_ATTRIBUTE = "when not matched then\n" +
                 "    insert (object_id, attr_id, value,date_value,list_value_id)\n" +
                 "        values(?, ?, ?, ?, ?);\n";
+
+        private String MERGE_SECOND_PART_REFERENCE = "when not matched then\n" +
+                "    insert  (attr_id, object_id, reference)\n" +
+                "        values(?, ?, ?);\n";
 
         private String DELETE_BY_OBJECT_ID = "delete from objects where object_id = ?";
 
@@ -140,6 +151,13 @@ public class ObjectEavBuilder {
             return this.jdbcTemplate.queryForObject(GET_ID, BigInteger.class);
         }
 
+        /**
+         * CreateReferences
+         * @deprecated
+         * This method is no longer acceptable to create References.
+         * <p> Use {@link Builder#update()} instead.
+         */
+        @Deprecated
         @Transactional
         public void createReference(){
             String query = "insert all\n";
@@ -159,7 +177,7 @@ public class ObjectEavBuilder {
              String query = "begin\n";
              ArrayList<Object> objects = new ArrayList<>();
              for(Attribute attribute : this.objectEav.attributes){
-                 query += this.MERGE_FIRST_PART;
+                 query += this.MERGE_FIRST_PART_ATTRIBUTE;
                  objects.add(this.objectEav.objectId.toString());
                  objects.add(attribute.attributeId.toString());
                  if(attribute.value != null){
@@ -189,7 +207,18 @@ public class ObjectEavBuilder {
                      objects.add(null);
                      objects.add(attribute.listValueId.toString());
                  }
-                 query += this.MERGE_SECOND_PART;
+                 query += this.MERGE_SECOND_PART_ATTRIBUTE;
+             }
+             for(Reference reference : this.objectEav.references){
+                 query += this.MERGE_FIRST_PART_REFERENCE;
+                 objects.add(this.objectEav.objectId.toString());
+                 objects.add(reference.attributeId.toString());
+                 query += this.REFERENCE_UPDATE;
+                 objects.add(reference.referenceId.toString());
+                 query += this.MERGE_SECOND_PART_REFERENCE;
+                 objects.add(reference.attributeId.toString());
+                 objects.add(this.objectEav.objectId.toString());
+                 objects.add(reference.referenceId.toString());
              }
              query += "end;";
              this.jdbcTemplate.update(query, objects.toArray());
@@ -211,7 +240,8 @@ public class ObjectEavBuilder {
             }
             else if(objectEav.parentId != null && objectEav.objectTypeId != null){
                 String query = this.DELETE_BY_PARENT_ID_AND_TYPE;
-                this.jdbcTemplate.update(query, this.objectEav.parentId.toString(), this.objectEav.objectTypeId.toString());
+                this.jdbcTemplate.update(query, this.objectEav.parentId.toString(),
+                                                this.objectEav.objectTypeId.toString());
             }
         }
 
