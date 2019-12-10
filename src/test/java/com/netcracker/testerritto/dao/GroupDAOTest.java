@@ -43,7 +43,7 @@ public class GroupDAOTest {
     public void setUp(){
         Locale.setDefault(Locale.ENGLISH);
         creatorId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(new BigInteger("1"))
+                .setObjectTypeId(ObjtypeProperties.USER)
                 .setName("USER_CREATOR")
                 .create();
     }
@@ -83,33 +83,28 @@ public class GroupDAOTest {
         Group group = groupDAO.getGroupById(sequenceId);
     }
 
-    @Ignore//пока не поменятться сущность User не открывтаь тест
     @Test
     public void getAllUsersInGroup() throws Exception{
-        jdbcTemplate.update(
-                    "insert all\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(?,1,'User_lastname',null,null)\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(?,2,'User_firstname',null,null)\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(?,3,'User_email',null,null)\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(?,4,'User_password',null,null)\n" +
-                        "    into attributes(object_id, attr_id, value, date_value, list_value_id)\n" +
-                        "        values(?,5,'User_phone',null,null)\n" +
-                        "select * from dual", creatorId, creatorId, creatorId, creatorId, creatorId);
+        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+                .setObjectId(creatorId)
+                .setStringAttribute(AttrtypeProperties.LAST_NAME,"User_lastname")
+                .setStringAttribute(AttrtypeProperties.FIRST_NAME,"User_firstname")
+                .setStringAttribute(AttrtypeProperties.EMAIL,"User_email")
+                .setStringAttribute(AttrtypeProperties.PASSWORD,"User_password")
+                .setStringAttribute(AttrtypeProperties.PHONE,"User_phone")
+                .update();
         List<User> users = groupDAO.getUsersInGroup(sequenceId);
 
         List<User> usersExpected = new ArrayList();
         User user = new User();
-       // user.setId(creatorId);
-       // user.setLast_name("User_lastname");
-      //  user.setFirst_name("User_firstname");
-       // user.setEmail("User_email");
-      //  user.setPassword("User_password");
-      //  user.setPhone("User_phone");
-      //  usersExpected.add(user);
+        user.setId(creatorId);
+        user.setLastName("User_lastname");
+        user.setFirstName("User_firstname");
+        user.setEmail("User_email");
+        user.setPassword("User_password");
+        user.setPhone("User_phone");
+        usersExpected.add(user);
 
         assertEquals(usersExpected, users);
     }
@@ -119,10 +114,10 @@ public class GroupDAOTest {
         sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
         BigInteger testId = new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setParentId(sequenceId)
-                .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.TEST)))
+                .setObjectTypeId(ObjtypeProperties.TEST)
                 .setName("MyTest")
-                .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.NAME_TEST)), "MyTest")
-                .setReference(new BigInteger(String.valueOf(AttrtypeProperties.CREATE_TEST_BY)), creatorId)
+                .setStringAttribute(AttrtypeProperties.NAME_TEST, "MyTest")
+                .setReference(AttrtypeProperties.CREATE_TEST_BY, creatorId)
                 .create();
         List<com.netcracker.testerritto.models.Test> tests = groupDAO.getAllTestsInGroup(sequenceId);
 

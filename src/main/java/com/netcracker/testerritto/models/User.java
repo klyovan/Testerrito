@@ -112,17 +112,11 @@ public class User {
     }
 
     User user = (User) obj;
-    return id == user.id
-        || (id != null && id.compareTo(user.getId()) == 0)
-        && (firstName == user.firstName
-        || (firstName != null && firstName.equals(user.getFirstName())))
-        && (lastName == user.lastName
-        || (lastName != null && lastName.equals(user.getLastName())))
-        && (email == user.email
-        || (email != null && email.equals(user.getEmail())))
-        && (password == user.password
-        || (password != null && password.equals(user.getPassword())))
-        && (phone == user.phone
-        || (phone != null && phone.equals(user.getPhone())));
+    return (id != null && id.compareTo(user.getId()) == 0)
+        && (firstName != null && firstName.equals(user.getFirstName()))
+        && (lastName != null && lastName.equals(user.getLastName()))
+        && (email != null && email.equals(user.getEmail()))
+        && (password != null && password.equals(user.getPassword()))
+        && (phone != null && phone.equals(user.getPhone()));
   }
 }
