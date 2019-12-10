@@ -87,8 +87,8 @@ public class UserDAOTest {
 
   @Test
   public void getCreatedGroupAndDeleteCreatedGroupTest() {
-    BigInteger id = BigInteger.valueOf(2);
-    User user1 = userDAO.getUser(id);
+   // BigInteger id = BigInteger.valueOf(2);
+  //  User user1 = userDAO.getUser(user1.getId());
     int createdGroupCount = 0;
 
     List<Group> groupsList = new ArrayList<>();
