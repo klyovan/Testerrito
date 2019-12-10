@@ -1,5 +1,6 @@
 package com.netcracker.testerritto.models;
 
+import com.netcracker.testerritto.properties.ListsAttr;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
@@ -8,10 +9,27 @@ import java.util.Objects;
 public class Answer {
 
   private BigInteger id;
-  private String textAnswer;
+  private ListsAttr textAnswer;
   private int score;
   private BigInteger questionId;
+  private BigInteger nextQuestionId;
 
+  public BigInteger getReplyId() {
+    return replyId;
+  }
+
+  public void setReplyId(BigInteger replyId) {
+    this.replyId = replyId;
+  }
+
+  private BigInteger replyId;
+
+  public BigInteger getNextQuestionId() {
+    return nextQuestionId;
+  }
+  public void setNextQuestionId(BigInteger nextQuestionId) {
+    this.nextQuestionId = nextQuestionId;
+  }
   public BigInteger getId() {
     return id;
   }
@@ -20,11 +38,11 @@ public class Answer {
     this.id = id;
   }
 
-  public String getTextAnswer() {
+  public ListsAttr getTextAnswer() {
     return textAnswer;
   }
 
-  public void setTextAnswer(String textAnswer) {
+  public void setTextAnswer(ListsAttr textAnswer) {
     this.textAnswer = textAnswer;
   }
 

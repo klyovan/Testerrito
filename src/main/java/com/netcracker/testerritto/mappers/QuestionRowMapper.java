@@ -1,5 +1,6 @@
 package com.netcracker.testerritto.mappers;
 
+import com.netcracker.testerritto.properties.ListsAttr;
 import org.springframework.jdbc.core.RowMapper;
 import com.netcracker.testerritto.models.Question;
 
@@ -15,7 +16,7 @@ public class QuestionRowMapper implements RowMapper<Question> {
         Question question = new Question();
         question.setId(new BigInteger(resultSet.getString("id")));
         question.setTextQuestion(resultSet.getString("text"));
-        question.setTypeQuestion(resultSet.getString("type"));
+        question.setTypeQuestion(ListsAttr.getValueById(BigInteger. valueOf(resultSet.getInt("type_question"))));
         question.setTestId(new BigInteger(resultSet.getString("testId")));
         return question;
     }
