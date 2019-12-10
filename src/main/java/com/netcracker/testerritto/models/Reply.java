@@ -5,9 +5,29 @@ import java.util.List;
 
 public class Reply  extends ObjectEav{
 
-
+  private BigInteger id;
   private BigInteger resultId;
   private BigInteger answerId;
+  private String answer;
+
+  public String getAnswer() {
+    return answer;
+  }
+
+  @Override
+  public BigInteger getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(BigInteger id) {
+    this.id = id;
+  }
+
+  public void setAnswer(String answer) {
+    this.answer = answer;
+  }
+
   private List<Answer> replyList;
 
   public BigInteger getResultId() {
