@@ -43,8 +43,18 @@ public class ReplyDAO {
         + "       and text_answer.object_id = answer.object_id";
 
 
-    return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new ReplyRowMapper());
+ //   return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new ReplyRowMapper());
 
+    return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new RowMapper<Reply>() {
+      @Override
+      public Reply mapRow(ResultSet resultSet, int i) throws SQLException {
+        Reply reply = new Reply();
+        reply.setId(new BigInteger(resultSet.getString("id")));
+        reply.setResultId(new BigInteger(resultSet.getString("result_id")));
+        reply.setAnswerId(new BigInteger(resultSet.getString("answer_id")));
+        return reply;
+      }
+    });
   }
 
   public void updateReply(BigInteger replyId, BigInteger answerId) {
