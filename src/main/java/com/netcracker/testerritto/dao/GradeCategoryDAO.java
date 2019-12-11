@@ -45,6 +45,57 @@ public class GradeCategoryDAO {
       "  and grade_category_meaning.object_id = grade_category.object_id " +
       "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
       "  and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
+  private String getGradeCategoryByCategoryIdQuery =
+    "select " +
+      "  grade_category.object_id id, " +
+      "  grade_category.name grade_name, " +
+      "  grade_category.parent_id test_id, " +
+      "  grade_category_min_value.value min_value, " +
+      "  grade_category_max_value.value max_value, " +
+      "  grade_category_meaning.value meaning, " +
+      "  grade_category_ref_on_category.reference category_id " +
+      "from " +
+      "  objects grade_category, " +
+      "  attributes grade_category_min_value, " +
+      "  attributes grade_category_max_value, " +
+      "  attributes grade_category_meaning, " +
+      "  objreference grade_category_ref_on_category " +
+      "where " +
+      "  grade_category_ref_on_category.reference = ? " +
+      "  and grade_category_ref_on_category.attr_id = 33 /* grade_belongs */ " +
+      "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
+      "  and grade_category.object_type_id = 9 /* grade_category */ " +
+      "  and grade_category_min_value.attr_id = 15 /* min_score */ " +
+      "  and grade_category_min_value.object_id = grade_category.object_id " +
+      "  and grade_category_max_value.attr_id = 16 /* max_score */ " +
+      "  and grade_category_max_value.object_id = grade_category.object_id " +
+      "  and grade_category_meaning.attr_id = 17 /* meaning */ " +
+      "  and grade_category_meaning.object_id = grade_category.object_id";
+  private String getGradeCategoryByIdQuery =
+    "select " +
+      "  grade_category.object_id id, " +
+      "  grade_category.parent_id test_id, " +
+      "  grade_category_min_value.value min_value, " +
+      "  grade_category_max_value.value max_value, " +
+      "  grade_category_meaning.value meaning, " +
+      "  grade_category_ref_on_category.reference category_id " +
+      "from " +
+      "  objects grade_category, " +
+      "  attributes grade_category_min_value, " +
+      "  attributes grade_category_max_value, " +
+      "  attributes grade_category_meaning, " +
+      "  objreference grade_category_ref_on_category " +
+      "where " +
+      "  grade_category.object_id = ? " +
+      "  and grade_category.object_type_id = 9 /* grade_category */ " +
+      "  and grade_category_min_value.attr_id = 15 /* min_score */ " +
+      "  and grade_category_min_value.object_id = grade_category.object_id " +
+      "  and grade_category_max_value.attr_id = 16 /* max_score */ " +
+      "  and grade_category_max_value.object_id = grade_category.object_id  " +
+      "  and grade_category_meaning.attr_id = 17 /* meaning */ " +
+      "  and grade_category_meaning.object_id = grade_category.object_id " +
+      "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
+      "  and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
 
   public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) {
 
@@ -53,63 +104,11 @@ public class GradeCategoryDAO {
   }
 
   public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) {
-    String getGradeCategoryByCategoryIdQuery =
-      "select " +
-        "  grade_category.object_id id, " +
-        "  grade_category.name grade_name, " +
-        "  grade_category.parent_id test_id, " +
-        "  grade_category_min_value.value min_value, " +
-        "  grade_category_max_value.value max_value, " +
-        "  grade_category_meaning.value meaning, " +
-        "  grade_category_ref_on_category.reference category_id " +
-        "from " +
-        "  objects grade_category, " +
-        "  attributes grade_category_min_value, " +
-        "  attributes grade_category_max_value, " +
-        "  attributes grade_category_meaning, " +
-        "  objreference grade_category_ref_on_category " +
-        "where " +
-        "  grade_category_ref_on_category.reference = ? " +
-        "  and grade_category_ref_on_category.attr_id = 33 /* grade_belongs */ " +
-        "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
-        "  and grade_category.object_type_id = 9 /* grade_category */ " +
-        "  and grade_category_min_value.attr_id = 15 /* min_score */ " +
-        "  and grade_category_min_value.object_id = grade_category.object_id " +
-        "  and grade_category_max_value.attr_id = 16 /* max_score */ " +
-        "  and grade_category_max_value.object_id = grade_category.object_id " +
-        "  and grade_category_meaning.attr_id = 17 /* meaning */ " +
-        "  and grade_category_meaning.object_id = grade_category.object_id";
     return jdbcTemplate
       .query(getGradeCategoryByCategoryIdQuery, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
   public GradeCategory getGradeCategoryById(BigInteger id) {
-    String getGradeCategoryByIdQuery =
-      "select " +
-        "  grade_category.object_id id, " +
-        "  grade_category.parent_id test_id, " +
-        "  grade_category_min_value.value min_value, " +
-        "  grade_category_max_value.value max_value, " +
-        "  grade_category_meaning.value meaning, " +
-        "  grade_category_ref_on_category.reference category_id " +
-        "from " +
-        "  objects grade_category, " +
-        "  attributes grade_category_min_value, " +
-        "  attributes grade_category_max_value, " +
-        "  attributes grade_category_meaning, " +
-        "  objreference grade_category_ref_on_category " +
-        "where " +
-        "  grade_category.object_id = ? " +
-        "  and grade_category.object_type_id = 9 /* grade_category */ " +
-        "  and grade_category_min_value.attr_id = 15 /* min_score */ " +
-        "  and grade_category_min_value.object_id = grade_category.object_id " +
-        "  and grade_category_max_value.attr_id = 16 /* max_score */ " +
-        "  and grade_category_max_value.object_id = grade_category.object_id  " +
-        "  and grade_category_meaning.attr_id = 17 /* meaning */ " +
-        "  and grade_category_meaning.object_id = grade_category.object_id " +
-        "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
-        "  and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
-
     return jdbcTemplate.queryForObject(getGradeCategoryByIdQuery, new Object[]{id.toString()},
       gradeCategoryMapper);
   }
