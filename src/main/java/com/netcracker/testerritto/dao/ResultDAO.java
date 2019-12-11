@@ -182,7 +182,6 @@ public class ResultDAO {
 
     public BigInteger updateResult(Result result) {
 
-
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(result.getId())
             .setObjectTypeId(ObjtypeProperties.RESULT)
