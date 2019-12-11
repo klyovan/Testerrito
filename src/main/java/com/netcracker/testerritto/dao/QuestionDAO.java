@@ -20,70 +20,68 @@ public class QuestionDAO {
   @Autowired
   private QuestionRowMapper questionRowMapper;
 
+  private String QUERY_FOR_SELECT_BY_ID =
+       "select \n" +
+       "question.object_id as id,\n" +
+       "question_text.value as text,\n" +
+       "question_type.list_value_id as question_type,\n" +
+       "question.parent_id as test_id\n" +
+       "from\n" +
+       "objects question,\n" +
+       "attributes question_type,\n" +
+       "attributes question_text\n" +
+       "where\n" +
+       "question.object_id = ?\n" +
+       "and question.object_type_id = 10\n" +
+       "and question.object_id = question_text.object_id\n" +
+       "and question_text.attr_id = 18\n" +
+       "and question.object_id = question_text.object_id\n" +
+       "and question.object_id = question_type.object_id\n" +
+       "and question_type.attr_id = 19";
+
+  private String QUERY_FOR_SELECT_ALL_QUESTIONS_IN_TEST = "select " +
+      "question.object_id as id," +
+      "question_text.value as text," +
+      "question_type.list_value_id as type_question," +
+      "question.parent_id as test_id," +
+      "match_category.reference as category_id," +
+      "caused_by_question.reference as remark_id" +
+      "from" +
+      "objects question," +
+      "attributes question_text," +
+      "attributes question_type," +
+      "objreference match_category," +
+      "objreference caused_by_question" +
+      "where" +
+      "question.parent_id = ?" +
+      "and question.object_type_id = 10" +
+      "and question.object_id = question_text.object_id" +
+      "and question_text.attr_id = 18" +
+      "and question.object_id = question_type.object_id\n" +
+      "and question_type.attr_id = 19" +
+      "and question.object_id = match_category.object_id" +
+      "and match_category.attr_id = 34" +
+      "and question.object_id = caused_by_question.object_id" +
+      "and caused_by_question.attr_id = 28";
+
   public QuestionDAO(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
+
   public Question getQuestionById(BigInteger id) {
-    String query ="select "
-        + "question.object_id as id,"
-        + "question_text.value as text,"
-        + "question_type.list_value_id as question_type,"
-        + "question.parent_id as test_id,"
-        + "match_category.reference as category_id,"
-        + "caused_by_question.reference as remark_id"
-        + "from"
-        + "objects question,"
-        + "attributes question_type,"
-        + "attributes question_text,"
-        + "objreference match_category,"
-        + "objreference caused_by_question"
-        + "where"
-        + "question.object_id = ?"
-        + "and question.object_type_id = " + ObjtypeProperties.QUESTION
-        + "and question.object_id = question_text.object_id"
-        + "and question_text.attr_id = " + AttrtypeProperties.TEXT_QUESTION
-        + "and question.object_id = question_text.object_id"
-        + "and question.object_id = question_type.object_id"
-        + "and question_type.attr_id = " + AttrtypeProperties.TYPE_QUESTION
-        + "and question.object_id = match_category.object_id"
-        + "and match_category.attr_id = " + AttrtypeProperties.MATCH_CATEGORY
-        + "and question.object_id = caused_by_question.object_id"
-        + "and caused_by_question.attr_id = " + AttrtypeProperties.CAUSED_BY;
-    return jdbcTemplate.queryForObject(query, new Object[]{id}, questionRowMapper);
+    return jdbcTemplate.queryForObject(QUERY_FOR_SELECT_BY_ID, new Object[]{id.toString()}, questionRowMapper);
   }
 
   public List<Question> getAllQuestionInTest(BigInteger test_id){
-      String query = "select "
-          + "question.object_id as id,"
-          + "question_text.value as text,"
-          + "question_type.list_value_id as type_question,"
-          + "question.parent_id as test_id,"
-          + "match_category.reference as category_id,"
-          + "caused_by_question.reference as remark_id"
-          + "from"
-          + "objects question,"
-          + "attributes question_text,"
-          + "attributes question_type,"
-          + "objreference match_category,"
-          + "objreference caused_by_question"
-          + "where"
-          + "question.parent_id = ?"
-          + "and question.object_type_id = " + ObjtypeProperties.QUESTION
-          + "and question.object_id = question_text.object_id"
-          + "and question_text.attr_id = " + AttrtypeProperties.TEXT_QUESTION
-          + "and question.object_id = question_type.object_id\n"
-          + "and question_type.attr_id = " + AttrtypeProperties.TYPE_QUESTION
-          + "and question.object_id = match_category.object_id"
-          + "and match_category.attr_id = " + AttrtypeProperties.MATCH_CATEGORY
-          + "and question.object_id = caused_by_question.object_id"
-          + "and caused_by_question.attr_id = " + AttrtypeProperties.CAUSED_BY;
-    return jdbcTemplate.query(query, new Object[]{test_id}, questionRowMapper);
+    return jdbcTemplate.query(QUERY_FOR_SELECT_ALL_QUESTIONS_IN_TEST, new Object[]{test_id.toString()}, questionRowMapper);
   }
 
   public Question updateQuestion(Question question){
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(question.getId())
-        .setStringAttribute(AttrtypeProperties.NAME_CATEGORY, question.getTextQuestion())
+        .setObjectTypeId(ObjtypeProperties.QUESTION)
+        .setStringAttribute(AttrtypeProperties.TEXT_QUESTION, question.getTextQuestion())
+        .setListAttribute(AttrtypeProperties.TYPE_QUESTION,question.getTypeQuestion().getId())
         .update();
     return getQuestionById(question.getId());
   }

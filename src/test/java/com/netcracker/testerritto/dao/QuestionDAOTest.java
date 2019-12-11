@@ -31,6 +31,7 @@ public class QuestionDAOTest {
   private BigInteger questionId;
   private Question createdQuestion;
   private List<Question> expQuestions;
+ Question questionForTesting = new Question();
 
   @Before
   public void setUp() throws Exception {
@@ -61,10 +62,11 @@ public class QuestionDAOTest {
   public void updateQuestion() throws DataAccessException {
     String newTextQuestion = "Do you like bananas?";
     createdQuestion.setTextQuestion(newTextQuestion);
+    createdQuestion.setTypeQuestion(ListsAttr.MULTIPLE_ANSWER);
     questionDAO.updateQuestion(createdQuestion);
     expectedQuestion = questionDAO.getQuestionById(createdQuestion.getId());
 
-    assertEquals(expectedQuestion.getId(), createdQuestion.getId());
+    assertEquals(expectedQuestion.getTypeQuestion(), createdQuestion.getTypeQuestion());
     assertEquals(expectedQuestion.getTextQuestion(), createdQuestion.getTextQuestion());
   }
 
@@ -77,7 +79,6 @@ public class QuestionDAOTest {
   }
 
   private Question getNewQuestion() {
-
     Question question = new Question();
     question.setTextQuestion("What?");
     question.setTypeQuestion(ListsAttr.ONE_ANSWER);

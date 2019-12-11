@@ -16,8 +16,8 @@ public class QuestionRowMapper implements RowMapper<Question> {
         Question question = new Question();
         question.setId(new BigInteger(resultSet.getString("id")));
         question.setTextQuestion(resultSet.getString("text"));
-        question.setTypeQuestion(ListsAttr.getValueById(BigInteger. valueOf(resultSet.getInt("type_question"))));
-        question.setTestId(new BigInteger(resultSet.getString("testId")));
+        question.setTypeQuestion(ListsAttr.getValueById(BigInteger. valueOf(resultSet.getInt("question_type"))));
+        question.setTestId(new BigInteger(resultSet.getString("test_id")));
         return question;
     }
 }
