@@ -1,11 +1,8 @@
 package com.netcracker.testerritto.services;
 
-import static org.junit.Assert.assertEquals;
-
 import com.netcracker.testerritto.ApplicationConfiguration;
-import com.netcracker.testerritto.exceptions.CategoryServiceException;
+import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Category;
-import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,13 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertEquals;
+
 @SpringBootTest(classes = ApplicationConfiguration.class)
 @RunWith(SpringRunner.class)
 public class CategoryServiceTest {
-  private Category testCategory;
-
   @Autowired
   CategoryService categoryService;
+
+  private Category testCategory;
 
   @Before
   public void setUp() throws Exception {
@@ -29,12 +30,12 @@ public class CategoryServiceTest {
     testCategory.setId(testCategoryId);
   }
 
-  @Test( expected = NullPointerException.class )
+  @Test( expected = IllegalArgumentException.class )
   public void getCategoryById_idIsNull() throws Exception {
     categoryService.getCategoryById(null);
   }
 
-  @Test( expected = CategoryServiceException.class )
+  @Test( expected = ServiceException.class )
   public void getCategoryById_idNotExist() throws Exception {
     categoryService.deleteCategoryById(testCategory.getId());
     categoryService.getCategoryById(testCategory.getId());
@@ -46,23 +47,23 @@ public class CategoryServiceTest {
     assertEquals(testCategory.getNameCategory(), categoryFromDb.getNameCategory());
   }
 
-  @Test( expected = NullPointerException.class )
+  @Test( expected = IllegalArgumentException.class )
   public void deleteCategoryById_idIsNull() throws Exception {
     categoryService.deleteCategoryById(null);
   }
 
-  @Test( expected = CategoryServiceException.class )
+  @Test( expected = ServiceException.class )
   public void deleteCategoryById() throws Exception {
     categoryService.deleteCategoryById(testCategory.getId());
     categoryService.getCategoryById(testCategory.getId());
   }
 
-  @Test( expected = NullPointerException.class )
+  @Test( expected = IllegalArgumentException.class )
   public void updateCategory_idIsNull() throws Exception {
     categoryService.updateCategory(null);
   }
 
-  @Test( expected = CategoryServiceException.class )
+  @Test( expected = ServiceException.class )
   public void updateCategory_CategoryNotExist() throws Exception {
     categoryService.deleteCategoryById(testCategory.getId());
     categoryService.updateCategory(testCategory);
@@ -80,7 +81,7 @@ public class CategoryServiceTest {
     categoryService.deleteCategoryById(testCategory.getId());
   }
 
-  @Test( expected = NullPointerException.class)
+  @Test( expected = IllegalArgumentException.class)
   public void createCategory_categoryNameParamIsNull() throws Exception {
     Category incorrectCategoryForCreation = new Category();
     categoryService.createCategory(incorrectCategoryForCreation);

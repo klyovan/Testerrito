@@ -5,6 +5,7 @@ import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,23 +98,22 @@ public class GradeCategoryDAO {
       "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
       "  and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
 
-  public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) {
-
+  public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) throws DataAccessException {
     return jdbcTemplate
       .query(getGradeCategoryByTestIdQuery, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
-  public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) {
+  public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) throws DataAccessException {
     return jdbcTemplate
       .query(getGradeCategoryByCategoryIdQuery, new Object[]{id.toString()}, gradeCategoryMapper);
   }
 
-  public GradeCategory getGradeCategoryById(BigInteger id) {
+  public GradeCategory getGradeCategoryById(BigInteger id) throws DataAccessException {
     return jdbcTemplate.queryForObject(getGradeCategoryByIdQuery, new Object[]{id.toString()},
       gradeCategoryMapper);
   }
 
-  public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
+  public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws DataAccessException {
     return new ObjectEavBuilder.Builder(jdbcTemplate)
       .setName(newGradeCategory.getMeaning())
       .setObjectTypeId(ObjtypeProperties.GRADE_CATEGORY)
@@ -129,20 +129,20 @@ public class GradeCategoryDAO {
       .create();
   }
 
-  public void deleteGradeCategoryById(BigInteger id) {
+  public void deleteGradeCategoryById(BigInteger id) throws DataAccessException {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setObjectId(id)
       .delete();
   }
 
-  public void deleteGradeCategoryByTestId(BigInteger id) {
+  public void deleteGradeCategoryByTestId(BigInteger id) throws DataAccessException {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setParentId(id)
       .setObjectTypeId(ObjtypeProperties.GRADE_CATEGORY)
       .delete();
   }
 
-  public GradeCategory updateGradeCategory(GradeCategory gradeCategory) {
+  public GradeCategory updateGradeCategory(GradeCategory gradeCategory) throws DataAccessException {
     new ObjectEavBuilder.Builder(jdbcTemplate)
       .setObjectId(gradeCategory.getId())
       .setStringAttribute(AttrtypeProperties.MIN_SCORE,

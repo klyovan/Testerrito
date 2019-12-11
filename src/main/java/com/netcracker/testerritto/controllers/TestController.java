@@ -4,9 +4,10 @@ import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.services.CategoryService;
 import com.netcracker.testerritto.services.GradeCategoryService;
-import java.math.BigInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigInteger;
 
 @RestController
 @RequestMapping("test")
@@ -38,12 +39,12 @@ public class TestController {
   }
 
   @GetMapping("/category/grade/{id}")
-  public GradeCategory getGradeCategory(@PathVariable BigInteger id) {
+  public GradeCategory getGradeCategory(@PathVariable BigInteger id) throws Exception {
     return gradeCategoryService.getCategoryById(id);
   }
 
   @PostMapping("/category/grade")
-  public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
+  public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws Exception {
     return gradeCategoryService.createGradeCategory(newGradeCategory);
   }
 
