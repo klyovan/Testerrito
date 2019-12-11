@@ -19,7 +19,7 @@ public class CategoryDAO {
   private JdbcTemplate jdbcTemplate;
   @Autowired
   private CategoryRowMapper categoryRowMapper;
-  private String getCategoryByIdQuery =
+  private static final String getCategoryByIdQuery =
     "select " +
       "  category.object_id id, " +
       "  category_attr.value name_category " +

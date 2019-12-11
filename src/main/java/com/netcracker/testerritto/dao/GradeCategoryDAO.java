@@ -19,7 +19,7 @@ public class GradeCategoryDAO {
   private JdbcTemplate jdbcTemplate;
   @Autowired
   private GradeCategoryMapper gradeCategoryMapper;
-  private String getGradeCategoryByTestIdQuery =
+  private static final String getGradeCategoryByTestIdQuery =
     "select " +
       "  grade_category.object_id id, " +
       "  grade_category.name grade_name, " +
@@ -45,7 +45,7 @@ public class GradeCategoryDAO {
       "  and grade_category_meaning.object_id = grade_category.object_id " +
       "  and grade_category_ref_on_category.object_id = grade_category.object_id " +
       "  and grade_category_ref_on_category.attr_id = 33/* grade_belongs */";
-  private String getGradeCategoryByCategoryIdQuery =
+  private static final String getGradeCategoryByCategoryIdQuery =
     "select " +
       "  grade_category.object_id id, " +
       "  grade_category.name grade_name, " +
@@ -71,7 +71,7 @@ public class GradeCategoryDAO {
       "  and grade_category_max_value.object_id = grade_category.object_id " +
       "  and grade_category_meaning.attr_id = 17 /* meaning */ " +
       "  and grade_category_meaning.object_id = grade_category.object_id";
-  private String getGradeCategoryByIdQuery =
+  private static final String getGradeCategoryByIdQuery =
     "select " +
       "  grade_category.object_id id, " +
       "  grade_category.parent_id test_id, " +
