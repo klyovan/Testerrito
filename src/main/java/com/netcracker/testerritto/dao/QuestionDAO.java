@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionDAO {
   @Autowired
   public JdbcTemplate jdbcTemplate;
-
   @Autowired
   private QuestionRowMapper questionRowMapper;
 
