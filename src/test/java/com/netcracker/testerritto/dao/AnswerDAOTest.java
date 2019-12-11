@@ -61,8 +61,8 @@ public class AnswerDAOTest {
 
   @Test(expected = EmptyResultDataAccessException.class)
   public void deleteAnswer(){
-    Answer newAnser = getNewAnswer();
-    BigInteger deletedId = answerDAO.createAnswer(newAnser);
+    Answer newAnswer = getNewAnswer();
+    BigInteger deletedId = answerDAO.createAnswer(newAnswer);
     answerDAO.deleteAnswer(deletedId);
     answerDAO.getAnswerById(deletedId);
   }
@@ -70,7 +70,6 @@ public class AnswerDAOTest {
   @Test
   public void getAnswerById() throws DataAccessException {
     expectedAnswer = answerDAO.getAnswerById(isCreated);
-    Answer selectedCategory = answerDAO.getAnswerById(isCreated);
 
     assertEquals(expectedAnswer.getId(), createdAnswer.getId());
     assertEquals(expectedAnswer.getTextAnswer(), createdAnswer.getTextAnswer());
@@ -82,7 +81,6 @@ public class AnswerDAOTest {
     answer.setTextAnswer(ListsAttr.POSITIVE_TEXT_ANSWER);
     answer.setScore(25);
     answer.setQuestionId(new BigInteger("-910"));
-    answer.setReplyId(new BigInteger("-710"));
     return answer;
   }
 }

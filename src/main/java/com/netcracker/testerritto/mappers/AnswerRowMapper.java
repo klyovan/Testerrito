@@ -15,7 +15,7 @@ public class AnswerRowMapper implements RowMapper<Answer> {
   public Answer mapRow(ResultSet resultSet, int i) throws SQLException {
     Answer answer = new Answer();
     answer.setId(new BigInteger(resultSet.getString("id")));
-    answer.setQuestionId(new BigInteger(resultSet.getString("questionId")));
+    answer.setQuestionId(new BigInteger(resultSet.getString("question_id")));
     answer.setScore(resultSet.getInt("score"));
     answer.setTextAnswer(ListsAttr.getValueById(BigInteger.valueOf(resultSet.getInt("text"))));
     return answer;
