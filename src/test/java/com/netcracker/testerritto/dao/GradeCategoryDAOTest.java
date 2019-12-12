@@ -106,11 +106,10 @@ public class GradeCategoryDAOTest {
   @Test
   public void getGradeCategoryByCategoryId() throws DataAccessException {
     expGradeCategories = createGradeCategoriesForTest();
-    expGradeCategories.sort(new ObjectEavIdComparator());
+    expGradeCategories.sort(new ObjectEavIdComparator<>());
 
     List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByCategoryId(expGradeCategories.get(0).getCategoryId());
-    System.out.println(selectedGradeCategories.toString());
-    selectedGradeCategories.sort(new ObjectEavIdComparator());
+    selectedGradeCategories.sort(new ObjectEavIdComparator<>());
 
     assertEquals(expGradeCategories.size(), selectedGradeCategories.size());
 
@@ -209,7 +208,6 @@ public class GradeCategoryDAOTest {
   }
 
   private List<GradeCategory> createGradeCategoriesForTest() throws DataAccessException {
-    gradeCategoryDAO.deleteGradeCategoryByTestId(testId);
     GradeCategory gradeCategory1 = new GradeCategory();
     GradeCategory gradeCategory2 = new GradeCategory();
     GradeCategory gradeCategory3 = new GradeCategory();

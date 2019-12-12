@@ -12,44 +12,44 @@ import java.math.BigInteger;
 @RestController
 @RequestMapping("test")
 public class TestController {
-  @Autowired
-  private CategoryService categoryService;
+    @Autowired
+    private CategoryService categoryService;
 
-  @Autowired
-  private GradeCategoryService gradeCategoryService;
+    @Autowired
+    private GradeCategoryService gradeCategoryService;
 
-  @GetMapping("/category/{categoryId}")
-  public Category getCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
-    return categoryService.getCategoryById(id);
-  }
+    @GetMapping("/category/{categoryId}")
+    public Category getCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
+        return categoryService.getCategoryById(id);
+    }
 
-  @DeleteMapping("/category/{categoryId}")
-  public void deleteCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
-    categoryService.deleteCategoryById(id);
-  }
+    @DeleteMapping("/category/{categoryId}")
+    public void deleteCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
+        categoryService.deleteCategoryById(id);
+    }
 
-  @PutMapping("/category")
-  public Category updateCategory(Category updateCategory) throws Exception {
-    return categoryService.updateCategory(updateCategory);
-  }
+    @PutMapping("/category")
+    public Category updateCategory(Category updateCategory) throws Exception {
+        return categoryService.updateCategory(updateCategory);
+    }
 
-  @PostMapping("/category")
-  public BigInteger createCategory(Category newCategory) throws Exception {
-    return categoryService.createCategory(newCategory);
-  }
+    @PostMapping("/category")
+    public BigInteger createCategory(Category newCategory) throws Exception {
+        return categoryService.createCategory(newCategory);
+    }
 
-  @GetMapping("/category/grade/{id}")
-  public GradeCategory getGradeCategory(@PathVariable BigInteger id) throws Exception {
-    return gradeCategoryService.getCategoryById(id);
-  }
+    @GetMapping("/category/grade/{id}")
+    public GradeCategory getGradeCategory(@PathVariable BigInteger id) throws Exception {
+        return gradeCategoryService.getCategoryById(id);
+    }
 
-  @PostMapping("/category/grade")
-  public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws Exception {
-    return gradeCategoryService.createGradeCategory(newGradeCategory);
-  }
+    @PostMapping("/category/grade")
+    public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws Exception {
+        return gradeCategoryService.createGradeCategory(newGradeCategory);
+    }
 
-  @GetMapping("/hello")
-  public String getHello() {
-    return "Hello";
-  }
+    @GetMapping("/hello")
+    public String getHello() {
+        return "Hello";
+    }
 }
