@@ -69,7 +69,6 @@ public class ResultDAOTest {
         BigInteger deletedId = resultDAO.createResult(resultDeleted);
         resultDAO.deleteResult(deletedId);
         resultDAO.getResult(deletedId);
-
     }
 
     @Test
@@ -87,8 +86,6 @@ public class ResultDAOTest {
 
         Assert.assertEquals(expectedResult.getScore(), createdResult.getScore());
         Assert.assertEquals(expectedResult.getStatus(), createdResult.getStatus());
-
-
     }
 
 
