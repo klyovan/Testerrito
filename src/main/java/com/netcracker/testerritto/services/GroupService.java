@@ -1,10 +1,13 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.GroupDAO;
+import com.netcracker.testerritto.exceptions.ServiceException;
+import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,60 +17,82 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-@Transactional
 public class GroupService {
 
     @Autowired
     private GroupDAO groupDAO;
 
-    private static Logger log=Logger.getLogger(RemarkService.class.getName());
+    @Autowired
+    private ServiceExceptionHandler serviceExceptionHandler;
 
-    public Group getGroupById(BigInteger groupId){
-        checkNullId(groupId);
-        return groupDAO.getGroupById(groupId);
-    }
-
-    public BigInteger createGroup(BigInteger userId, String link, String name){
-        checkNullId(userId);
-        checkNullString(link);
-        checkNullString(name);
-        return groupDAO.createGroup(userId, link, name);
-    }
-
-    public void updateGroup(BigInteger groupId, String newName){
-        checkNullId(groupId);
-        checkNullString(newName);
-        groupDAO.updateGroup(groupId, newName);
-    }
-
-    public void deleteGroup(BigInteger groupId){
-        checkNullId(groupId);
-        groupDAO.deleteGroup(groupId);
-    }
-
-    public List<User> getUsersInGroup(BigInteger groupId){
-        checkNullId(groupId);
-        return groupDAO.getUsersInGroup(groupId);
-    }
-
-    public List<Test> getAllTestsInGroup(BigInteger groupId){
-        checkNullId(groupId);
-        return groupDAO.getAllTestsInGroup(groupId);
-    }
-
-    private void checkNullId(BigInteger id){
-        if(id == null){
-            IllegalArgumentException exception = new IllegalArgumentException("ID can not be NULL.");
-            log.log(Level.SEVERE, exception.getMessage(), id);
-            throw exception;
+    public Group getGroupById(BigInteger groupId) throws ServiceException {
+        checkIdNotNull(groupId);
+        try {
+            return groupDAO.getGroupById(groupId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed GetGroupById().", exception);
+            return null;
         }
     }
 
-    private void checkNullString(String text){
-        if("".equals(text)){
-            IllegalArgumentException exception = new IllegalArgumentException("Text Field can not be NULL.");
-            log.log(Level.SEVERE, exception.getMessage(), text);
-            throw exception;
+    public BigInteger createGroup(Group group) throws ServiceException {
+        checkIdNotNull(group.getCreatorUserId());
+        checkStringNotNull(group.getLink());
+        checkStringNotNull(group.getName());
+        try {
+            return groupDAO.createGroup(group);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed CreateGroup().", exception);
+            return null;
         }
+    }
+
+    public void updateGroup(Group group) throws ServiceException {
+        checkIdNotNull(group.getId());
+        checkStringNotNull(group.getName());
+        try {
+            groupDAO.updateGroup(group);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed UpdateGroup().", exception);
+        }
+    }
+
+    public void deleteGroup(BigInteger groupId) throws ServiceException {
+        checkIdNotNull(groupId);
+        try {
+            groupDAO.deleteGroup(groupId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed DeleteGroup().", exception);
+        }
+    }
+
+    public List<User> getUsersInGroup(BigInteger groupId) throws ServiceException {
+        checkIdNotNull(groupId);
+        try {
+            return groupDAO.getUsersInGroup(groupId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed GetUsersInGroup().", exception);
+            return null;
+        }
+    }
+
+    public List<Test> getAllTestsInGroup(BigInteger groupId) throws ServiceException {
+        checkIdNotNull(groupId);
+        try {
+            return groupDAO.getAllTestsInGroup(groupId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed GetAllTestsInGroup().", exception);
+            return null;
+        }
+    }
+
+    private void checkIdNotNull(BigInteger id) {
+        if (id == null)
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
+    }
+
+    private void checkStringNotNull(String string) {
+        if ("".equals(string) || string == null)
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter Text can not be NULL.");
     }
 }
