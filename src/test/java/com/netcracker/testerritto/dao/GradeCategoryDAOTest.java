@@ -4,6 +4,7 @@ import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.comparators.ObjectEavIdComparator;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
+import com.netcracker.testerritto.models.Group;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,11 @@ public class GradeCategoryDAOTest {
   public void setUp() {
     userId = userDAO.createUser("Karina", "Marinina",
       "marinina.@gmail", "1111", "12345");
-    groupId = groupDAO.createGroup(userId, "New Link http...", "Very cool group");
+    Group group = new Group();
+    group.setCreatorUserId(userId);
+    group.setLink("New Link http...");
+    group.setName("Very cool group");
+    groupId = groupDAO.createGroup(group);
 
     testForGradeCategory = new com.netcracker.testerritto.models.Test();
     testForGradeCategory.setNameTest("Тест на личность");

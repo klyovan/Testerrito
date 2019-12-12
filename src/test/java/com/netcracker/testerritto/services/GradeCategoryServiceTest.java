@@ -9,6 +9,7 @@ import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
+import com.netcracker.testerritto.models.Group;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -431,7 +432,11 @@ public class GradeCategoryServiceTest {
     private BigInteger createTestForTest() throws IllegalArgumentException, ServiceException {
         userId = userDAO.createUser("Karina", "Marinina",
             "marinina.@gmail", "1111", "12345");
-        groupId = groupDAO.createGroup(userId, "New Link http...", "Very cool group");
+        Group group = new Group();
+        group.setCreatorUserId(userId);
+        group.setLink("New Link http...");
+        group.setName("Very cool group");
+        groupId = groupDAO.createGroup(group);
 
         com.netcracker.testerritto.models.Test testForGradeCategory = new com.netcracker.testerritto.models.Test();
         testForGradeCategory.setNameTest("Тест на личность");

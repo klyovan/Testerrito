@@ -9,15 +9,6 @@ public class Remark extends ObjectEav{
     private BigInteger userSenderId;
     private BigInteger questionId;
 
-    public Remark(){}
-
-    public Remark(BigInteger id, String text, BigInteger userSenderId, BigInteger questionId){
-        this.id = id;
-        this.text = text;
-        this.userSenderId = userSenderId;
-        this.questionId = questionId;
-    }
-
     public void setText(String text) {
         this.text = text;
     }
