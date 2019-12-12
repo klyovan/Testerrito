@@ -1,71 +1,73 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.CategoryDAO;
-import com.netcracker.testerritto.exceptions.CategoryServiceException;
+import com.netcracker.testerritto.exceptions.ServiceException;
+import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Category;
-import java.math.BigInteger;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+
 @Service
 public class CategoryService {
-  private static Logger logger = Logger.getLogger(CategoryService.class.getName());
+    @Autowired
+    private ServiceExceptionHandler serviceExceptionHandler;
+    @Autowired
+    private CategoryDAO categoryDAO;
 
-  @Autowired
-  private CategoryDAO categoryDAO;
+    public Category getCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+        if (id == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
+        }
+        try {
+            return categoryDAO.getCategoryById(id);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Getting category by id was failed.", e);
+        }
+        return null;
+    }
 
-  public Category getCategoryById(BigInteger id) throws Exception {
-    if (id == null) {
-      RuntimeException ex = new NullPointerException("id can't be null");
-      logExceptionAndThrowException(ex);
+    public void deleteCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+        if (id == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
+        }
+        try {
+            categoryDAO.deleteCategoryById(id);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Deleting category by id was failed.", e);
+        }
     }
-    try {
-      return categoryDAO.getCategoryById(id);
-    } catch (DataAccessException e) {
-      throw new CategoryServiceException(CategoryServiceException._FAIL_TO_GET);
-    }
-  }
 
-  public void deleteCategoryById(BigInteger id) throws Exception {
-    if (id == null) {
-      RuntimeException ex = new NullPointerException("id can't be null");
-      logExceptionAndThrowException(ex);
+    public Category updateCategory(Category updatedCategory) throws IllegalArgumentException, ServiceException {
+        if (updatedCategory == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Can't pass null object in method");
+        }
+        if (updatedCategory.getId() == null || updatedCategory.getNameCategory() == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Parameters(id, nameCategory) can't be null");
+        }
+        try {
+            return categoryDAO.updateCategory(updatedCategory);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Updating category was failed.", e);
+        }
+        return null;
     }
-    try {
-      categoryDAO.deleteCategoryById(id);
-    } catch (DataAccessException e) {
-      throw new CategoryServiceException(CategoryServiceException._FAIL_TO_DELETE);
-    }
-  }
 
-  public Category updateCategory(Category updatedCategory) throws Exception {
-    if (updatedCategory.getId() == null || updatedCategory.getNameCategory() == null) {
-      RuntimeException ex = new NullPointerException("Parameters of updated category are invalid");
-      logExceptionAndThrowException(ex);
+    public BigInteger createCategory(Category newCategory) throws IllegalArgumentException, ServiceException {
+        if (newCategory == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Can't pass null object in method");
+        }
+        if (newCategory.getNameCategory() == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter(nameCategory) can't be null");
+        }
+        try {
+            return categoryDAO.createCategory(newCategory);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Creating category was failed", e);
+        }
+        return null;
     }
-    try {
-      return categoryDAO.updateCategory(updatedCategory);
-    } catch (DataAccessException e) {
-      throw new CategoryServiceException(CategoryServiceException._FAIL_TO_UPDATE);
-    }
-  }
 
-  public BigInteger createCategory(Category newCategory) throws Exception {
-    if (newCategory.getNameCategory() == null) {
-      RuntimeException ex = new NullPointerException("Parameters of created category are invalid");
-      logExceptionAndThrowException(ex);
-    }
-    try {
-      return categoryDAO.createCategory(newCategory);
-    } catch (DataAccessException e) {
-      throw new CategoryServiceException(CategoryServiceException._FAIL_TO_CREATE);
-    }
-  }
-
-  private void logExceptionAndThrowException(Exception ex) throws Exception {
-    logger.error(ex.getMessage(), ex);
-    throw ex;
-  }
 }
