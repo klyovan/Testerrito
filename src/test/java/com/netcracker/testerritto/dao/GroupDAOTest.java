@@ -38,14 +38,18 @@ public class GroupDAOTest {
 
     private BigInteger sequenceId;
     private BigInteger creatorId;
+    private Group groupExpected = new Group();
 
     @Before
     public void setUp(){
         Locale.setDefault(Locale.ENGLISH);
         creatorId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(ObjtypeProperties.USER)
-                .setName("USER_CREATOR")
-                .create();
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_CREATOR")
+            .create();
+        groupExpected.setCreatorUserId(creatorId);
+        groupExpected.setName("Very cool group");
+        groupExpected.setLink("New Link http...");
     }
 
     @After
@@ -61,39 +65,40 @@ public class GroupDAOTest {
 
     @Test
     public void insertGetGroup() throws Exception{
-        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        Group groupExpected = new Group(sequenceId, creatorId, "Very cool group","New Link http...", null, null);
+        sequenceId = groupDAO.createGroup(groupExpected);
+        groupExpected.setId(sequenceId);
         Group group = groupDAO.getGroupById(sequenceId);
         assertEquals(groupExpected, group);
     }
 
     @Test
     public void updateGroupById() throws Exception{
-        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
-        groupDAO.updateGroup(sequenceId, "New very-very cool name");
+        sequenceId = groupDAO.createGroup(groupExpected);
+        groupExpected.setId(sequenceId);
+        groupExpected.setName("New very-very cool name");
+        groupDAO.updateGroup(groupExpected);
         Group group = groupDAO.getGroupById(sequenceId);
-        Group groupExpected = new Group(sequenceId, creatorId, "New very-very cool name", "New Link http...", null, null);
         assertEquals(groupExpected, group);
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void deleteGroupById() throws Exception{
-        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
+        sequenceId = groupDAO.createGroup(groupExpected);
         groupDAO.deleteGroup(sequenceId);
         Group group = groupDAO.getGroupById(sequenceId);
     }
 
     @Test
     public void getAllUsersInGroup() throws Exception{
-        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
+        sequenceId = groupDAO.createGroup(groupExpected);
         new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectId(creatorId)
-                .setStringAttribute(AttrtypeProperties.LAST_NAME,"User_lastname")
-                .setStringAttribute(AttrtypeProperties.FIRST_NAME,"User_firstname")
-                .setStringAttribute(AttrtypeProperties.EMAIL,"User_email")
-                .setStringAttribute(AttrtypeProperties.PASSWORD,"User_password")
-                .setStringAttribute(AttrtypeProperties.PHONE,"User_phone")
-                .update();
+            .setObjectId(creatorId)
+            .setStringAttribute(AttrtypeProperties.LAST_NAME, "User_lastname")
+            .setStringAttribute(AttrtypeProperties.FIRST_NAME, "User_firstname")
+            .setStringAttribute(AttrtypeProperties.EMAIL, "User_email")
+            .setStringAttribute(AttrtypeProperties.PASSWORD, "User_password")
+            .setStringAttribute(AttrtypeProperties.PHONE, "User_phone")
+            .update();
         List<User> users = groupDAO.getUsersInGroup(sequenceId);
 
         List<User> usersExpected = new ArrayList();
@@ -111,14 +116,14 @@ public class GroupDAOTest {
 
     @Test
     public void getAllTestsInGroup() throws Exception{
-        sequenceId = groupDAO.createGroup(creatorId, "New Link http...", "Very cool group");
+        sequenceId = groupDAO.createGroup(groupExpected);
         BigInteger testId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setParentId(sequenceId)
-                .setObjectTypeId(ObjtypeProperties.TEST)
-                .setName("MyTest")
-                .setStringAttribute(AttrtypeProperties.NAME_TEST, "MyTest")
-                .setReference(AttrtypeProperties.CREATE_TEST_BY, creatorId)
-                .create();
+            .setParentId(sequenceId)
+            .setObjectTypeId(ObjtypeProperties.TEST)
+            .setName("MyTest")
+            .setStringAttribute(AttrtypeProperties.NAME_TEST, "MyTest")
+            .setReference(AttrtypeProperties.CREATE_TEST_BY, creatorId)
+            .create();
         List<com.netcracker.testerritto.models.Test> tests = groupDAO.getAllTestsInGroup(sequenceId);
 
         List<com.netcracker.testerritto.models.Test> testsExpected = new ArrayList<>();
