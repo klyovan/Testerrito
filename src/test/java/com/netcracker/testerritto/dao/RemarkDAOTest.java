@@ -39,33 +39,37 @@ public class RemarkDAOTest {
     private BigInteger questionId;
     private BigInteger remarkerId;
     private BigInteger sequenceId;
+    private Remark remarkExpected = new Remark();
 
     @Before
     public void setup(){
         Locale.setDefault(Locale.ENGLISH);
         authorId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(ObjtypeProperties.USER)
-                .setName("USER_AUTHOR")
-                .create();
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_AUTHOR")
+            .create();
         groupId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(ObjtypeProperties.GROUP)
-                .setName("GROUP")
-                .create();
+            .setObjectTypeId(ObjtypeProperties.GROUP)
+            .setName("GROUP")
+            .create();
         testId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setParentId(groupId)
-                .setObjectTypeId(ObjtypeProperties.TEST)
-                .setName("TEST")
-                .setReference(AttrtypeProperties.CREATE_TEST_BY, groupId)
-                .create();
+            .setParentId(groupId)
+            .setObjectTypeId(ObjtypeProperties.TEST)
+            .setName("TEST")
+            .setReference(AttrtypeProperties.CREATE_TEST_BY, authorId)
+            .create();
         questionId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setParentId(testId)
-                .setObjectTypeId(ObjtypeProperties.QUESTION)
-                .setName("QUESTION")
-                .create();
+            .setParentId(testId)
+            .setObjectTypeId(ObjtypeProperties.QUESTION)
+            .setName("QUESTION")
+            .create();
         remarkerId = new ObjectEavBuilder.Builder(jdbcTemplate)
-                .setObjectTypeId(ObjtypeProperties.USER)
-                .setName("USER_REMARKER")
-                .create();
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_REMARKER")
+            .create();
+        remarkExpected.setText("New Remark Text");
+        remarkExpected.setUserSenderId(remarkerId);
+        remarkExpected.setQuestionId(questionId);
     }
 
     @After
@@ -80,16 +84,16 @@ public class RemarkDAOTest {
             listForDelete.add(sequenceId);
         for(BigInteger id : listForDelete){
             new ObjectEavBuilder.Builder(jdbcTemplate)
-                    .setObjectId(id)
-                    .delete();
+                .setObjectId(id)
+                .delete();
         }
     }
 
     @Test
     public void insertGetRemarkById() throws Exception{
-        sequenceId = remarkDAO.createRemark(remarkerId, questionId,"New Remark Text");
+        sequenceId = remarkDAO.createRemark(remarkExpected);
+        remarkExpected.setId(sequenceId);
         Remark remark = remarkDAO.getRemarkById(sequenceId);
-        Remark remarkExpected = new Remark(sequenceId, "New Remark Text", remarkerId, questionId);
         assertEquals(remarkExpected.getId(), remark.getId());
         assertEquals(remarkExpected.getText(), remark.getText());
         assertEquals(remarkExpected.getQuestionId(), remark.getQuestionId());
@@ -98,7 +102,8 @@ public class RemarkDAOTest {
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void deleteRemarkById() throws Exception{
-        sequenceId = remarkDAO.createRemark(remarkerId, questionId,"New Remark Text");
+        sequenceId = remarkDAO.createRemark(remarkExpected);
+        remarkExpected.setId(sequenceId);
         remarkDAO.deleteRemark(sequenceId);
         Remark remark = remarkDAO.getRemarkById(sequenceId);
     }
