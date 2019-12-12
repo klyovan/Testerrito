@@ -12,17 +12,6 @@ public class Group {
     private List<User> users;
     private List<Test> tests;
 
-    public Group(){}
-
-    public Group(BigInteger id, BigInteger creatorUserId, String name, String link, List<User> users, List<Test> tests){
-        this.id = id;
-        this.creatorUserId = creatorUserId;
-        this.name = name;
-        this.link = link;
-        this.users = users;
-        this.tests = tests;
-    }
-
     public BigInteger getId() {
         return id;
     }
