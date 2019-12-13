@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TestDAO {
 
-    private static final String GET_TEST =
+    private static final String getTest =
             "select tests.object_id test_id, tests.parent_id group_id, " +
             "test_name.value test_name, creator.object_id creator_id " +
             "from  objects tests, " +
@@ -34,7 +34,7 @@ public class TestDAO {
             "    and test2creator.object_id = tests.object_id " +
             "    and creator.object_id = test2creator.reference";
 
-    private static final String GET_EXPERTS =
+    private static final String getExperts =
               "select expert.object_id id, lastname.value lastName,  "
             + "    firstName.value firstName, email.value email,  "
             + "    password.value password, phone.value phone  "
@@ -71,8 +71,7 @@ public class TestDAO {
 
     public Test getTest(BigInteger testId) {
 
-        Test test = jdbcTemplate
-            .queryForObject(GET_TEST, new Object[]{testId.toString()}, new TestRowMapper());
+        Test test = jdbcTemplate.queryForObject(getTest, new Object[]{testId.toString()}, new TestRowMapper());
 
         test.setExperts(getExperts(testId));
         test.setGradesCategory(getGradesCategory(testId));
@@ -84,8 +83,7 @@ public class TestDAO {
 
     private List<User> getExperts(BigInteger testId) {
 
-        return jdbcTemplate
-            .query(GET_EXPERTS, new Object[]{testId.toString()}, new UserRowMapper());
+        return jdbcTemplate.query(getExperts, new Object[]{testId.toString()}, new UserRowMapper());
     }
 
     private List<Question> getQuestions(BigInteger testId) {

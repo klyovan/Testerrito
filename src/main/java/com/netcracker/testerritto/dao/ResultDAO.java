@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ResultDAO {
 
-    private static final String GET_RESULT =
+    private static final String getResult =
             "select  results.object_id id, result2test.reference test_id, " +
             "    result_date.date_value result_date, result_score.value result_score , " +
             "    result_status.list_value_id result_status, result2user.reference user_id " +
@@ -44,7 +44,7 @@ public class ResultDAO {
             "    and result2user.attr_id = 29 /*look by*/ " +
             "    and result2user.object_id = results.object_id";
 
-    private static String GET_REPLIES =
+    private static String getReplies =
             "select  results.object_id res_id, reply.object_id rep_id, questions.object_id ques_id  " +
             "from objects results, " +
             "    objreference answer2reply, " +
@@ -74,8 +74,7 @@ public class ResultDAO {
 
     public Result getResult(BigInteger resultId) {
 
-        Result result = jdbcTemplate
-            .queryForObject(GET_RESULT, new Object[]{resultId.toString()}, new ResultRowMapper());
+        Result result = jdbcTemplate.queryForObject(getResult, new Object[]{resultId.toString()}, new ResultRowMapper());
 
         result.setReplies(getReplies(resultId));
 
@@ -86,7 +85,7 @@ public class ResultDAO {
         HashMap<BigInteger, BigInteger> resultHashMapId = new HashMap<>();
         HashMap<Reply, Question> resultHashMap = new HashMap<>();
 
-        jdbcTemplate.query(GET_REPLIES, new Object[]{resultId.toString()},
+        jdbcTemplate.query(getReplies, new Object[]{resultId.toString()},
             new RowMapper<Map<BigInteger, BigInteger>>() {
                 @Override
                 public Map<BigInteger, BigInteger> mapRow(ResultSet resultSet, int i)
