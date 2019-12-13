@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -31,8 +32,9 @@ public class UserDAOTest {
 
   @Before
   public void init() {
-   BigInteger id = userDAO.createUser("Allina", "Verde",
+    BigInteger id = userDAO.createUser("Allina", "Verde",
         "verde.@gmail", "1111", "12345");
+
     user1 = userDAO.getUser(id);
 
   }
@@ -87,8 +89,8 @@ public class UserDAOTest {
 
   @Test
   public void getCreatedGroupAndDeleteCreatedGroupTest() {
-   // BigInteger id = BigInteger.valueOf(2);
-  //  User user1 = userDAO.getUser(user1.getId());
+    // BigInteger id = BigInteger.valueOf(2);
+    //  User user1 = userDAO.getUser(user1.getId());
     int createdGroupCount = 0;
 
     List<Group> groupsList = new ArrayList<>();
@@ -130,14 +132,31 @@ public class UserDAOTest {
       assertTrue(groupsCountAfterEnter == groupsCountBeforeDelete);
     }
   }
-  /*
-    @Test
-    public void getUserByEmailTest() {
-    User user2 = userDAO.getUserByEmail(user1.getEmail());
-    assertTrue(user2.equals(user1));
 
-    }
-*/
+  @Test
+  public void getUserByEmailTest() {
+    User user2 = userDAO.getUserByEmail(user1.getEmail());
+    BCryptPasswordEncoder passwordEn = new BCryptPasswordEncoder();
+    assertTrue(user2.getId().equals(user1.getId()));
+    assertTrue(passwordEn.matches(user1.getPassword(), user2.getPassword()));
+  }
+
+  @Test(expected = EmptyResultDataAccessException.class)
+  public void isEmailExistTest() {
+    assertTrue(userDAO.isEmailExist(user1.getEmail()));
+    String deletedEmail = user1.getEmail();
+    userDAO.deleteUser(user1.getId());
+    userDAO.isEmailExist(deletedEmail);
+
+  }
+
+  @Test(expected = EmptyResultDataAccessException.class)
+  public void isPhoneExistTest() {
+    assertTrue(userDAO.isPhoneExist(user1.getPhone()));
+    String deletedPhone = user1.getPhone();
+    userDAO.deleteUser(user1.getId());
+    userDAO.isPhoneExist(deletedPhone);
+  }
 
   @After
   public void tearDown() throws Exception {

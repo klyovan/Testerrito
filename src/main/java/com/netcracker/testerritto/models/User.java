@@ -18,6 +18,14 @@ public class User {
   public User() {
   }
 
+  public User( String lastName, String firstName, String email,
+      String password, String phone) {
+    this.lastName = lastName;
+    this.firstName = firstName;
+    this.email = email;
+    this.password = password;
+    this.phone = phone;
+  }
   public User(BigInteger id, String lastName, String firstName, String email,
       String password, String phone) {
     this.id = id;
