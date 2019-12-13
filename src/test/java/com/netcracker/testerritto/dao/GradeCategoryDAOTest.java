@@ -1,16 +1,11 @@
 package com.netcracker.testerritto.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.comparators.ObjectEavIdComparator;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.netcracker.testerritto.models.Group;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,21 +15,49 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 @SpringBootTest(classes = ApplicationConfiguration.class)
 @RunWith(SpringRunner.class)
 public class GradeCategoryDAOTest {
   @Autowired
   GradeCategoryDAO gradeCategoryDAO;
-
   @Autowired
   CategoryDAO categoryDAO;
+  @Autowired
+  TestDAO testDAO;
+  @Autowired
+  UserDAO userDAO;
+  @Autowired
+  GroupDAO groupDAO;
 
   GradeCategory gradeCategoryExampleForTest;
   List<GradeCategory> expGradeCategories;
+  BigInteger testId;
+  BigInteger userId;
+  BigInteger groupId;
+  com.netcracker.testerritto.models.Test testForGradeCategory;
 
   @Before
-  public void setUp() throws Exception {
-    Locale.setDefault(Locale.ENGLISH);
+  public void setUp() {
+    userId = userDAO.createUser("Karina", "Marinina",
+      "marinina.@gmail", "1111", "12345");
+    Group group = new Group();
+    group.setCreatorUserId(userId);
+    group.setLink("New Link http...");
+    group.setName("Very cool group");
+    groupId = groupDAO.createGroup(group);
+
+    testForGradeCategory = new com.netcracker.testerritto.models.Test();
+    testForGradeCategory.setNameTest("Тест на личность");
+    testForGradeCategory.setCreatorUserId(userId);
+    testForGradeCategory.setGroupId(groupId);
+    testId = testDAO.createTest(testForGradeCategory);
   }
 
   @Test
@@ -57,7 +80,7 @@ public class GradeCategoryDAOTest {
     }
 
     categoryDAO.deleteCategoryById(expGradeCategories.get(0).getCategoryId());
-    for (GradeCategory expGradeCategory: expGradeCategories) {
+    for (GradeCategory expGradeCategory : expGradeCategories) {
       gradeCategoryDAO.deleteGradeCategoryById(expGradeCategory.getId());
     }
   }
@@ -88,11 +111,10 @@ public class GradeCategoryDAOTest {
   @Test
   public void getGradeCategoryByCategoryId() throws DataAccessException {
     expGradeCategories = createGradeCategoriesForTest();
-    expGradeCategories.sort(new ObjectEavIdComparator());
+    expGradeCategories.sort(new ObjectEavIdComparator<>());
 
     List<GradeCategory> selectedGradeCategories = gradeCategoryDAO.getGradeCategoryByCategoryId(expGradeCategories.get(0).getCategoryId());
-    System.out.println(selectedGradeCategories.toString());
-    selectedGradeCategories.sort(new ObjectEavIdComparator());
+    selectedGradeCategories.sort(new ObjectEavIdComparator<>());
 
     assertEquals(expGradeCategories.size(), selectedGradeCategories.size());
 
@@ -106,7 +128,7 @@ public class GradeCategoryDAOTest {
     }
 
     categoryDAO.deleteCategoryById(expGradeCategories.get(0).getCategoryId());
-    for (GradeCategory expGradeCategory: expGradeCategories) {
+    for (GradeCategory expGradeCategory : expGradeCategories) {
       gradeCategoryDAO.deleteGradeCategoryById(expGradeCategory.getId());
     }
   }
@@ -165,6 +187,13 @@ public class GradeCategoryDAOTest {
 
   }
 
+  @After
+  public void tearDown() {
+    testDAO.deleteTest(testId);
+    groupDAO.deleteGroup(groupId);
+    userDAO.deleteUser(userId);
+  }
+
   private BigInteger createCategoryForTest() throws DataAccessException {
     Category categoryExampleForTesting = new Category();
     categoryExampleForTesting.setNameCategory("Темперамент ");
@@ -172,7 +201,6 @@ public class GradeCategoryDAOTest {
   }
 
   private GradeCategory createGradeCategoryForTest() throws DataAccessException {
-    BigInteger testId = new BigInteger("-10025");
     gradeCategoryExampleForTest = new GradeCategory();
     gradeCategoryExampleForTest.setTestId(testId);
     gradeCategoryExampleForTest.setMinScore(2);
@@ -185,9 +213,6 @@ public class GradeCategoryDAOTest {
   }
 
   private List<GradeCategory> createGradeCategoriesForTest() throws DataAccessException {
-    // DELETE ALL GRADE CATEGORIES WHERE TEST_ID = -10025
-    BigInteger testId = new BigInteger("-10025");
-    gradeCategoryDAO.deleteGradeCategoryByTestId(testId);
     GradeCategory gradeCategory1 = new GradeCategory();
     GradeCategory gradeCategory2 = new GradeCategory();
     GradeCategory gradeCategory3 = new GradeCategory();

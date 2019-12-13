@@ -45,23 +45,23 @@ public class QuestionDAO {
       "question_type.list_value_id as type_question," +
       "question.parent_id as test_id," +
       "match_category.reference as category_id," +
-      "caused_by_question.reference as remark_id" +
+      "caused_by_question.reference as remark_id " +
     "from " +
       "objects question," +
       "attributes question_text," +
       "attributes question_type," +
       "objreference match_category," +
-      "objreference caused_by_question" +
+      "objreference caused_by_question " +
     "where " +
       "question.parent_id = ?" +
       "and question.object_type_id = 10" +
-      "and question.object_id = question_text.object_id" +
-      "and question_text.attr_id = 18" +
+      "and question.object_id = question_text.object_id " +
+      "and question_text.attr_id = 18 " +
       "and question.object_id = question_type.object_id\n" +
-      "and question_type.attr_id = 19" +
-      "and question.object_id = match_category.object_id" +
-      "and match_category.attr_id = 34" +
-      "and question.object_id = caused_by_question.object_id" +
+      "and question_type.attr_id = 19 " +
+      "and question.object_id = match_category.object_id " +
+      "and match_category.attr_id = 34 " +
+      "and question.object_id = caused_by_question.object_id " +
       "and caused_by_question.attr_id = 28";
 
   public QuestionDAO(JdbcTemplate jdbcTemplate) {

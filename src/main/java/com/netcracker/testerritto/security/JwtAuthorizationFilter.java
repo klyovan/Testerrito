@@ -1,21 +1,22 @@
 package com.netcracker.testerritto.security;
 
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-
 import com.auth0.jwt.JWT;
 import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.JwtProperties;
-import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   private UserDAO userDAO;
@@ -39,14 +40,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
   private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
     String token = request.getHeader(JwtProperties.HEADER_STRING)
-        .replace(JwtProperties.TOKEN_PREFIX,"");
+      .replace(JwtProperties.TOKEN_PREFIX, "");
 
     if (token != null) {
 
       String userEmail = JWT.require(HMAC512(JwtProperties.SECRET.getBytes()))
-          .build()
-          .verify(token)
-          .getSubject();
+        .build()
+        .verify(token)
+        .getSubject();
       if (userEmail != null) {
         User user = userDAO.getUserByEmail(userEmail);
         UserPrincipal principal = new UserPrincipal(user);
