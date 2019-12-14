@@ -76,8 +76,7 @@ public class GroupDAOTest {
         sequenceId = groupDAO.createGroup(groupExpected);
         groupExpected.setId(sequenceId);
         groupExpected.setName("New very-very cool name");
-        groupDAO.updateGroup(groupExpected);
-        Group group = groupDAO.getGroupById(sequenceId);
+        Group group =  groupDAO.updateGroup(groupExpected);
         assertEquals(groupExpected, group);
     }
 
