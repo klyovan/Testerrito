@@ -9,12 +9,10 @@ import com.netcracker.testerritto.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class GroupService {
@@ -47,13 +45,14 @@ public class GroupService {
         }
     }
 
-    public void updateGroup(Group group) throws ServiceException {
+    public Group updateGroup(Group group) throws ServiceException {
         checkIdNotNull(group.getId());
         checkStringNotNull(group.getName());
         try {
-            groupDAO.updateGroup(group);
+            return groupDAO.updateGroup(group);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed UpdateGroup().", exception);
+            return null;
         }
     }
 
@@ -72,7 +71,7 @@ public class GroupService {
             return groupDAO.getUsersInGroup(groupId);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetUsersInGroup().", exception);
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -82,7 +81,7 @@ public class GroupService {
             return groupDAO.getAllTestsInGroup(groupId);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetAllTestsInGroup().", exception);
-            return null;
+            return new ArrayList<>();
         }
     }
 
