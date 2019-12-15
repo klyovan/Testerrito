@@ -25,7 +25,7 @@ public class AnswerDAO {
       "select\n" +
           "answer.object_id id,\n" +
           "answer.parent_id question_id,\n" +
-          "answer_text.list_value_id text,\n" +
+          "answer_text.value text,\n" +
           "answer_score.value score\n" +
           "from\n" +
           "objects answer,\n" +
@@ -43,7 +43,7 @@ public class AnswerDAO {
       "select" +
           "answer.object_id id,"+
           "answer.parent_id question_id," +
-          "answer_text.list_value_id text," +
+          "answer_text.value text," +
           "answer_score.value score," +
           "answer2reply.reference reply_id, " +
           "answer2remark.reference remark_id," +
@@ -73,7 +73,7 @@ public class AnswerDAO {
       "select " +
           "answer.object_id id," +
           "answer.parent_id question_id," +
-          "answer_text.list_value_id text," +
+          "answer_text.value text," +
           "answer_score.value score," +
           "answer2reply.reference" +
     "from" +
@@ -110,7 +110,7 @@ public class AnswerDAO {
   public Answer updateAnswer(Answer answer){
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(answer.getId())
-        .setListAttribute(AttrtypeProperties.TEXT_ANSWER, answer.getTextAnswer().getId())
+        .setStringAttribute(AttrtypeProperties.TEXT_ANSWER, answer.getTextAnswer())
         .setStringAttribute(AttrtypeProperties.SCORE_ANSWER, String.valueOf(answer.getScore()))
         .update();
     return getAnswerById(answer.getId());
@@ -121,7 +121,7 @@ public class AnswerDAO {
         .setName("Answer " + newAnswer.getId())
         .setObjectTypeId(ObjtypeProperties.ANSWER)
         .setParentId(newAnswer.getQuestionId())
-        .setListAttribute(AttrtypeProperties.TEXT_ANSWER, newAnswer.getTextAnswer().getId())
+        .setStringAttribute(AttrtypeProperties.TEXT_ANSWER, newAnswer.getTextAnswer())
         .setStringAttribute(new BigInteger(String.valueOf(AttrtypeProperties.SCORE_ANSWER)), String.valueOf(newAnswer.getScore()))
         .create();
   }
@@ -132,10 +132,4 @@ public class AnswerDAO {
         .delete();
   }
 
-  public void deleteAllAnswerInQuestion(BigInteger questionId){
-    new ObjectEavBuilder.Builder(jdbcTemplate)
-        .setParentId(questionId)
-        .setObjectTypeId(new BigInteger(String.valueOf(ObjtypeProperties.ANSWER)))
-        .delete();
-  }
 }

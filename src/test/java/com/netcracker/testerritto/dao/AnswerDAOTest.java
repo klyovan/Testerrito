@@ -50,7 +50,7 @@ public class AnswerDAOTest {
   @Test
   public void updateAnswer() {
     int newScore = 60;
-    createdAnswer.setTextAnswer(ListsAttr.NEGATIVE_TEXT_ANSWER);
+    createdAnswer.setTextAnswer("Do you like films?");
     createdAnswer.setScore(newScore);
     answerDAO.updateAnswer(createdAnswer);
     expectedAnswer = answerDAO.getAnswerById(createdAnswer.getId());
@@ -78,7 +78,7 @@ public class AnswerDAOTest {
 
   private Answer getNewAnswer(){
     Answer answer = new Answer();
-    answer.setTextAnswer(ListsAttr.POSITIVE_TEXT_ANSWER);
+    answer.setTextAnswer("Do you like pizza?");
     answer.setScore(25);
     answer.setQuestionId(new BigInteger("-910"));
     return answer;
