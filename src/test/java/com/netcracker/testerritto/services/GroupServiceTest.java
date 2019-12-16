@@ -163,7 +163,7 @@ public class GroupServiceTest {
         createTestValues();
         sequenceId = groupService.createGroup(groupExpected);
         Group group = new Group();
-        group.setId(null);
+        group.setId(sequenceId);
         group.setName("");
         groupService.updateGroup(group);
     }
