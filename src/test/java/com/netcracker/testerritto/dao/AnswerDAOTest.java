@@ -34,7 +34,7 @@ public class AnswerDAOTest {
     Locale.setDefault(Locale.ENGLISH);
     createdAnswer = getNewAnswer();
     isCreated = answerDAO.createAnswer(createdAnswer);
-    createdAnswer.setId(BigInteger.valueOf(-911));
+    createdAnswer.setId(isCreated);
   }
 
   @After
