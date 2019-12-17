@@ -1,12 +1,7 @@
 package com.netcracker.testerritto.dao;
 
-import static org.junit.Assert.assertEquals;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.models.Answer;
-import com.netcracker.testerritto.properties.ListsAttr;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Locale;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(classes = ApplicationConfiguration.class)
 @RunWith(SpringRunner.class)
@@ -55,8 +56,8 @@ public class AnswerDAOTest {
     answerDAO.updateAnswer(createdAnswer);
     expectedAnswer = answerDAO.getAnswerById(createdAnswer.getId());
 
-    Assert.assertEquals(expectedAnswer.getScore(), createdAnswer.getScore());
-    Assert.assertEquals(expectedAnswer.getTextAnswer(), createdAnswer.getTextAnswer());
+    assertEquals(expectedAnswer.getScore(), createdAnswer.getScore());
+    assertEquals(expectedAnswer.getTextAnswer(), createdAnswer.getTextAnswer());
   }
 
   @Test(expected = EmptyResultDataAccessException.class)
