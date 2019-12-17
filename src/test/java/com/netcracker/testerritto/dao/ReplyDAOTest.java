@@ -39,8 +39,7 @@ public class ReplyDAOTest {
   private AnswerDAO answerDAO;
   @Autowired
   private QuestionDAO questionDAO;
-
-
+  
   private BigInteger userId;
   private BigInteger groupId;
   private BigInteger testId;
