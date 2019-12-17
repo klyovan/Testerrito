@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 public class ServiceExceptionHandler {
     private static Logger logger = Logger.getLogger(ServiceExceptionHandler.class.getName());
 
-    public void logAndThrowIllegalException(String message) throws IllegalArgumentException {
+    public void logAndThrowIllegalException(String message) {
         IllegalArgumentException ex = new IllegalArgumentException(message);
         logger.error(ex.getMessage(), ex);
         throw ex;
     }
 
-    public void logAndThrowServiceException(String message, Throwable cause) throws ServiceException {
+    public void logAndThrowServiceException(String message, Throwable cause) {
         ServiceException ex = new ServiceException(message, cause);
         logger.error(ex.getMessage(), ex);
         throw ex;

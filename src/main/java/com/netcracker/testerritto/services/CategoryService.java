@@ -1,7 +1,6 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.CategoryDAO;
-import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class CategoryService {
     @Autowired
     private CategoryDAO categoryDAO;
 
-    public Category getCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public Category getCategoryById(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
@@ -29,7 +28,7 @@ public class CategoryService {
         return null;
     }
 
-    public void deleteCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public void deleteCategoryById(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
@@ -40,7 +39,7 @@ public class CategoryService {
         }
     }
 
-    public Category updateCategory(Category updatedCategory) throws IllegalArgumentException, ServiceException {
+    public Category updateCategory(Category updatedCategory) {
         if (updatedCategory == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Can't pass null object in method");
         }
@@ -55,7 +54,7 @@ public class CategoryService {
         return null;
     }
 
-    public BigInteger createCategory(Category newCategory) throws IllegalArgumentException, ServiceException {
+    public BigInteger createCategory(Category newCategory) {
         if (newCategory == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Can't pass null object in method");
         }

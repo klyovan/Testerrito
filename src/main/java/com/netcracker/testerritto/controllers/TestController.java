@@ -1,13 +1,17 @@
 package com.netcracker.testerritto.controllers;
 
+import com.netcracker.testerritto.exceptions.ApiRequestException;
+import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.services.CategoryService;
 import com.netcracker.testerritto.services.GradeCategoryService;
+import com.netcracker.testerritto.services.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @RestController
 @RequestMapping("test")
@@ -18,38 +22,105 @@ public class TestController {
     @Autowired
     private GradeCategoryService gradeCategoryService;
 
-    @GetMapping("/category/{categoryId}")
-    public Category getCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
-        return categoryService.getCategoryById(id);
+    @Autowired
+    private GroupService groupService;
+
+    @GetMapping("/category/{id}")
+    public Category getCategoryById(@PathVariable BigInteger id) {
+        try {
+            return categoryService.getCategoryById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
-    @DeleteMapping("/category/{categoryId}")
-    public void deleteCategory(@PathVariable("categoryId") BigInteger id) throws Exception {
-        categoryService.deleteCategoryById(id);
+    @DeleteMapping("/category/{id}")
+    public void deleteCategory(@PathVariable BigInteger id) {
+        try {
+            categoryService.deleteCategoryById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/category")
-    public Category updateCategory(Category updateCategory) throws Exception {
-        return categoryService.updateCategory(updateCategory);
+    public Category updateCategory(@RequestBody Category updateCategory) {
+        try {
+            return categoryService.updateCategory(updateCategory);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
     @PostMapping("/category")
-    public BigInteger createCategory(Category newCategory) throws Exception {
-        return categoryService.createCategory(newCategory);
+    public BigInteger createCategory(@RequestBody Category newCategory) {
+        try {
+            return categoryService.createCategory(newCategory);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
     @GetMapping("/category/grade/{id}")
-    public GradeCategory getGradeCategory(@PathVariable BigInteger id) throws Exception {
-        return gradeCategoryService.getCategoryById(id);
+    public GradeCategory getGradeCategoryById(@PathVariable BigInteger id) {
+        try {
+            return gradeCategoryService.getGradeCategoryById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/category/grade/test/{id}")
+    public List<GradeCategory> getGradeCategoryByTestId(@PathVariable BigInteger id) {
+        try {
+            return gradeCategoryService.getGradeCategoryByTestId(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/category/grade/category/{id}")
+    public List<GradeCategory> getGradeCategoryByCategoryId(@PathVariable BigInteger id) {
+        try {
+            return gradeCategoryService.getGradeCategoryByCategoryId(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
     @PostMapping("/category/grade")
-    public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws Exception {
-        return gradeCategoryService.createGradeCategory(newGradeCategory);
+    public BigInteger createGradeCategory(@RequestBody GradeCategory newGradeCategory) {
+        try {
+            return gradeCategoryService.createGradeCategory(newGradeCategory);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 
-    @GetMapping("/hello")
-    public String getHello() {
-        return "Hello";
+    @PutMapping("/category/grade")
+    public void updateGradeCategory(@RequestBody GradeCategory updateGradeCategory) {
+        try {
+            gradeCategoryService.updateGradeCategory(updateGradeCategory);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/category/grade/{id}")
+    public void deleteGradeCategoryById(@PathVariable BigInteger id) {
+        try {
+            gradeCategoryService.deleteGradeCategoryById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/category/grade/test/{id}")
+    public void deleteGradeCategoryByTestId(@PathVariable BigInteger id) {
+        try {
+            gradeCategoryService.deleteGradeCategoryByTestId(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 }
