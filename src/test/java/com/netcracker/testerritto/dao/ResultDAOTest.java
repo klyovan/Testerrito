@@ -2,9 +2,11 @@ package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
+import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
+import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.ListsAttr;
 import org.junit.After;
 import org.junit.Assert;
@@ -28,27 +30,56 @@ import java.util.HashMap;
 public class ResultDAOTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private ResultDAO resultDAO;
+    @Autowired
+    private TestDAO testDAO;
+    @Autowired
+    private UserDAO userDAO;
+    @Autowired
+    private GroupDAO groupDAO;
 
 
     private BigInteger isCreated;
     private Result createdResult;
     private Result expectedResult;
+    private BigInteger testUserId;
+    private BigInteger testTestId;
+    private BigInteger testGroupId;
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        User user = new User();
+        user.setEmail("Email..");
+        user.setFirstName("FirstName...");
+        user.setPassword("Password...");
+        user.setLastName("LastName");
+        user.setPhone("5555");
+        testUserId = userDAO.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhone());
+
+        Group group = new Group();
+        group.setLink("Link...");
+        group.setName("Group...");
+        group.setCreatorUserId(testUserId);
+        testGroupId = groupDAO.createGroup(group);
+
+        com.netcracker.testerritto.models.Test test = new com.netcracker.testerritto.models.Test();
+        test.setNameTest("Test..");
+        test.setGroupId(testGroupId);
+        test.setCreatorUserId(testUserId);
+        testTestId = testDAO.createTest(test);
+
         createdResult = getNewResult();
         isCreated = resultDAO.createResult(createdResult);
         createdResult.setId(isCreated);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         resultDAO.deleteResult(createdResult.getId());
+        userDAO.deleteUser(testUserId);
+        groupDAO.deleteGroup(testGroupId);
+        testDAO.deleteTest(testTestId);
     }
 
     @Test
@@ -98,8 +129,8 @@ public class ResultDAOTest {
         result.setDate(date);
         result.setScore(10);
         result.setStatus(ListsAttr.PASSED);
-        result.setTestId(new BigInteger("-10025"));
-        result.setUserId(new BigInteger("-88"));
+        result.setTestId(testTestId);
+        result.setUserId(testUserId);
         result.setReplies(replies);
 
         return result;

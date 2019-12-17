@@ -17,7 +17,7 @@ public class AnswerRowMapper implements RowMapper<Answer> {
     answer.setId(new BigInteger(resultSet.getString("id")));
     answer.setQuestionId(new BigInteger(resultSet.getString("question_id")));
     answer.setScore(resultSet.getInt("score"));
-    answer.setTextAnswer(ListsAttr.getValueById(BigInteger.valueOf(resultSet.getInt("text"))));
+    answer.setTextAnswer(resultSet.getString("text"));
     return answer;
   }
 }

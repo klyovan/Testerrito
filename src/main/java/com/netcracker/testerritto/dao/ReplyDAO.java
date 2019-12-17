@@ -1,5 +1,6 @@
 package com.netcracker.testerritto.dao;
 
+import com.netcracker.testerritto.dao.ObjectEavBuilder.Builder;
 import com.netcracker.testerritto.mappers.ReplyRowMapper;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
@@ -19,31 +20,31 @@ public class ReplyDAO {
   private JdbcTemplate jdbcTemplate;
 
   public Reply getReply(BigInteger id) {
-    String sql =""
-        + " select reply.object_id id,\n"
-        + "        results.object_id result_id,\n"
-        + "        answer.object_id answer_id,\n"
-        + "        text_answer.value text_answer \n"
-        + " from objects results,\n"
-        + "      objects answer,\n"
-        + "      objects reply,\n"
-        + "      objreference answer_2_reply,\n"
-        + "      objreference replys_2_results,\n"
-        + "      attributes text_answer\n"
-        + " where reply.object_id = ?              /*reply_id*/          \n"
-        + "       and results.object_type_id= 5\n"
-        + "       and replys_2_results.attr_id = 31\n"
-        + "       and replys_2_results.object_id = reply.object_id\n"
-        + "       and replys_2_results.reference = results.object_id \n"
-        + "       and answer.object_type_id = 11     \n"
-        + "       and answer_2_reply.attr_id = 32\n"
-        + "       and answer_2_reply.object_id = answer.object_id\n"
-        + "       and answer_2_reply.reference = reply.object_id\n"
-        + "       and text_answer.attr_id = 20\n"
-        + "       and text_answer.object_id = answer.object_id";
-
-
- //   return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new ReplyRowMapper());
+    String sql =
+        "select \n " +
+            "    reply.object_id id,\n" +
+            "    results.object_id result_id,\n" +
+            "    answer.object_id answer_id,\n" +
+            "    text_answer.value text_answer \n" +
+            "from \n" +
+            "    objects results,\n" +
+            "    objects answer,\n" +
+            "    objects reply,\n" +
+            "    objreference answer_2_reply,\n" +
+            "    objreference replys_2_results,\n" +
+            "    attributes text_answer\n" +
+            "where \n" +
+            "    reply.object_id = ?              /*reply_id*/          \n" +
+            "    and results.object_type_id= 5\n" +
+            "    and replys_2_results.attr_id = 31\n" +
+            "    and replys_2_results.object_id = reply.object_id\n" +
+            "    and replys_2_results.reference = results.object_id \n" +
+            "    and answer.object_type_id = 11     \n" +
+            "    and answer_2_reply.attr_id = 32\n" +
+            "    and answer_2_reply.object_id = answer.object_id\n" +
+            "    and answer_2_reply.reference = reply.object_id\n" +
+            "    and text_answer.attr_id = 20\n" +
+            "    and text_answer.object_id = answer.object_id";
 
     return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new RowMapper<Reply>() {
       @Override
@@ -60,42 +61,44 @@ public class ReplyDAO {
 
 
   public void updateReply(BigInteger replyId, BigInteger answerId) {
-   String sql =
-       "update objreference answer_2_reply  set  answer_2_reply.object_id = ?  /* answer_id */\n"
-           + "    where answer_2_reply.attr_id = 32  \n"
-           + "    and  answer_2_reply.reference = ?                               /*reply_id*/";
 
-   jdbcTemplate.update(sql, answerId.toString(), replyId.toString());
+    Reply reply = getReply(replyId);
+    new Builder(jdbcTemplate)
+        .setObjectId(reply.getAnswerId())
+        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+        .delete();
 
+    new Builder(jdbcTemplate)
+        .setObjectId(answerId)
+        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+        .createReference();
   }
 
   public BigInteger createReply(BigInteger resultId, BigInteger answerId) {
-    String objectName = "Reply for question "+getQuestionId(answerId) ;
-    BigInteger objSequence = getObjectSequenceCount();
+    String objectName = "Reply for question " + getQuestionId(answerId);
 
-    String sql =
-        "insert all   \n"
-            + "    into objects(OBJECT_ID, PARENT_ID, OBJECT_TYPE_ID, NAME)\n"
-            + "        values(?, null, 6, ?)\n"
-            + "    into objreference(attr_id, object_id, reference)    \n"
-            + "        values(31, ?, ?)                           /*currval(), result_id*/  \n"
-            + "    into objreference(attr_id, object_id, reference)    \n"
-            + "        values(32, ?, ?)                          /* answer_id, currval()*/  \n"
-            + " select * from dual ";
+    BigInteger replyId = new Builder(jdbcTemplate)
+        .setObjectTypeId(ObjtypeProperties.REPLY)
+        .setName(objectName)
+        .setReference(AttrtypeProperties.REPLY_BELONGS, resultId)
+        .create();
 
-    jdbcTemplate.update(sql, objSequence.toString(), objectName, objSequence.toString(), resultId.toString(),
-        answerId.toString(), objSequence.toString());
+    new Builder(jdbcTemplate)
+        .setObjectId(answerId)
+        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+        .createReference();
 
-    return objSequence;
+    return replyId;
 
   }
-  public void deleteReply(BigInteger id){
+
+  public void deleteReply(BigInteger id) {
     new ObjectEavBuilder.Builder(jdbcTemplate)
         .setObjectId(id)
         .delete();
   }
 
-  private Integer getQuestionId(BigInteger answerId ) {
+  private Integer getQuestionId(BigInteger answerId) {
     String sql = ""
         + "select answer.parent_id\n"
         + "from objects answer\n"
@@ -104,16 +107,10 @@ public class ReplyDAO {
     return jdbcTemplate
         .queryForObject(sql, new Object[]{answerId.toString()}, new RowMapper<Integer>() {
           @Override
-          public Integer mapRow(ResultSet rs, int rowNum) throws SQLException  {
+          public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
             return rs.getInt(1);
           }
         });
-  }
-  private BigInteger getObjectSequenceCount() {
-    String sql = " select object_id_pr.NEXTVAL from dual";
-
-    BigInteger result = jdbcTemplate.queryForObject(sql, BigInteger.class);
-    return result;
   }
 
 }

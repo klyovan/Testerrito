@@ -3,6 +3,7 @@ package com.netcracker.testerritto.dao;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
 import com.netcracker.testerritto.models.GradeCategory;
+import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.User;
 import org.junit.After;
@@ -28,18 +29,36 @@ import java.util.List;
 public class TestDAOTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private TestDAO testDAO;
+    @Autowired
+    private UserDAO userDAO;
+    @Autowired
+    private GroupDAO groupDAO;
 
 
     private BigInteger isCreated;
     private com.netcracker.testerritto.models.Test createdTest;
     private com.netcracker.testerritto.models.Test expectedTest;
+    private BigInteger testUserId;
+    private BigInteger testGroupId;
+
 
     @Before
     public void setUp() throws Exception {
+        User user = new User();
+        user.setEmail("Email..");
+        user.setFirstName("FirstName...");
+        user.setPassword("Password...");
+        user.setLastName("LastName");
+        user.setPhone("5555");
+        testUserId = userDAO.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhone());
+
+        Group group = new Group();
+        group.setLink("Link...");
+        group.setName("Group...");
+        group.setCreatorUserId(testUserId);
+        testGroupId = groupDAO.createGroup(group);
+
         createdTest = getNewTest();
         isCreated = testDAO.createTest(createdTest);
         createdTest.setId(isCreated);
@@ -47,7 +66,9 @@ public class TestDAOTest {
 
     @After
     public void tearDown() throws Exception {
-        testDAO.deleteTest(createdTest.getId());
+        testDAO.deleteTest(isCreated);
+        userDAO.deleteUser(testUserId);
+        groupDAO.deleteGroup(testGroupId);
     }
 
 
@@ -84,15 +105,13 @@ public class TestDAOTest {
 
     private com.netcracker.testerritto.models.Test getNewTest() {
 
-        BigInteger a = new BigInteger("-88");
-        BigInteger b = new BigInteger("-77");
-
         List<GradeCategory> grades = new ArrayList<>();
 
         List<User> experts = new ArrayList<>();
 
         List<Question> questions = new ArrayList<>();
 
-        return new com.netcracker.testerritto.models.Test(null, a, "JustTest", b, grades, experts, questions);
+        return new com.netcracker.testerritto.models.Test(null, testGroupId, "JustTest", testUserId,
+            grades, experts, questions);
     }
 }
