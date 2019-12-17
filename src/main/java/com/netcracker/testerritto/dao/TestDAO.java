@@ -1,7 +1,5 @@
 package com.netcracker.testerritto.dao;
 
-import com.netcracker.testerritto.mappers.GradeCategoryMapper;
-import com.netcracker.testerritto.mappers.QuestionRowMapper;
 import com.netcracker.testerritto.mappers.TestRowMapper;
 import com.netcracker.testerritto.mappers.UserRowMapper;
 import com.netcracker.testerritto.models.GradeCategory;

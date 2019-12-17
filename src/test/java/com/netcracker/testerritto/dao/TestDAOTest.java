@@ -51,7 +51,7 @@ public class TestDAOTest {
         user.setPassword("Password...");
         user.setLastName("LastName");
         user.setPhone("5555");
-        testUserId = userDAO.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhone());
+        testUserId = userDAO.createUser(user);
 
         Group group = new Group();
         group.setLink("Link...");
@@ -104,11 +104,8 @@ public class TestDAOTest {
 
 
     private com.netcracker.testerritto.models.Test getNewTest() {
-
         List<GradeCategory> grades = new ArrayList<>();
-
         List<User> experts = new ArrayList<>();
-
         List<Question> questions = new ArrayList<>();
 
         return new com.netcracker.testerritto.models.Test(null, testGroupId, "JustTest", testUserId,
