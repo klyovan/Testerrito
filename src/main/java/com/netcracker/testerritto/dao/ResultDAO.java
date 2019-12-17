@@ -1,8 +1,6 @@
 package com.netcracker.testerritto.dao;
 
 
-import com.netcracker.testerritto.mappers.QuestionRowMapper;
-import com.netcracker.testerritto.mappers.ReplyRowMapper;
 import com.netcracker.testerritto.mappers.ResultRowMapper;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
