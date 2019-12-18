@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,6 @@ public class ReplyDAOTest {
     assertTrue("да".equals(reply.getAnswer()));
     // Result result = resultDAO.createResult(date);
   }
-
 
   @Test
   public void updateReplyTest() {
