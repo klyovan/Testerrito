@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Answer {
 
   private BigInteger id;
-  private ListsAttr textAnswer;
+  private String textAnswer;
   private int score;
   private BigInteger questionId;
   private BigInteger nextQuestionId;
@@ -38,11 +38,11 @@ public class Answer {
     this.id = id;
   }
 
-  public ListsAttr getTextAnswer() {
+  public String getTextAnswer() {
     return textAnswer;
   }
 
-  public void setTextAnswer(ListsAttr textAnswer) {
+  public void setTextAnswer(String textAnswer) {
     this.textAnswer = textAnswer;
   }
 

@@ -2,13 +2,12 @@ package com.netcracker.testerritto.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.models.LoginViewModel;
 import com.netcracker.testerritto.properties.JwtProperties;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -29,12 +28,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   }
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
     LoginViewModel credentials = null;
     try {
       credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
     } catch (IOException e) {
-      throw new ApiRequestException("Retrieving of credentials from inputStream was failed.", e);
+      throw new AuthenticationCredentialsNotFoundException("Retrieving of credentials from inputStream was failed.", e);
     }
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
       credentials.getUserEmail(),

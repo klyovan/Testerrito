@@ -45,10 +45,10 @@ public class GradeCategoryServiceTest {
     private BigInteger testId;
 
     @Test
-    public void getCategoryById() throws IllegalArgumentException, ServiceException {
+    public void getCategoryById() {
         testGradeCategory = buildValidGradeCategory();
         testGradeCategory.setId(gradeCategoryService.createGradeCategory(testGradeCategory));
-        GradeCategory gradeCategoryFromDb = gradeCategoryService.getCategoryById(testGradeCategory.getId());
+        GradeCategory gradeCategoryFromDb = gradeCategoryService.getGradeCategoryById(testGradeCategory.getId());
         assertEquals(testGradeCategory.getId(), gradeCategoryFromDb.getId());
         assertEquals(testGradeCategory.getMeaning(), gradeCategoryFromDb.getMeaning());
         assertEquals(testGradeCategory.getMaxScore(), gradeCategoryFromDb.getMaxScore());
@@ -64,12 +64,12 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void getCategoryById_idIsNull() throws IllegalArgumentException, ServiceException {
-        gradeCategoryService.getCategoryById(null);
+    public void getCategoryById_idIsNull() {
+        gradeCategoryService.getGradeCategoryById(null);
     }
 
     @Test
-    public void getGradeCategoryByTestId() throws IllegalArgumentException, ServiceException {
+    public void getGradeCategoryByTestId() {
         testGradeCategories = createGradeCategoriesForTest();
         List<GradeCategory> gradeCategoriesFromDb = gradeCategoryService.getGradeCategoryByTestId(testGradeCategories.get(0).getTestId());
         assertEquals(testGradeCategories.size(), gradeCategoriesFromDb.size());
@@ -90,12 +90,12 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void getGradeCategoryByTestId_idIsNull() throws IllegalArgumentException, ServiceException {
+    public void getGradeCategoryByTestId_idIsNull() {
         gradeCategoryService.getGradeCategoryByTestId(null);
     }
 
     @Test
-    public void getGradeCategoryByCategoryId() throws IllegalArgumentException, ServiceException {
+    public void getGradeCategoryByCategoryId() {
         testGradeCategories = createGradeCategoriesForTest();
         List<GradeCategory> gradeCategoriesFromDb = gradeCategoryService.getGradeCategoryByCategoryId(testGradeCategories.get(0).getCategoryId());
         assertEquals(testGradeCategories.size(), gradeCategoriesFromDb.size());
@@ -116,15 +116,15 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void getGradeCategoryByCategoryId_idIsNull() throws IllegalArgumentException, ServiceException {
+    public void getGradeCategoryByCategoryId_idIsNull() {
         gradeCategoryService.getGradeCategoryByCategoryId(null);
     }
 
     @Test
-    public void createGradeCategory() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory() {
         testGradeCategory = buildValidGradeCategory();
         testGradeCategory.setId(gradeCategoryService.createGradeCategory(testGradeCategory));
-        GradeCategory gradeCategoryFromDb = gradeCategoryService.getCategoryById(testGradeCategory.getId());
+        GradeCategory gradeCategoryFromDb = gradeCategoryService.getGradeCategoryById(testGradeCategory.getId());
         assertEquals(testGradeCategory.getId(), gradeCategoryFromDb.getId());
         assertEquals(testGradeCategory.getMeaning(), gradeCategoryFromDb.getMeaning());
         assertEquals(testGradeCategory.getMaxScore(), gradeCategoryFromDb.getMaxScore());
@@ -140,12 +140,12 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_nullGradeCategory() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_nullGradeCategory() {
         gradeCategoryService.createGradeCategory(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_nullMeaning() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_nullMeaning() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_meaningIsNull());
         } finally {
@@ -157,7 +157,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_maxScoreLessThenMinScore() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_maxScoreLessThenMinScore() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_maxScoreLessThenMinScore());
         } finally {
@@ -169,7 +169,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_testIdIsNull() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_testIdIsNull() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_testIdIsNull());
         } finally {
@@ -178,7 +178,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_categoryIdIsNull() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_categoryIdIsNull() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_categoryIdIsNull());
         } finally {
@@ -189,7 +189,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_minScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_minScoreLessThen0() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_minScoreLessThen0());
         } finally {
@@ -201,7 +201,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createGradeCategory_maxScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    public void createGradeCategory_maxScoreLessThen0() {
         try {
             gradeCategoryService.createGradeCategory(buildInvalidGradeCategory_maxScoreLessThen0());
         } finally {
@@ -213,13 +213,13 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void deleteGradeCategoryById() throws ServiceException {
+    public void deleteGradeCategoryById() {
         testGradeCategory = buildValidGradeCategory();
         testGradeCategory.setId(gradeCategoryService.createGradeCategory(testGradeCategory));
 
         gradeCategoryService.deleteGradeCategoryById(testGradeCategory.getId());
         try {
-            gradeCategoryService.getCategoryById(testGradeCategory.getId());
+            gradeCategoryService.getGradeCategoryById(testGradeCategory.getId());
         } finally {
             categoryDAO.deleteCategoryById(categoryId);
             testDAO.deleteTest(testId);
@@ -229,12 +229,12 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteGradeCategoryById_idIsNull() throws ServiceException {
+    public void deleteGradeCategoryById_idIsNull() {
         gradeCategoryService.deleteGradeCategoryById(null);
     }
 
     @Test
-    public void deleteGradeCategoryByTestId() throws ServiceException {
+    public void deleteGradeCategoryByTestId() {
         testGradeCategories = createGradeCategoriesForTest();
         gradeCategoryService.deleteGradeCategoryByTestId(testGradeCategories.get(0).getTestId());
         List<GradeCategory> gradeCategoriesFromDb = gradeCategoryService.getGradeCategoryByTestId(testGradeCategories.get(0).getTestId());
@@ -247,19 +247,19 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteGradeCategoryByTestId_idIsNull() throws ServiceException {
+    public void deleteGradeCategoryByTestId_idIsNull() {
         gradeCategoryService.deleteGradeCategoryByTestId(null);
     }
 
     @Test
-    public void updateGradeCategory() throws ServiceException {
+    public void updateGradeCategory() {
         testGradeCategory = buildValidGradeCategory();
         testGradeCategory.setId(gradeCategoryService.createGradeCategory(testGradeCategory));
         testGradeCategory.setMeaning("Экстраверт-сангвиник");
         testGradeCategory.setMinScore(3);
         testGradeCategory.setMaxScore(13);
         gradeCategoryService.updateGradeCategory(testGradeCategory);
-        GradeCategory testGradeCategoryUpdated = gradeCategoryService.getCategoryById(testGradeCategory.getId());
+        GradeCategory testGradeCategoryUpdated = gradeCategoryService.getGradeCategoryById(testGradeCategory.getId());
         assertEquals(testGradeCategory.getId(), testGradeCategoryUpdated.getId());
         assertEquals(testGradeCategory.getMeaning(), testGradeCategoryUpdated.getMeaning());
         assertEquals(testGradeCategory.getMaxScore(), testGradeCategoryUpdated.getMaxScore());
@@ -275,18 +275,18 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_idIsNull() throws ServiceException {
+    public void updateGradeCategory_idIsNull() {
         GradeCategory updatedCategory = new GradeCategory();
         gradeCategoryService.updateGradeCategory(updatedCategory);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_nullGradeCategory() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_nullGradeCategory() {
         gradeCategoryService.updateGradeCategory(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_nullMeaning() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_nullMeaning() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_meaningIsNull());
         } finally {
@@ -298,7 +298,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_maxScoreLessThenMinScore() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_maxScoreLessThenMinScore() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_maxScoreLessThenMinScore());
         } finally {
@@ -310,7 +310,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_testIdIsNull() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_testIdIsNull() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_testIdIsNull());
         } finally {
@@ -319,7 +319,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_categoryIdIsNull() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_categoryIdIsNull() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_categoryIdIsNull());
         } finally {
@@ -330,7 +330,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_minScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_minScoreLessThen0() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_minScoreLessThen0());
         } finally {
@@ -342,7 +342,7 @@ public class GradeCategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateGradeCategory_maxScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory_maxScoreLessThen0() {
         try {
             gradeCategoryService.updateGradeCategory(buildInvalidGradeCategory_maxScoreLessThen0());
         } finally {
@@ -353,7 +353,7 @@ public class GradeCategoryServiceTest {
         }
     }
 
-    private GradeCategory buildValidGradeCategory() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildValidGradeCategory() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(2);
@@ -363,7 +363,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_meaningIsNull() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_meaningIsNull() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(2);
@@ -372,7 +372,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_maxScoreLessThenMinScore() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_maxScoreLessThenMinScore() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(22);
@@ -382,7 +382,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_testIdIsNull() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_testIdIsNull() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(null);
         gradeCategoryExampleForTest.setMinScore(2);
@@ -392,7 +392,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_categoryIdIsNull() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_categoryIdIsNull() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(2);
@@ -402,7 +402,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_minScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_minScoreLessThen0() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(-2);
@@ -412,7 +412,7 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private GradeCategory buildInvalidGradeCategory_maxScoreLessThen0() throws IllegalArgumentException, ServiceException {
+    private GradeCategory buildInvalidGradeCategory_maxScoreLessThen0() {
         GradeCategory gradeCategoryExampleForTest = new GradeCategory();
         gradeCategoryExampleForTest.setTestId(createTestForTest());
         gradeCategoryExampleForTest.setMinScore(2);
@@ -422,14 +422,14 @@ public class GradeCategoryServiceTest {
         return gradeCategoryExampleForTest;
     }
 
-    private BigInteger createCategoryForTest() throws IllegalArgumentException, ServiceException {
+    private BigInteger createCategoryForTest() {
         Category categoryExampleForTesting = new Category();
         categoryExampleForTesting.setNameCategory("Темперамент ");
         categoryId = categoryDAO.createCategory(categoryExampleForTesting);
         return categoryId;
     }
 
-    private BigInteger createTestForTest() throws IllegalArgumentException, ServiceException {
+    private BigInteger createTestForTest() {
         userId = userDAO.createUser("Karina", "Marinina",
             "marinina.@gmail", "1111", "12345");
         Group group = new Group();
@@ -446,7 +446,7 @@ public class GradeCategoryServiceTest {
         return testId;
     }
 
-    private List<GradeCategory> createGradeCategoriesForTest() throws IllegalArgumentException, ServiceException {
+    private List<GradeCategory> createGradeCategoriesForTest() {
         GradeCategory gradeCategory1 = new GradeCategory();
         GradeCategory gradeCategory2 = new GradeCategory();
         GradeCategory gradeCategory3 = new GradeCategory();

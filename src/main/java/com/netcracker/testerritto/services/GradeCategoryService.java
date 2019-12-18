@@ -1,7 +1,6 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.GradeCategoryDAO;
-import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.GradeCategory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class GradeCategoryService {
     @Autowired
     private GradeCategoryDAO gradeCategoryDAO;
 
-    public GradeCategory getCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public GradeCategory getGradeCategoryById(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
@@ -30,7 +29,7 @@ public class GradeCategoryService {
         return null;
     }
 
-    public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public List<GradeCategory> getGradeCategoryByTestId(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(testId) can't be null");
         }
@@ -42,7 +41,7 @@ public class GradeCategoryService {
         return null;
     }
 
-    public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public List<GradeCategory> getGradeCategoryByCategoryId(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(categoryId) can't be null");
         }
@@ -54,7 +53,7 @@ public class GradeCategoryService {
         return null;
     }
 
-    public BigInteger createGradeCategory(GradeCategory newGradeCategory) throws IllegalArgumentException, ServiceException {
+    public BigInteger createGradeCategory(GradeCategory newGradeCategory) {
         checkParamsForCreateUpdate(newGradeCategory);
         try {
             return gradeCategoryDAO.createGradeCategory(newGradeCategory);
@@ -64,7 +63,7 @@ public class GradeCategoryService {
         return null;
     }
 
-    public void deleteGradeCategoryById(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public void deleteGradeCategoryById(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
@@ -75,7 +74,7 @@ public class GradeCategoryService {
         }
     }
 
-    public void deleteGradeCategoryByTestId(BigInteger id) throws IllegalArgumentException, ServiceException {
+    public void deleteGradeCategoryByTestId(BigInteger id) {
         if (id == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
@@ -86,7 +85,7 @@ public class GradeCategoryService {
         }
     }
 
-    public void updateGradeCategory(GradeCategory updatedGradeCategory) throws IllegalArgumentException, ServiceException {
+    public void updateGradeCategory(GradeCategory updatedGradeCategory) {
         checkParamsForCreateUpdate(updatedGradeCategory);
         if (updatedGradeCategory.getId() == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
@@ -98,7 +97,7 @@ public class GradeCategoryService {
         }
     }
 
-    private void checkParamsForCreateUpdate(GradeCategory checkedCategory) throws IllegalArgumentException {
+    private void checkParamsForCreateUpdate(GradeCategory checkedCategory) {
         if (checkedCategory == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Can't pass null object in method");
         }

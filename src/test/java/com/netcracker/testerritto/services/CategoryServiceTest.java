@@ -24,53 +24,53 @@ public class CategoryServiceTest {
     private Category testCategory;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         testCategory = createValidCategory();
         BigInteger testCategoryId = categoryService.createCategory(testCategory);
         testCategory.setId(testCategoryId);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void getCategoryById_idIsNull() throws Exception {
+    public void getCategoryById_idIsNull() {
         categoryService.getCategoryById(null);
     }
 
     @Test(expected = ServiceException.class)
-    public void getCategoryById_idNotExist() throws Exception {
+    public void getCategoryById_idNotExist() {
         categoryService.deleteCategoryById(testCategory.getId());
         categoryService.getCategoryById(testCategory.getId());
     }
 
-    public void getCategoryById() throws Exception {
+    public void getCategoryById() {
         Category categoryFromDb = categoryService.getCategoryById(testCategory.getId());
         assertEquals(testCategory.getId(), categoryFromDb.getId());
         assertEquals(testCategory.getNameCategory(), categoryFromDb.getNameCategory());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteCategoryById_idIsNull() throws Exception {
+    public void deleteCategoryById_idIsNull() {
         categoryService.deleteCategoryById(null);
     }
 
     @Test(expected = ServiceException.class)
-    public void deleteCategoryById() throws Exception {
+    public void deleteCategoryById() {
         categoryService.deleteCategoryById(testCategory.getId());
         categoryService.getCategoryById(testCategory.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateCategory_idIsNull() throws Exception {
+    public void updateCategory_idIsNull() {
         categoryService.updateCategory(null);
     }
 
     @Test(expected = ServiceException.class)
-    public void updateCategory_CategoryNotExist() throws Exception {
+    public void updateCategory_CategoryNotExist() {
         categoryService.deleteCategoryById(testCategory.getId());
         categoryService.updateCategory(testCategory);
     }
 
     @Test
-    public void createCategory() throws Exception {
+    public void createCategory() {
         Category testCategory = new Category();
         testCategory.setNameCategory("Жизненная позиция");
         BigInteger idCreatedCategory = categoryService.createCategory(testCategory);
@@ -82,13 +82,13 @@ public class CategoryServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createCategory_categoryNameParamIsNull() throws Exception {
+    public void createCategory_categoryNameParamIsNull() {
         Category incorrectCategoryForCreation = new Category();
         categoryService.createCategory(incorrectCategoryForCreation);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         categoryService.deleteCategoryById(testCategory.getId());
     }
 
