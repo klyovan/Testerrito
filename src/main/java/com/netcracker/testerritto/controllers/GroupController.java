@@ -9,6 +9,7 @@ import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -24,11 +25,14 @@ public class GroupController {
     @Autowired
     private RemarkService remarkService;
 
-    //maybe we need method getAllRemarks()????
-   /* @GetMapping("/remark")
-    public Remark getAllRemarksInGroup(BigInteger groupId) throws IllegalArgumentException, ServiceException {
-        return groupService.getAllRemarksInGroup(groupId);
-    }*/
+    @PutMapping
+    public Group updateGroup(@RequestBody Group group) {
+        try {
+            return groupService.updateGroup(group);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
 
     @GetMapping("/remark/{remarkId}")
     public Remark getRemarkById(@PathVariable BigInteger remarkId) throws IllegalArgumentException, ServiceException {
@@ -66,12 +70,10 @@ public class GroupController {
         }
     }
 
-    @PutMapping("/{id}")
-    public Group updateGroup(@RequestBody Group group) throws IllegalArgumentException, ServiceException {
-        try {
-            return groupService.updateGroup(group);
-        } catch (IllegalArgumentException | ServiceException e) {
-            throw new ApiRequestException(e.getMessage(), e);
-        }
-    }
+    //maybe we need method getAllRemarks()????
+   /* @GetMapping("/remark")
+    public Remark getAllRemarksInGroup(BigInteger groupId) throws IllegalArgumentException, ServiceException {
+        return groupService.getAllRemarksInGroup(groupId);
+    }*/
+
 }
