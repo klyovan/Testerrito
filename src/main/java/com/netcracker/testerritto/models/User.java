@@ -1,6 +1,9 @@
 package com.netcracker.testerritto.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -11,8 +14,11 @@ public class User {
   private String email;
   private String password;
   private String phone;
+  @JsonDeserialize(as = ArrayList.class, contentAs = Group.class)
   private List<Group> groups;
+  @JsonDeserialize(as = ArrayList.class, contentAs = Result.class)
   private List<Result> results;
+  @JsonDeserialize(as = ArrayList.class, contentAs = Group.class)
   private List<Group> createdGroups;
 
   public User() {

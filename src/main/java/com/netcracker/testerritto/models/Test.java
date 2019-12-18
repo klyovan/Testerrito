@@ -1,6 +1,9 @@
 package com.netcracker.testerritto.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +11,11 @@ public class Test extends ObjectEav {
     private BigInteger groupId;
     private String nameTest;
     private BigInteger creatorUserId;
+    @JsonDeserialize(as = ArrayList.class, contentAs = GradeCategory.class)
     private List<GradeCategory> gradesCategory;
+    @JsonDeserialize(as = ArrayList.class, contentAs = User.class)
     private List<User> experts;
+    @JsonDeserialize(as = ArrayList.class, contentAs = Question.class)
     private List<Question> questions;
 
     public Test() {
