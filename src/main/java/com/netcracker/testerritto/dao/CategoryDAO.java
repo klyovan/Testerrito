@@ -5,7 +5,6 @@ import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,17 +29,17 @@ public class CategoryDAO {
             "  and category.object_id = attr.object_id " +
             "  and attr.attr_id = 14 /* name_category */";
 
-    public Category getCategoryById(BigInteger id) throws DataAccessException {
+    public Category getCategoryById(BigInteger id) {
         return jdbcTemplate.queryForObject(getCategoryByIdQuery, new Object[]{id.toString()}, categoryRowMapper);
     }
 
-    public void deleteCategoryById(BigInteger id) throws DataAccessException {
+    public void deleteCategoryById(BigInteger id) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(id)
             .delete();
     }
 
-    public Category updateCategory(Category category) throws DataAccessException {
+    public Category updateCategory(Category category) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(category.getId())
             .setStringAttribute(AttrtypeProperties.NAME_CATEGORY, category.getNameCategory())
@@ -48,7 +47,7 @@ public class CategoryDAO {
         return getCategoryById(category.getId());
     }
 
-    public BigInteger createCategory(Category newCategory) throws DataAccessException {
+    public BigInteger createCategory(Category newCategory) {
         return new ObjectEavBuilder.Builder(jdbcTemplate)
             .setName(newCategory.getNameCategory())
             .setObjectTypeId(ObjtypeProperties.CATEGORY)
