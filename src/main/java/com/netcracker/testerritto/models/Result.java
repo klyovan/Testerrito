@@ -1,5 +1,6 @@
 package com.netcracker.testerritto.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.netcracker.testerritto.properties.ListsAttr;
 
 import java.math.BigInteger;
@@ -13,6 +14,7 @@ public class Result extends ObjectEav {
   private int score;
   private ListsAttr status;
   private BigInteger testId;
+  @JsonIgnore
   private HashMap<Reply, Question> replies;
   private BigInteger userId;
 

@@ -101,7 +101,7 @@ public class GroupDAO{
     }
 
     public BigInteger createGroup(Group group) {
-        BigInteger object_id = new ObjectEavBuilder.Builder(jdbcTemplate)
+        BigInteger objectId = new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectTypeId(ObjtypeProperties.GROUP)
             .setName("Group")
             .setStringAttribute(AttrtypeProperties.NAME_GROUP, group.getName())
@@ -110,16 +110,17 @@ public class GroupDAO{
             .create();
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(group.getCreatorUserId())
-            .setReference(AttrtypeProperties.CONSIST, object_id)
+            .setReference(AttrtypeProperties.CONSIST, objectId)
             .update();
-        return object_id;
+        return objectId;
     }
 
-    public void updateGroup(Group group) {
+    public Group updateGroup(Group group) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(group.getId())
             .setStringAttribute(AttrtypeProperties.NAME_GROUP, group.getName())
             .update();
+        return getGroupById(group.getId());
     }
 
     public void deleteGroup(BigInteger groupId) {

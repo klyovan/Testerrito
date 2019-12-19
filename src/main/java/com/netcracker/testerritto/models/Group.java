@@ -1,24 +1,23 @@
 package com.netcracker.testerritto.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Group {
-    private BigInteger id;
+public class Group extends ObjectEav {
+
     private String name;
     private String link;
     private BigInteger creatorUserId;
+    @JsonDeserialize(as = ArrayList.class, contentAs = User.class)
     private List<User> users;
+    @JsonDeserialize(as = ArrayList.class, contentAs = Test.class)
     private List<Test> tests;
 
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
+    public Group(){}
 
     public String getName() {
         return name;

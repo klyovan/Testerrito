@@ -1,6 +1,10 @@
 package com.netcracker.testerritto.models;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.netcracker.testerritto.properties.ListsAttr;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,6 +13,7 @@ public class Question {
     private String textQuestion;
     private ListsAttr typeQuestion;
     private BigInteger testId;
+    @JsonDeserialize(as = ArrayList.class, contentAs = Answer.class)
     private List<Answer> answers;
 
     public void setId(BigInteger id){
