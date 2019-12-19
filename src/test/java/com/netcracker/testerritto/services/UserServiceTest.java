@@ -72,6 +72,7 @@ public class UserServiceTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void createUserWithExistEmailTest() {
+
     userService.createUser(user1);
   }
 

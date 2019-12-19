@@ -18,8 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SpringBootTest(classes = ApplicationConfiguration.class)
 @RunWith(SpringRunner.class)
@@ -89,8 +88,6 @@ public class UserDAOTest {
 
   @Test
   public void getCreatedGroupAndDeleteCreatedGroupTest() {
-    // BigInteger id = BigInteger.valueOf(2);
-    //  User user1 = userDAO.getUser(user1.getId());
     int createdGroupCount = 0;
 
     List<Group> groupsList = new ArrayList<>();
@@ -141,21 +138,21 @@ public class UserDAOTest {
     assertTrue(passwordEn.matches(user1.getPassword(), user2.getPassword()));
   }
 
-  @Test(expected = EmptyResultDataAccessException.class)
+  @Test//(expected = EmptyResultDataAccessException.class)
   public void isEmailExistTest() {
     assertTrue(userDAO.isEmailExist(user1.getEmail()));
     String deletedEmail = user1.getEmail();
     userDAO.deleteUser(user1.getId());
-    userDAO.isEmailExist(deletedEmail);
+    assertFalse(userDAO.isEmailExist(deletedEmail));
 
   }
 
-  @Test(expected = EmptyResultDataAccessException.class)
+  @Test//(expected = EmptyResultDataAccessException.class)
   public void isPhoneExistTest() {
     assertTrue(userDAO.isPhoneExist(user1.getPhone()));
     String deletedPhone = user1.getPhone();
     userDAO.deleteUser(user1.getId());
-    userDAO.isPhoneExist(deletedPhone);
+    assertFalse(userDAO.isPhoneExist(deletedPhone));
   }
 
   @After
