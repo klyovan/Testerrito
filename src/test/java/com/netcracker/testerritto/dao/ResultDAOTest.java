@@ -7,7 +7,11 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.models.User;
-import com.netcracker.testerritto.properties.ListsAttr;
+import com.netcracker.testerritto.properties.Status;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,14 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -55,7 +54,7 @@ public class ResultDAOTest {
         user.setPassword("Password...");
         user.setLastName("LastName");
         user.setPhone("5555");
-        testUserId = userDAO.createUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhone());
+        testUserId = userDAO.createUser(user);
 
         Group group = new Group();
         group.setLink("Link...");
@@ -94,6 +93,14 @@ public class ResultDAOTest {
         Assert.assertEquals(expectedResult.getReplies(), createdResult.getReplies());
     }
 
+    @Test
+    public void getResultsByUser() {
+        List<Result> results = resultDAO.getResultsByUser(createdResult.getUserId());
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(results.get(0).getId(), createdResult.getId());
+    }
+
     @Test(expected = EmptyResultDataAccessException.class)
     public void deleteResult() {
         Result resultDeleted = getNewResult();
@@ -111,7 +118,7 @@ public class ResultDAOTest {
     public void updateResult() {
         int changedScore = 8;
         createdResult.setScore(changedScore);
-        createdResult.setStatus(ListsAttr.NOT_PASSED);
+        createdResult.setStatus(Status.NOT_PASSED);
         resultDAO.updateResult(createdResult);
         expectedResult = resultDAO.getResult(createdResult.getId());
 
@@ -123,12 +130,12 @@ public class ResultDAOTest {
     private Result getNewResult() {
 
         Date date = new Date();
-        HashMap<Reply, Question> replies = new HashMap<>();
+        HashMap<Question, Reply> replies = new HashMap<>();
 
         Result result = new Result();
         result.setDate(date);
         result.setScore(10);
-        result.setStatus(ListsAttr.PASSED);
+        result.setStatus(Status.PASSED);
         result.setTestId(testTestId);
         result.setUserId(testUserId);
         result.setReplies(replies);

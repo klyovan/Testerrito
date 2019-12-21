@@ -4,10 +4,12 @@ import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Remark;
+import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
+import com.netcracker.testerritto.services.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,9 @@ public class GroupController {
 
     @Autowired
     private RemarkService remarkService;
+
+    @Autowired
+    private ResultService resultService;
 
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
@@ -75,5 +80,26 @@ public class GroupController {
     public Remark getAllRemarksInGroup(BigInteger groupId) throws IllegalArgumentException, ServiceException {
         return groupService.getAllRemarksInGroup(groupId);
     }*/
+
+   @GetMapping("/result/{id}")
+   public Result getResultPassedTest(@PathVariable BigInteger id){
+       try {
+           return resultService.getResult(id);
+       } catch (IllegalArgumentException | ServiceException e) {
+           throw new ApiRequestException(e.getMessage(), e);
+       }
+
+   }
+
+   @GetMapping("/result/passed-tests/{id}")
+   public List<Result> getResultsPassedTest(@PathVariable BigInteger id){
+       try {
+           return resultService.getResultsByUser(id);
+       } catch (IllegalArgumentException | ServiceException e) {
+           throw new ApiRequestException(e.getMessage(), e);
+       }
+   }
+
+
 
 }

@@ -21,7 +21,7 @@ public class TestService {
     @Autowired
     private ServiceExceptionHandler serviceExceptionHandler;
 
-    public Test getTest(BigInteger testId) throws ServiceException {
+    public Test getTest(BigInteger testId)  {
         checkIdNotNull(testId);
         try {
             return testDAO.getTest(testId);
@@ -31,7 +31,7 @@ public class TestService {
         return null;
     }
 
-    public BigInteger createTest(Test test) throws ServiceException {
+    public BigInteger createTest(Test test)  {
         checkParamsForCreateUpdateTest(test);
         try {
             return testDAO.createTest(test);
@@ -41,7 +41,7 @@ public class TestService {
         return null;
     }
 
-    public BigInteger updateTest(Test test) throws ServiceException {
+    public BigInteger updateTest(Test test)  {
         checkParamsForCreateUpdateTest(test);
         checkIdNotNull(test.getId());
         try {
@@ -52,7 +52,7 @@ public class TestService {
         return null;
     }
 
-    public void deleteTest(BigInteger testId) throws ServiceException {
+    public void deleteTest(BigInteger testId)  {
         checkIdNotNull(testId);
         try {
             testDAO.deleteTest(testId);
@@ -78,7 +78,4 @@ public class TestService {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter id can not be null");
         }
     }
-
-
-
 }

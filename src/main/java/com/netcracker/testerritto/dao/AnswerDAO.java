@@ -44,30 +44,18 @@ public class AnswerDAO {
           "answer.object_id id,"+
           "answer.parent_id question_id," +
           "answer_text.value text," +
-          "answer_score.value score," +
-          "answer2reply.reference reply_id, " +
-          "answer2remark.reference remark_id," +
-          "next_question. reference next_question" +
-    "from " +
+          "answer_score.value score" +
+          "from " +
           "objects answer," +
           "attributes answer_text," +
-          "attributes answer_score," +
-          "objreference answer2reply," +
-          "objreference answer2remark," +
-          "objreference next_question" +
-    "where" +
+          "attributes answer_score" +
+          "where" +
           "answer.parent_id = ?" +
           "and answer.object_type_id = 11" +
           "and answer_text.attr_id = 20"  +
           "and answer_text.object_id = answer.object_id" +
           "and answer_score.attr_id = 21" +
-          "and answer_score.object_id = answer.object_id" +
-          "and answer2reply.object_id = answer.object_id" +
-          "and answer2reply.attr_id = 32" +
-          "and answer2remark.object_id = answer.object_id" +
-          "and answer2remark.attr_id = 28"  +
-          "and next_question.object_id = answer.object_id" +
-          "and next_question.attr_id = 37" ;
+          "and answer_score.object_id = answer.object_id";
 
   private String QUERY_SELECT_ANSWERS_FOR_REPLY =
       "select " +

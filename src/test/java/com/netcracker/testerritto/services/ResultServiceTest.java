@@ -8,10 +8,12 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.models.User;
-import com.netcracker.testerritto.properties.ListsAttr;
+import com.netcracker.testerritto.properties.Status;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -100,6 +102,30 @@ public class ResultServiceTest {
     }
 
     @Test
+    public void getResultsByUser() {
+        List<Result> expectedResults = new ArrayList<>();
+        expectedResults.add(createdResult);
+        List<Result> actualResults = resultService.getResultsByUser(testUserId);
+        Assert.assertEquals(expectedResults.size(), actualResults.size());
+        Assert.assertEquals(expectedResults.get(0).getScore(), actualResults.get(0).getScore());
+        Assert.assertEquals(expectedResults.get(0).getStatus(), actualResults.get(0).getStatus());
+        Assert.assertEquals(expectedResults.get(0).getUserId(), actualResults.get(0).getUserId());
+        Assert.assertEquals(expectedResults.get(0).getTestId(), actualResults.get(0).getTestId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getResultsByUserByIdNull() throws ServiceException {
+        resultService.getResultsByUser(null);
+    }
+
+    @Test
+    public void getResultsByUserByWrongId() throws ServiceException {
+        List<Result> actualResults = resultService.getResultsByUser(BigInteger.valueOf(-666));
+        List<Result> expectedResults = new ArrayList<>();
+        Assert.assertEquals(expectedResults, actualResults);
+    }
+
+    @Test
     public void createResult() {
         Assert.assertNotEquals(null, createdResult.getId());
     }
@@ -152,11 +178,6 @@ public class ResultServiceTest {
         resultService.createResult(validResult);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void createResultStatusWrong() throws ServiceException {
-        validResult.setStatus(ListsAttr.MULTIPLE_ANSWER);
-        resultService.createResult(validResult);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateResultNull() throws ServiceException {
@@ -195,17 +216,12 @@ public class ResultServiceTest {
         resultService.updateResult(createdResult);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateResultStatusWrong() throws ServiceException {
-        createdResult.setStatus(ListsAttr.MULTIPLE_ANSWER);
-        resultService.updateResult(createdResult);
-    }
 
     @Test
     public void updateResult() throws ServiceException {
 
         createdResult.setScore(11);
-        createdResult.setStatus(ListsAttr.NOT_PASSED);
+        createdResult.setStatus(Status.NOT_PASSED);
         resultService.updateResult(createdResult);
 
         Result expectedResult = resultService.getResult(createdResult.getId());
@@ -235,12 +251,12 @@ public class ResultServiceTest {
     private Result getNewResult() {
 
         Date date = new Date();
-        HashMap<Reply, Question> replies = new HashMap<>();
+        HashMap<Question, Reply> replies = new HashMap<>();
 
         Result result = new Result();
         result.setDate(date);
         result.setScore(10);
-        result.setStatus(ListsAttr.PASSED);
+        result.setStatus(Status.PASSED);
         result.setTestId(testTestId);
         result.setUserId(testUserId);
         result.setReplies(replies);

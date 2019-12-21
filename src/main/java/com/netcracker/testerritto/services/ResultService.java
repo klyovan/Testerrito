@@ -1,11 +1,12 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.ResultDAO;
-import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Result;
-import com.netcracker.testerritto.properties.ListsAttr;
+import com.netcracker.testerritto.properties.Status;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-
 public class ResultService {
 
     @Autowired
@@ -22,7 +22,7 @@ public class ResultService {
     @Autowired
     private ServiceExceptionHandler serviceExceptionHandler;
 
-    public Result getResult(BigInteger resultId) throws ServiceException {
+    public Result getResult(BigInteger resultId) {
         checkIdNotNull(resultId);
 
         try {
@@ -33,7 +33,20 @@ public class ResultService {
         return null;
     }
 
-    public BigInteger createResult(Result result) throws ServiceException {
+
+    public List<Result> getResultsByUser(BigInteger userId) {
+        checkIdNotNull(userId);
+
+        try {
+            return resultDAO.getResultsByUser(userId);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed getResultByUser()", e);
+        }
+        return new ArrayList<>();
+    }
+
+
+    public BigInteger createResult(Result result) {
         checkParamsForCreateUpdateResult(result);
         try {
             return resultDAO.createResult(result);
@@ -44,7 +57,7 @@ public class ResultService {
 
     }
 
-    public BigInteger updateResult(Result result) throws ServiceException {
+    public BigInteger updateResult(Result result)  {
         checkParamsForCreateUpdateResult(result);
         checkIdNotNull(result.getId());
         try {
@@ -55,7 +68,7 @@ public class ResultService {
         return null;
     }
 
-    public void deleteResult(BigInteger resultId) throws ServiceException {
+    public void deleteResult(BigInteger resultId) {
         checkIdNotNull(resultId);
         try {
             resultDAO.deleteResult(resultId);
@@ -66,7 +79,7 @@ public class ResultService {
     }
 
     private void checkParamsForCreateUpdateResult(Result result) {
-        ListsAttr[] attributes = ListsAttr.values();
+        Status[] attributes = Status.values();
 
         if (result.getDate() == null) {
             serviceExceptionHandler
@@ -83,8 +96,8 @@ public class ResultService {
 
         int valid = 0;
 
-        for (ListsAttr attribute : attributes) {
-            if (result.getStatus() == ListsAttr.PASSED || result.getStatus() == ListsAttr.NOT_PASSED) {
+        for (Status attribute : attributes) {
+            if (result.getStatus() == Status.PASSED || result.getStatus() == Status.NOT_PASSED) {
                 valid += 1;
             }
         }
@@ -93,7 +106,6 @@ public class ResultService {
             serviceExceptionHandler.logAndThrowIllegalException(
                 "Wrong result parameter - status. Check enum ListsAttr!");
         }
-
     }
 
     private void checkIdNotNull(BigInteger id) {
