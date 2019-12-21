@@ -37,7 +37,7 @@ public class GroupService {
         checkIdNotNull(group.getCreatorUserId());
         checkStringNotNull(group.getLink());
         checkStringNotNull(group.getName());
-        try {
+       try {
             return groupDAO.createGroup(group);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed CreateGroup().", exception);

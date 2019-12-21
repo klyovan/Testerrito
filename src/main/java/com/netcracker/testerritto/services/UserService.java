@@ -8,12 +8,9 @@ import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.User;
 import java.math.BigInteger;
 import java.util.List;
-import javax.swing.text.Position.Bias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 

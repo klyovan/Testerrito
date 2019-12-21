@@ -74,7 +74,8 @@ public class Group extends ObjectEav {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, link, creatorUserId, users, tests);
+        int hash = Objects.hash(id, name, link, creatorUserId, users, tests);
+        return hash;
     }
 
     @Override

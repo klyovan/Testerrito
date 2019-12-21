@@ -82,7 +82,7 @@ public class QuestionDAOTest {
     Question question = new Question();
     question.setTextQuestion("What?");
     question.setTypeQuestion(ListsAttr.ONE_ANSWER);
-    question.setTestId(new BigInteger("-10025"));
+    question.setTestId(new BigInteger("-1025"));
     return question;
   }
 }
