@@ -71,7 +71,7 @@ public class QuestionDAOTest {
   }
 
   @Test(expected = EmptyResultDataAccessException.class)
-  public void deleteCategoryById() throws DataAccessException {
+  public void deleteQuestionById() throws DataAccessException {
     Question questForDeleting = getNewQuestion();
     BigInteger deletedId = questionDAO.createQuestion(questForDeleting);
     questionDAO.deleteQuestionById(deletedId);
