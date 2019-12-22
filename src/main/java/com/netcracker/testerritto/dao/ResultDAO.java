@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,8 +21,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ResultDAO {
 
-    private static final String getResult =
-            "select  results.object_id id, result2test.reference test_id, " +
+    private static final String GET_RESULT =
+        "select  results.object_id id, result2test.reference test_id, " +
             "    result_date.date_value result_date, result_score.value result_score , " +
             "    result_status.list_value_id result_status, result2user.reference user_id " +
             "from  objects results, " +
@@ -42,8 +43,52 @@ public class ResultDAO {
             "    and result2user.attr_id = 29 /*look by*/ " +
             "    and result2user.object_id = results.object_id";
 
-    private static String getReplies =
-            "select  results.object_id res_id, reply.object_id rep_id, questions.object_id ques_id  " +
+    private static final String GET_RESULTS_BY_USER =
+        "select  results.object_id id, result2test.reference test_id,  " +
+            "    result_date.date_value result_date, result_score.value result_score ,  " +
+            "    result_status.list_value_id result_status, result2user.reference user_id  " +
+            "from  objects results,  " +
+            "    attributes result_date,  " +
+            "    attributes result_score,  " +
+            "    attributes result_status,  " +
+            "    objreference result2test,  " +
+            "    objreference result2user    " +
+            "where result2user.reference = ? " +
+            "    and result2test.attr_id = 30 /*results_belongs*/  " +
+            "    and result2test.object_id = results.object_id  " +
+            "    and result_date.attr_id = 10 /*date*/  " +
+            "    and result_date.object_id = results.object_id  " +
+            "    and result_score.attr_id = 11 /*score*/  " +
+            "    and result_score.object_id = results.object_id  " +
+            "    and result_status.attr_id = 12 /*status*/  " +
+            "    and result_status.object_id = results.object_id  " +
+            "    and result2user.attr_id = 29 /*look by*/  " +
+            "    and result2user.object_id = results.object_id";
+
+    private static final String GET_RESULTS_BY_TEST =
+            "select  results.object_id id, result2test.reference test_id,   "+
+             "   result_date.date_value result_date, result_score.value result_score ,   "+
+             "   result_status.list_value_id result_status, result2user.reference user_id   "+
+             "from  objects results,   "+
+             "   attributes result_date, "+
+             "   attributes result_score, "+
+             "   attributes result_status, "+
+             "   objreference result2test, "+
+             "   objreference result2user  "+
+             "where result2test.reference = ? "+
+             "   and result2test.attr_id = 30 /*results_belongs*/   "+
+             "   and result2test.object_id = results.object_id   "+
+             "   and result_date.attr_id = 10 /*date*/   "+
+             "   and result_date.object_id = results.object_id   "+
+             "   and result_score.attr_id = 11 /*score*/   "+
+             "   and result_score.object_id = results.object_id   "+
+             "   and result_status.attr_id = 12 /*status*/   "+
+             "   and result_status.object_id = results.object_id   "+
+             "   and result2user.attr_id = 29 /*look by*/   "+
+             "   and result2user.object_id = results.object_id";
+
+    private static final String GET_REPLIES =
+        "select  results.object_id res_id, reply.object_id rep_id, questions.object_id ques_id  " +
             "from objects results, " +
             "    objreference answer2reply, " +
             "    objects reply, " +
@@ -72,24 +117,24 @@ public class ResultDAO {
 
     public Result getResult(BigInteger resultId) {
 
-        Result result = jdbcTemplate.queryForObject(getResult, new Object[]{resultId.toString()}, new ResultRowMapper());
+        Result result = jdbcTemplate.queryForObject(GET_RESULT, new Object[]{resultId.toString()}, new ResultRowMapper());
 
         result.setReplies(getReplies(resultId));
 
         return result;
     }
 
-    private HashMap<Reply, Question> getReplies(BigInteger resultId) {
-        HashMap<BigInteger, BigInteger> resultHashMapId = new HashMap<>();
-        HashMap<Reply, Question> resultHashMap = new HashMap<>();
+    private Map<Question, Reply> getReplies(BigInteger resultId) {
+        Map<BigInteger, BigInteger> resultHashMapId = new HashMap<>();
+        Map<Question, Reply> resultHashMap = new HashMap<>();
 
-        jdbcTemplate.query(getReplies, new Object[]{resultId.toString()},
+        jdbcTemplate.query(GET_REPLIES, new Object[]{resultId.toString()},
             new RowMapper<Map<BigInteger, BigInteger>>() {
                 @Override
-                public Map<BigInteger, BigInteger> mapRow(ResultSet resultSet, int i)
-                    throws SQLException {
-                    resultHashMapId.put(BigInteger.valueOf(resultSet.getInt("rep_id")),
-                        BigInteger.valueOf(resultSet.getInt("ques_id")));
+                public Map<BigInteger, BigInteger> mapRow(ResultSet resultSet, int i) throws SQLException {
+                    resultHashMapId.put(
+                        BigInteger.valueOf(resultSet.getInt("ques_id")),
+                        BigInteger.valueOf(resultSet.getInt("rep_id")));
                     return resultHashMapId;
                 }
             }
@@ -97,14 +142,23 @@ public class ResultDAO {
 
         for (Map.Entry<BigInteger, BigInteger> entry : resultHashMapId.entrySet()) {
             resultHashMap.put(
-                replyDAO.getReply(entry.getKey()),
-                questionDAO.getQuestionById(entry.getValue())
+                questionDAO.getQuestionById(entry.getKey()),
+                replyDAO.getReply(entry.getValue())
             );
         }
         return resultHashMap;
 
-
     }
+
+    public List<Result> getResultsByUser(BigInteger userId) {
+        return jdbcTemplate.query(GET_RESULTS_BY_USER, new Object[]{userId.toString()}, new ResultRowMapper());
+    }
+
+    public List<Result> getResultsByTest(BigInteger userId) {
+        return jdbcTemplate.query(GET_RESULTS_BY_TEST, new Object[]{userId.toString()}, new ResultRowMapper());
+    }
+
+
 
     public void deleteResult(BigInteger resultId) {
         new ObjectEavBuilder.Builder(jdbcTemplate)

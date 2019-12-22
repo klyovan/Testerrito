@@ -4,16 +4,22 @@ import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Remark;
+import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
+import com.netcracker.testerritto.services.ResultService;
 import java.math.BigInteger;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("group")
@@ -24,6 +30,9 @@ public class GroupController {
 
     @Autowired
     private RemarkService remarkService;
+
+    @Autowired
+    private ResultService resultService;
 
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
@@ -76,4 +85,32 @@ public class GroupController {
         return groupService.getAllRemarksInGroup(groupId);
     }*/
 
+    @GetMapping("/result/{id}")
+    public Result getResultPassedTest(@PathVariable BigInteger id) {
+        try {
+            return resultService.getResult(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+
+    }
+
+    @GetMapping("/result/user/{id}")
+    public List<Result> getResultsPassedTestByUser(@PathVariable BigInteger id) {
+        try {
+            return resultService.getResultsByUser(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+
+    @GetMapping("/result/test/{id}")
+    public List<Result> getResultsPassedTestByTest(@PathVariable BigInteger id) {
+        try {
+            return resultService.getResultsByTest(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
 }
