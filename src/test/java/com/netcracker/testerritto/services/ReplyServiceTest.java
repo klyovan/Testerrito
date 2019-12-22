@@ -5,6 +5,7 @@ import com.netcracker.testerritto.dao.*;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.*;
 import com.netcracker.testerritto.properties.ListsAttr;
+import com.netcracker.testerritto.properties.Status;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -187,12 +188,12 @@ public class ReplyServiceTest {
     private Result getNewResult() {
 
         Date date = new Date();
-        HashMap<Reply, Question> replies = new HashMap<>();
+        HashMap<Question, Reply> replies = new HashMap<>();
 
         Result result = new Result();
         result.setDate(date);
         result.setScore(10);
-        result.setStatus(ListsAttr.PASSED);
+        result.setStatus(Status.PASSED);
         result.setTestId(test1Id);
         result.setUserId(userId);
         result.setReplies(replies);
