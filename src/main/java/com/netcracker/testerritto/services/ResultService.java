@@ -45,6 +45,17 @@ public class ResultService {
         return new ArrayList<>();
     }
 
+    public List<Result> getResultsByTest(BigInteger testId) {
+        checkIdNotNull(testId);
+
+        try {
+            return resultDAO.getResultsByTest(testId);
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed getResultByTest()", e);
+        }
+        return new ArrayList<>();
+    }
+
 
     public BigInteger createResult(Result result) {
         checkParamsForCreateUpdateResult(result);

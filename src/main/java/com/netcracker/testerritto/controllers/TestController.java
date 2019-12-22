@@ -59,16 +59,6 @@ public class TestController {
     }
 
 
-    @GetMapping("/{id}")
-    public Test getTest(@PathVariable BigInteger id) {
-        try {
-            return testService.getTest(id);
-        } catch (IllegalArgumentException | ServiceException e) {
-            throw new ApiRequestException(e.getMessage(), e);
-        }
-    }
-
-
     @GetMapping("/category/{id}")
     public Category getCategoryById(@PathVariable BigInteger id) {
         try {

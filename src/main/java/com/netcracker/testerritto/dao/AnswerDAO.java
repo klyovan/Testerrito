@@ -40,22 +40,22 @@ public class AnswerDAO {
           "and answer_score.object_id = answer.object_id";
 
   private String QUERY_SELECT_ALL_ANSWERS_IN_QUESTION =
-      "select" +
-          "answer.object_id id,"+
-          "answer.parent_id question_id," +
-          "answer_text.value text," +
-          "answer_score.value score" +
+      "select " +
+          "answer.object_id id, "+
+          "answer.parent_id question_id, " +
+          "answer_text.value text, " +
+          "answer_score.value score " +
           "from " +
-          "objects answer," +
-          "attributes answer_text," +
-          "attributes answer_score" +
+          "objects answer, " +
+          "attributes answer_text, " +
+          "attributes answer_score " +
           "where" +
-          "answer.parent_id = ?" +
-          "and answer.object_type_id = 11" +
-          "and answer_text.attr_id = 20"  +
-          "and answer_text.object_id = answer.object_id" +
-          "and answer_score.attr_id = 21" +
-          "and answer_score.object_id = answer.object_id";
+          " answer.parent_id = ? " +
+          "and answer.object_type_id = 11 " +
+          "and answer_text.attr_id = 20 "  +
+          "and answer_text.object_id = answer.object_id " +
+          "and answer_score.attr_id = 21 " +
+          "and answer_score.object_id = answer.object_id ";
 
   private String QUERY_SELECT_ANSWERS_FOR_REPLY =
       "select " +

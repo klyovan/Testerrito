@@ -125,6 +125,31 @@ public class ResultServiceTest {
         Assert.assertEquals(expectedResults, actualResults);
     }
 
+
+    @Test
+    public void getResultsByTest() {
+        List<Result> expectedResults = new ArrayList<>();
+        expectedResults.add(createdResult);
+        List<Result> actualResults = resultService.getResultsByTest(testTestId);
+        Assert.assertEquals(expectedResults.size(), actualResults.size());
+        Assert.assertEquals(expectedResults.get(0).getScore(), actualResults.get(0).getScore());
+        Assert.assertEquals(expectedResults.get(0).getStatus(), actualResults.get(0).getStatus());
+        Assert.assertEquals(expectedResults.get(0).getUserId(), actualResults.get(0).getUserId());
+        Assert.assertEquals(expectedResults.get(0).getTestId(), actualResults.get(0).getTestId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getResultsByTestByIdNull() throws ServiceException {
+        resultService.getResultsByTest(null);
+    }
+
+    @Test
+    public void getResultsByTestByWrongId() throws ServiceException {
+        List<Result> actualResults = resultService.getResultsByTest(BigInteger.valueOf(-666));
+        List<Result> expectedResults = new ArrayList<>();
+        Assert.assertEquals(expectedResults, actualResults);
+    }
+
     @Test
     public void createResult() {
         Assert.assertNotEquals(null, createdResult.getId());

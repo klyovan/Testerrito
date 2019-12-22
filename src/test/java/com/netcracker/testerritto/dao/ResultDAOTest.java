@@ -101,6 +101,14 @@ public class ResultDAOTest {
         Assert.assertEquals(results.get(0).getId(), createdResult.getId());
     }
 
+    @Test
+    public void getResultsByTest() {
+        List<Result> results = resultDAO.getResultsByTest(createdResult.getTestId());
+
+        Assert.assertEquals(1, results.size());
+        Assert.assertEquals(results.get(0).getId(), createdResult.getId());
+    }
+
     @Test(expected = EmptyResultDataAccessException.class)
     public void deleteResult() {
         Result resultDeleted = getNewResult();
