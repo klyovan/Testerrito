@@ -90,7 +90,8 @@ public class ReplyServiceTest {
     public void getReplyTest() {
         Reply reply = replyService.getReply(replyId);
         Answer answer = answerDAO.getAnswerById(answer1Id);
-        assertTrue(reply.getAnswer().equals(answer.getTextAnswer()));
+        //assertTrue(reply.getAnswer().equals(answer.getTextAnswer()));
+        assertTrue(reply.getReplyList().get(0).getTextAnswer().equals(answer.getTextAnswer()));
 
     }
 
@@ -127,7 +128,7 @@ public class ReplyServiceTest {
     @Test
     public void createReplyTest() {
         Reply reply = replyService.getReply(replyId);
-        assertTrue(reply.getAnswer().equals("Kompot"));
+        assertTrue(reply.getReplyList().get(0).getTextAnswer().equals("Kompot"));
 
     }
 
@@ -138,7 +139,7 @@ public class ReplyServiceTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void createReplyWithBadResultIdTest(){
+    public void createReplyWithBadResultIdTest() {
         BigInteger newResultId = resultService.createResult(getNewResult());
         BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
 
@@ -149,39 +150,75 @@ public class ReplyServiceTest {
     }
 
     @Test
+    public void createReplyForMultipleAnswerTest() {
+        BigInteger newMultipleQuestionId = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
+        BigInteger newAnswerId1 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
+        BigInteger newAnswerId2 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
+        BigInteger newAnswerId3 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
+
+        BigInteger[] arr = {newAnswerId1, newAnswerId2, newAnswerId3};
+        int i = 0;
+        BigInteger newReplyId = replyService.createReply(resultId, newAnswerId1, newAnswerId2, newAnswerId3);
+        Reply reply = replyService.getReply(newReplyId);
+        for (Answer answer : reply.getReplyList()) {
+            assertTrue(answer.getId().equals(arr[i++]));
+        }
+
+        answerDAO.deleteAnswer(newAnswerId1);
+        answerDAO.deleteAnswer(newAnswerId2);
+        answerDAO.deleteAnswer(newAnswerId3);
+        questionDAO.deleteQuestionById(newMultipleQuestionId);
+        replyService.deleteReply(newReplyId);
+
+
+    }
+
+    @Test
     public void updateReplyTest() {
-        BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
-        replyService.updateReply(replyId, newAnswerId);
+        Answer answer = new Answer();
+        answer.setTextAnswer("pizza");
+        answer.setScore(25);
+        answer.setQuestionId(question1Id);
+
+        BigInteger newAnswerId = answerDAO.createAnswer(answer);
+
+        replyService.updateReply(replyId, answer1Id, newAnswerId);
+
+        Reply reply = replyService.getReply(replyId);
+        assertTrue(reply.getReplyList().get(0).getTextAnswer().equals("pizza"));
+
+        answerDAO.deleteAnswer(newAnswerId);
+
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateReplyWithNullReplyIdTest() {
-        replyService.updateReply(null, answer1Id);
+        replyService.updateReply(null, answer1Id, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateReplyWithNullAnswerIdTest() {
-        replyService.updateReply(replyId, null);
-    }
+   @Test(expected = IllegalArgumentException.class)
+   public void updateReplyWithNullAnswerIdTest() {
+       replyService.updateReply(replyId, null, null);
+   }
 
-    @Test(expected = ServiceException.class)
-    public void updateReplyWithBadIdTest(){
-        BigInteger newResultId = resultService.createResult(getNewResult());
-        BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
-        BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
+     @Test(expected = ServiceException.class)
+   public void updateReplyWithBadIdTest(){
+       BigInteger newResultId = resultService.createResult(getNewResult());
+       BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
+       BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
 
-        replyService.deleteReply(newReplyId);
-        resultService.deleteResult(newResultId);
-        answerDAO.deleteAnswer(newAnswerId);
-        replyService.updateReply(newReplyId, newAnswerId);
+       replyService.deleteReply(newReplyId);
+       resultService.deleteResult(newResultId);
+       answerDAO.deleteAnswer(newAnswerId);
+       replyService.updateReply(newReplyId, newAnswerId , null);
 
-    }
+   }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateReplyWithDifferentQuestionIdParameters(){
-        // новый ансвер с новый квещеном
-        replyService.updateReply(replyId , answer2Id);
-    }
+//   @Test(expected = IllegalArgumentException.class)
+//   public void updateReplyWithDifferentQuestionIdParameters(){
+//      //  новый ансвер с новый квещеном
+//       replyService.updateReply(replyId , answer2Id);
+//   }
 
 
     private Result getNewResult() {
@@ -224,6 +261,14 @@ public class ReplyServiceTest {
         return question;
     }
 
+    private Question getNewMultipleAnswerQuestion(BigInteger testId) {
+        Question question = new Question();
+        question.setTextQuestion("What?");
+        question.setTypeQuestion(ListsAttr.MULTIPLE_ANSWER);
+        question.setTestId(testId);
+        return question;
+    }
+
     private Answer getNewAnswer(BigInteger quesId) {
         Answer answer = new Answer();
         answer.setTextAnswer("Kompot");
@@ -233,3 +278,4 @@ public class ReplyServiceTest {
     }
 
 }
+//

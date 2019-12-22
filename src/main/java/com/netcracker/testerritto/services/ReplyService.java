@@ -10,6 +10,7 @@ import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Result;
+import com.netcracker.testerritto.properties.ListsAttr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,20 @@ public class ReplyService {
         return replyDAO.getReply(id);
     }
 
-    public BigInteger createReply(BigInteger resultId, BigInteger answerId) throws ServiceException {
+    public BigInteger createReply(BigInteger resultId, BigInteger... answerId) throws ServiceException {
         checkResultId(resultId);
-        checkAnswerId(answerId);
+
+        for (BigInteger id : answerId) {
+            checkAnswerId(id);
+        }
+
+        checkQuestionTypeOfAnswer( answerId);
+        checkAllAnswerIdHaveSameQuestionId( answerId);
+
+        checkQuestionTypeOfAnswer(answerId);
 
         Result result = resultDAO.getResult(resultId);
-        Answer answer = answerDAO.getAnswerById(answerId);
+        Answer answer = answerDAO.getAnswerById(answerId[0]);
         BigInteger questionId = answer.getQuestionId();
         Question question = questionDAO.getQuestionById(questionId);
 
@@ -50,28 +59,20 @@ public class ReplyService {
             return replyDAO.createReply(resultId, answerId);
         } else {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter resultId: " + resultId + " is in testId: "
-                + result.getTestId() + " and Parameter answerId: " + answerId + " is in testId: " + question.getTestId()
+                + result.getTestId() + " and Parameter answerId: " + answerId[0] + " is in testId: " + question.getTestId()
                 + " parameters are in different tests objects");
         }
 
         return null;
     }
 
-    public void updateReply(BigInteger replyId, BigInteger answerId) throws ServiceException {
-        checkAnswerId(answerId);
+    public void updateReply(BigInteger replyId, BigInteger oldAnswerId, BigInteger newAnswerId) throws ServiceException {
+        checkAnswerId(oldAnswerId);
+        checkAnswerId(newAnswerId);
+        checkReplyId(replyId);
 
-        Reply reply = getReply(replyId);
-        Answer answerReply = answerDAO.getAnswerById(reply.getAnswerId());
-        BigInteger questionReply = answerReply.getQuestionId();
-
-        Answer newAnswer = answerDAO.getAnswerById(answerId);
-        if (questionReply.equals(newAnswer.getQuestionId())) {
-            replyDAO.updateReply(replyId, answerId);
-        } else {
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter replId: " + replyId + " is in questionId: "
-                + questionReply + " and Parameter answerId: " + answerId + " is in questionId: " + newAnswer.getQuestionId()
-                + " parameters are in different question objects");
-        }
+        checkAllAnswerIdHaveSameQuestionId(oldAnswerId, newAnswerId);
+        replyDAO.updateReply(replyId, oldAnswerId, newAnswerId);
 
     }
 
@@ -118,6 +119,36 @@ public class ReplyService {
                 .logAndThrowServiceException("Getting result by id:" + id + " was fail", ex);
         }
 
+    }
+
+    private void checkQuestionTypeOfAnswer( BigInteger... answerId) {
+        Answer answer = answerDAO.getAnswerById(answerId[0]);
+        BigInteger questionId = answer.getQuestionId();
+        Question question = questionDAO.getQuestionById(questionId);
+        if (question.getTypeQuestion().equals(ListsAttr.ONE_ANSWER) && answerId.length > 1) {
+            serviceExceptionHandler.logAndThrowIllegalException("You can not create Reply with a lot of answer to question type "
+                + question.getTypeQuestion());
+        }
+    }
+
+    private void checkAllAnswerIdHaveSameQuestionId( BigInteger... answerId) {
+
+        Answer answ = answerDAO.getAnswerById(answerId[0]);
+        BigInteger constQuestionId = answ.getQuestionId();
+        StringBuilder allAnswerIds = new StringBuilder("answerIds : ");
+        for(BigInteger id : answerId){
+            allAnswerIds.append(id);
+            allAnswerIds.append(" ");
+        }
+
+        for (BigInteger id : answerId) {
+            Answer answer = answerDAO.getAnswerById(id);
+            BigInteger questionId = answer.getQuestionId();
+            if (!(constQuestionId.equals(questionId))) {
+                serviceExceptionHandler.logAndThrowIllegalException(" all answers must have same Question "+ allAnswerIds );
+            }
+
+        }
     }
 
 }
