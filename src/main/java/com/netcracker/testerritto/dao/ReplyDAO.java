@@ -25,7 +25,7 @@ public class ReplyDAO {
 
     private final String GET_RESULT_ID_OF_REPLY =
         "select \n" +
-            "    results.object_id result_id \n" +
+            "     results.object_id result_id \n" +
             "from \n" +
             "     objects results, \n" +
             "     objects reply, \n" +
@@ -56,7 +56,7 @@ public class ReplyDAO {
             "     and text_answer.object_id = answer.object_id\n";
 
     private final String ADD_ANSWER_QUERY =
-        "insert into objreference (attr_id, object_id, reference) values(32, ?/*answer_id*/, ?/*reply_id*/)";
+        "insert into objreference (attr_id, object_id, reference) values(32, ?, ? )";
 
     private final String DELETE_ANSWER_QUERY =
         "delete from objreference where attr_id =32 and object_id = ? /*answer_id*/ and reference = ? /*reply_id*/";
@@ -141,10 +141,10 @@ public class ReplyDAO {
     }
 
     private Integer getQuestionId(BigInteger answerId) {
-        String sql = ""
-            + "select answer.parent_id\n"
-            + "from objects answer\n"
-            + "where answer.object_id = ?";
+        String sql = ""+
+             "select answer.parent_id\n"+
+             "from objects answer\n"+
+             "where answer.object_id = ?";
 
         return jdbcTemplate
             .queryForObject(sql, new Object[]{answerId.toString()}, new RowMapper<Integer>() {

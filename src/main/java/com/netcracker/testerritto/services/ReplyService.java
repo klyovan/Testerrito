@@ -45,9 +45,8 @@ public class ReplyService {
             checkAnswerId(id);
         }
 
-        checkQuestionTypeOfAnswer( answerId);
-        checkAllAnswerIdHaveSameQuestionId( answerId);
-
+        //  checkQuestionTypeOfAnswer( answerId);
+        checkAllAnswerIdHaveSameQuestionId(answerId);
         checkQuestionTypeOfAnswer(answerId);
 
         Result result = resultDAO.getResult(resultId);
@@ -82,6 +81,33 @@ public class ReplyService {
 
     }
 
+    // только для мульти ансверов
+    public void addAnswer(BigInteger replyId, BigInteger answerId) {
+        checkAnswerId(answerId);
+        checkReplyId(replyId);
+
+        Reply reply = getReply(replyId);
+        BigInteger replyAnswerId = reply.getReplyList().get(0).getId();
+
+        checkQuestionTypeOfReply(replyId, "You can not add answer for ONE_ANSWER Question ");
+
+        checkAllAnswerIdHaveSameQuestionId(replyAnswerId, answerId);
+        replyDAO.addAnswer(replyId, answerId);
+    }
+
+    // только для мульти ансверов
+    public void deleteAnswer(BigInteger replyId, BigInteger answerId) {
+        checkAnswerId(answerId);
+        checkReplyId(replyId);
+
+        Reply reply = getReply(replyId);
+        if (reply.getReplyList().size() <= 1) {
+            serviceExceptionHandler.logAndThrowIllegalException("Reply must contain at least one value ");
+        }
+
+        replyDAO.deleteAnswer(replyId, answerId);
+
+    }
 
     private void checkReplyId(BigInteger id) {
         if (id == null) {
@@ -121,7 +147,7 @@ public class ReplyService {
 
     }
 
-    private void checkQuestionTypeOfAnswer( BigInteger... answerId) {
+    private void checkQuestionTypeOfAnswer(BigInteger... answerId) {
         Answer answer = answerDAO.getAnswerById(answerId[0]);
         BigInteger questionId = answer.getQuestionId();
         Question question = questionDAO.getQuestionById(questionId);
@@ -131,12 +157,12 @@ public class ReplyService {
         }
     }
 
-    private void checkAllAnswerIdHaveSameQuestionId( BigInteger... answerId) {
+    private void checkAllAnswerIdHaveSameQuestionId(BigInteger... answerId) {
 
         Answer answ = answerDAO.getAnswerById(answerId[0]);
-        BigInteger constQuestionId = answ.getQuestionId();
+        BigInteger constantQuestionId = answ.getQuestionId();
         StringBuilder allAnswerIds = new StringBuilder("answerIds : ");
-        for(BigInteger id : answerId){
+        for (BigInteger id : answerId) {
             allAnswerIds.append(id);
             allAnswerIds.append(" ");
         }
@@ -144,11 +170,24 @@ public class ReplyService {
         for (BigInteger id : answerId) {
             Answer answer = answerDAO.getAnswerById(id);
             BigInteger questionId = answer.getQuestionId();
-            if (!(constQuestionId.equals(questionId))) {
-                serviceExceptionHandler.logAndThrowIllegalException(" all answers must have same Question "+ allAnswerIds );
+            if (!(constantQuestionId.equals(questionId))) {
+                serviceExceptionHandler.logAndThrowIllegalException(" all answers must have same Question answerId "
+                    + allAnswerIds);
             }
 
         }
+    }
+
+    private void checkQuestionTypeOfReply(BigInteger replyId, String message) {
+        Reply reply = getReply(replyId);
+        BigInteger replyAnswerId = reply.getReplyList().get(0).getId();
+        BigInteger replyQuestionId = answerDAO.getAnswerById(replyAnswerId).getQuestionId();
+        // BigInteger answerQuestionId = answerDAO.getAnswerById(answerId).getQuestionId();
+
+        if (!(ListsAttr.MULTIPLE_ANSWER.equals(questionDAO.getQuestionById(replyQuestionId).getTypeQuestion()))) {
+            serviceExceptionHandler.logAndThrowIllegalException(message);
+        }
+
     }
 
 }

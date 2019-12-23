@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.netcracker.testerritto.properties.Status;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -181,22 +182,19 @@ public class ReplyDAOTest {
 
     }
 
-
     private Result getNewResult() {
 
         Date date = new Date();
-        HashMap<Reply, Question> replies = new HashMap<>();
+        HashMap<Question, Reply> replies = new HashMap<>();
 
         Result result = new Result();
         result.setDate(date);
         result.setScore(10);
-        result.setStatus(ListsAttr.PASSED);
+        result.setStatus(Status.PASSED);
         result.setTestId(testId);
         result.setUserId(userId);
         result.setReplies(replies);
 
         return result;
     }
-
 }
-
