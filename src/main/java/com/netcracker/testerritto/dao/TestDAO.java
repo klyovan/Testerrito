@@ -1,7 +1,9 @@
 package com.netcracker.testerritto.dao;
 
+import com.netcracker.testerritto.mappers.QuestionRowMapper;
 import com.netcracker.testerritto.mappers.TestRowMapper;
 import com.netcracker.testerritto.mappers.UserRowMapper;
+import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Test;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TestDAO {
 
-    private static final String getTest =
+    private static final String GET_TEST =
             "select tests.object_id test_id, tests.parent_id group_id, " +
             "test_name.value test_name, creator.object_id creator_id " +
             "from  objects tests, " +
@@ -32,44 +34,56 @@ public class TestDAO {
             "    and test2creator.object_id = tests.object_id " +
             "    and creator.object_id = test2creator.reference";
 
-    private static final String getExperts =
-              "select expert.object_id id, lastname.value lastName,  "
-            + "    firstName.value firstName, email.value email,  "
-            + "    password.value password, phone.value phone  "
-            + "    from objects tests,  "
-            + "    objreference test2expert,  "
-            + "    attributes firstName, "
-            + "    attributes lastName, "
-            + "    attributes email,  "
-            + "    attributes password, "
-            + "    attributes phone,   "
-            + "    objects expert "
-            + "where tests.object_id =  ?  "
-            + "    and test2expert.attr_id = 23 /*rate by*/  "
-            + "    and test2expert.object_id = tests.object_id  "
-            + "    and expert.object_id = test2expert.reference  "
-            + "    and firstName.attr_id =  2 /*firstName*/  "
-            + "    and firstName.object_id = expert.object_id  "
-            + "    and lastName.attr_id = 1 /*lastName*/  "
-            + "    and lastName.object_id = expert.object_id  "
-            + "    and email.attr_id = 3 /*email*/  "
-            + "    and email.object_id = expert.object_id  "
-            + "    and password.attr_id = 4 /*password*/  "
-            + "    and password.object_id = expert.object_id  "
-            + "    and phone.attr_id = 5 /*phone*/  "
-            + "    and phone.object_id = expert.object_id";
+    private static final String GET_EXPERTS =
+            "select expert.object_id id, lastname.value last_name,  " +
+            "    firstName.value first_name, email.value email,  " +
+            "    password.value password, phone.value phone  " +
+            "from objects tests,  " +
+            "    objreference test2expert,  " +
+            "    attributes firstName, " +
+            "    attributes lastName, " +
+            "    attributes email,  " +
+            "    attributes password, " +
+            "    attributes phone,   " +
+            "    objects expert " +
+            "where tests.object_id =  ?  " +
+            "    and test2expert.attr_id = 23 /*rate by*/  " +
+            "    and test2expert.object_id = tests.object_id  " +
+            "    and expert.object_id = test2expert.reference  " +
+            "    and firstName.attr_id =  2 /*firstName*/  " +
+            "    and firstName.object_id = expert.object_id  " +
+            "    and lastName.attr_id = 1 /*lastName*/  " +
+            "    and lastName.object_id = expert.object_id  " +
+            "    and email.attr_id = 3 /*email*/  " +
+            "    and email.object_id = expert.object_id  " +
+            "    and password.attr_id = 4 /*password*/  " +
+            "    and password.object_id = expert.object_id  " +
+            "    and phone.attr_id = 5 /*phone*/  " +
+            "    and phone.object_id = expert.object_id";
+
+    private final static String GET_QUESTIONS =
+            "select questions.object_id id, questions.parent_id test_Id, " +
+            "    questions_text.value text,questions_type.list_value_id question_type " +
+            "from objects questions,  " +
+            "    attributes questions_text, " +
+            "    attributes questions_type  " +
+            "where questions.parent_id = ? /* testId*/ " +
+            "    and questions.object_type_id = 10 /*questions*/  " +
+            "    and questions_text.attr_id = 18 /*text_question*/ " +
+            "    and questions_text.object_id = questions.object_id  " +
+            "    and questions_type.attr_id = 19 /*type_question*/ " +
+            "    and questions_type.object_id = questions.object_id ";
 
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private QuestionDAO questionDAO;
-    @Autowired
     private GradeCategoryDAO gradeCategoryDAO;
+    @Autowired
+    private AnswerDAO answerDAO;
 
     public Test getTest(BigInteger testId) {
-
-        Test test = jdbcTemplate.queryForObject(getTest, new Object[]{testId.toString()}, new TestRowMapper());
+        Test test = jdbcTemplate.queryForObject(GET_TEST, new Object[]{testId.toString()}, new TestRowMapper());
 
         test.setExperts(getExperts(testId));
         test.setGradesCategory(getGradesCategory(testId));
@@ -81,12 +95,13 @@ public class TestDAO {
 
     private List<User> getExperts(BigInteger testId) {
 
-        return jdbcTemplate.query(getExperts, new Object[]{testId.toString()}, new UserRowMapper());
+        return jdbcTemplate.query(GET_EXPERTS, new Object[]{testId.toString()}, new UserRowMapper());
     }
 
     private List<Question> getQuestions(BigInteger testId) {
-
-        return questionDAO.getAllQuestionInTest(testId);
+        List<Question> questions =   jdbcTemplate.query(GET_QUESTIONS, new Object[]{testId.toString()}, new QuestionRowMapper());
+        questions.forEach(question -> question.setAnswers(answerDAO.getAllAnswerInQuestion(question.getId())));
+        return questions;
     }
 
     private List<GradeCategory> getGradesCategory(BigInteger testId) {

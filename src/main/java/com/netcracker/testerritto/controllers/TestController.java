@@ -4,9 +4,11 @@ import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
+import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.services.CategoryService;
 import com.netcracker.testerritto.services.GradeCategoryService;
 import com.netcracker.testerritto.services.GroupService;
+import com.netcracker.testerritto.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,10 @@ import java.util.List;
 @RestController
 @RequestMapping("test")
 public class TestController {
+
+    @Autowired
+    private TestService testService;
+
     @Autowired
     private CategoryService categoryService;
 
@@ -24,6 +30,34 @@ public class TestController {
 
     @Autowired
     private GroupService groupService;
+
+    @PostMapping("/test")
+    public BigInteger createTest(@RequestBody Test test) {
+        try {
+            return testService.createTest(test);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/test")
+    public BigInteger updateTest(@RequestBody Test test) {
+        try {
+            return testService.updateTest(test);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTest(@PathVariable BigInteger id) {
+        try {
+            testService.deleteTest(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
 
     @GetMapping("/category/{id}")
     public Category getCategoryById(@PathVariable BigInteger id) {

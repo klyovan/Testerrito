@@ -3,25 +3,27 @@ package com.netcracker.testerritto.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.netcracker.testerritto.properties.ListsAttr;
 
+import com.netcracker.testerritto.properties.Status;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Result extends ObjectEav {
 
   private Date date;
   private int score;
-  private ListsAttr status;
+  private Status status;
   private BigInteger testId;
   @JsonIgnore
-  private HashMap<Reply, Question> replies;
+  private Map<Question, Reply> replies;
   private BigInteger userId;
 
   public Result() {
   }
 
-  public Result(Date date, int score, ListsAttr status, BigInteger testId, HashMap<Reply, Question> replies, BigInteger userId) {
+  public Result(Date date, int score, Status status, BigInteger testId, Map<Question, Reply> replies, BigInteger userId) {
     this.date = date;
     this.score = score;
     this.status = status;
@@ -47,11 +49,11 @@ public class Result extends ObjectEav {
   }
 
 
-  public ListsAttr getStatus() {
+  public Status getStatus() {
     return status;
   }
 
-  public void setStatus(ListsAttr status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
 
@@ -63,11 +65,11 @@ public class Result extends ObjectEav {
     this.testId = testId;
   }
 
-  public HashMap<Reply, Question> getReplies() {
+  public Map<Question, Reply> getReplies() {
     return replies;
   }
 
-  public void setReplies(HashMap<Reply, Question> replies) {
+  public void setReplies(Map<Question, Reply> replies) {
     this.replies = replies;
   }
 

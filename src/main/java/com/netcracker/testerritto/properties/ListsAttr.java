@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public enum ListsAttr {
     OPEN(BigInteger.valueOf(1), "open"),
     ONE_ANSWER(BigInteger.valueOf(2), "one-answer test"),

@@ -27,7 +27,7 @@ public class AnswerDAOTest {
 
   Answer createdAnswer;
   private BigInteger isCreated;
-  Answer expectedAnswer;;
+  Answer expectedAnswer;
   List<Answer> expAnswer;
 
   @Before

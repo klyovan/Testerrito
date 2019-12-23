@@ -71,7 +71,7 @@ public class QuestionDAOTest {
   }
 
   @Test(expected = EmptyResultDataAccessException.class)
-  public void deleteCategoryById() throws DataAccessException {
+  public void deleteQuestionById() throws DataAccessException {
     Question questForDeleting = getNewQuestion();
     BigInteger deletedId = questionDAO.createQuestion(questForDeleting);
     questionDAO.deleteQuestionById(deletedId);
@@ -82,7 +82,7 @@ public class QuestionDAOTest {
     Question question = new Question();
     question.setTextQuestion("What?");
     question.setTypeQuestion(ListsAttr.ONE_ANSWER);
-    question.setTestId(new BigInteger("-10025"));
+    question.setTestId(new BigInteger("-1025"));
     return question;
   }
 }
