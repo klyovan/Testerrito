@@ -45,7 +45,6 @@ public class ReplyService {
             checkAnswerId(id);
         }
 
-        //  checkQuestionTypeOfAnswer( answerId);
         checkAllAnswerIdHaveSameQuestionId(answerId);
         checkQuestionTypeOfAnswer(answerId);
 
@@ -81,8 +80,7 @@ public class ReplyService {
 
     }
 
-    // только для мульти ансверов
-    public void addAnswer(BigInteger replyId, BigInteger answerId) {
+    public void addAnswer(BigInteger replyId, BigInteger answerId) throws ServiceException {
         checkAnswerId(answerId);
         checkReplyId(replyId);
 
@@ -95,8 +93,7 @@ public class ReplyService {
         replyDAO.addAnswer(replyId, answerId);
     }
 
-    // только для мульти ансверов
-    public void deleteAnswer(BigInteger replyId, BigInteger answerId) {
+    public void deleteAnswer(BigInteger replyId, BigInteger answerId) throws ServiceException{
         checkAnswerId(answerId);
         checkReplyId(replyId);
 
@@ -182,7 +179,6 @@ public class ReplyService {
         Reply reply = getReply(replyId);
         BigInteger replyAnswerId = reply.getReplyList().get(0).getId();
         BigInteger replyQuestionId = answerDAO.getAnswerById(replyAnswerId).getQuestionId();
-        // BigInteger answerQuestionId = answerDAO.getAnswerById(answerId).getQuestionId();
 
         if (!(ListsAttr.MULTIPLE_ANSWER.equals(questionDAO.getQuestionById(replyQuestionId).getTypeQuestion()))) {
             serviceExceptionHandler.logAndThrowIllegalException(message);
