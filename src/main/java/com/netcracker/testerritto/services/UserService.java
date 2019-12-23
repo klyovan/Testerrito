@@ -9,13 +9,10 @@ import com.netcracker.testerritto.models.User;
 
 import java.math.BigInteger;
 import java.util.List;
-import javax.swing.text.Position.Bias;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 
@@ -113,7 +110,6 @@ public class UserService {
             serviceExceptionHandler.logAndThrowIllegalException("userId:" + userId +
                 " has not createdGroup with groupId: " + createdGroupId);
         }
-        //userDAO.deleteCreatedGroup(userId, createdGroupId);
         groupDAO.deleteGroup(createdGroupId);
 
     }
@@ -191,7 +187,6 @@ public class UserService {
     private void checkUniqueEmailConstraint(String param) {
         checkParameter(param, "email");
 
-//        try {
         if (userDAO.isEmailExist(param)) {
 
             try {
@@ -201,16 +196,12 @@ public class UserService {
                 serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
             }
         }
-//        } catch (DataAccessException ex) {
-        //   if we have exception it is mean that this email is free
-//        }
 
     }
 
     private void checkUniquePhoneConstraint(String param) {
         checkParameter(param, "phone");
 
-        //  try {
         if (userDAO.isPhoneExist(param)) {
             try {
                 throw new IllegalArgumentException(
@@ -219,9 +210,6 @@ public class UserService {
                 serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
             }
         }
-//    } catch (DataAccessException ex) {
-//         if we have exception it is mean that this phone is free
-//    }
 
     }
 

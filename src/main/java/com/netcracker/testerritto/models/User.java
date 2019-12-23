@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class User {
+public class User extends ObjectEav{
 
-  private BigInteger id;
   private String lastName;
   private String firstName;
   private String email;
@@ -40,14 +40,6 @@ public class User {
     this.email = email;
     this.password = password;
     this.phone = phone;
-  }
-
-  public BigInteger getId() {
-    return id;
-  }
-
-  public void setId(BigInteger id) {
-    this.id = id;
   }
 
   public String getLastName() {
@@ -132,5 +124,25 @@ public class User {
         && (email != null && email.equals(user.getEmail()))
         && (password != null && password.equals(user.getPassword()))
         && (phone != null && phone.equals(user.getPhone()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getLastName(), getFirstName(), getEmail(), getPassword(), getPhone(),
+        getGroups(), getResults(), getCreatedGroups());
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+        "lastName='" + lastName + '\'' +
+        ", firstName='" + firstName + '\'' +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", phone='" + phone + '\'' +
+        ", groups=" + groups +
+        ", results=" + results +
+        ", createdGroups=" + createdGroups +
+        '}';
   }
 }
