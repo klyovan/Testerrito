@@ -1,4 +1,4 @@
-package com.netcracker.testerritto.controllers.controllers;
+package com.netcracker.testerritto.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;

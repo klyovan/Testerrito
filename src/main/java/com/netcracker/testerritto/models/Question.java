@@ -1,26 +1,25 @@
 package com.netcracker.testerritto.models;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.netcracker.testerritto.properties.ListsAttr;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Question {
-    private BigInteger id;
+public class Question extends ObjectEav{
     private String textQuestion;
     private ListsAttr typeQuestion;
     private BigInteger testId;
+    @JsonDeserialize(as = ArrayList.class, contentAs = Answer.class)
     private List<Answer> answers;
 
-    public void setId(BigInteger id){
-        this.id = id;
-    }
-    public BigInteger getId(){
-        return this.id;
-    }
 
     public void setTextQuestion(String textQuestion){
         this.textQuestion = textQuestion;
     }
+
     public String getTextQuestion(){
         return this.textQuestion;
     }
@@ -28,6 +27,7 @@ public class Question {
     public void setTypeQuestion(ListsAttr typeQuestion){
         this.typeQuestion = typeQuestion;
     }
+
     public ListsAttr getTypeQuestion(){
         return this.typeQuestion;
     }
@@ -35,6 +35,7 @@ public class Question {
     public void setTestId(BigInteger testId){
         this.testId = testId;
     }
+
     public BigInteger getTestId(){
         return this.testId;
     }
@@ -42,6 +43,7 @@ public class Question {
     public void setAnswers(List<Answer> answers){
         this.answers = answers;
     }
+
     public List<Answer> getAnswers(){
         return this.answers;
     }

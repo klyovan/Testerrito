@@ -2,61 +2,53 @@ package com.netcracker.testerritto.models;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 
-public class Reply  extends ObjectEav{
+public class Reply extends ObjectEav {
 
-  private BigInteger id;
-  private BigInteger resultId;
-  private BigInteger answerId;
-  private String answer;
+    private BigInteger resultId;
+    private List<Answer> replyList;
 
-  public String getAnswer() {
-    return answer;
-  }
+    public BigInteger getResultId() {
+        return resultId;
+    }
 
-  @Override
-  public BigInteger getId() {
-    return id;
-  }
+    public void setResultId(BigInteger resultId) {
+        this.resultId = resultId;
+    }
 
-  @Override
-  public void setId(BigInteger id) {
-    this.id = id;
-  }
+    public List<Answer> getReplyList() {
+        return replyList;
+    }
 
-  public void setAnswer(String answer) {
-    this.answer = answer;
-  }
+    public void setReplyList(List<Answer> replyList) {
+        this.replyList = replyList;
+    }
 
-  private List<Answer> replyList;
+    public BigInteger getReplyId() {
+        return id;
+    }
 
-  public BigInteger getResultId() {
-    return resultId;
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reply reply = (Reply) o;
+        return getResultId().equals(reply.getResultId()) &&
+            getReplyList().equals(reply.getReplyList());
+    }
 
-  public void setResultId(BigInteger resultId) {
-    this.resultId = resultId;
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getResultId(), getReplyList());
+    }
 
-  public List<Answer> getReplyList() {
-    return replyList;
-  }
-
-  public void setReplyList(List<Answer> replyList) {
-    this.replyList = replyList;
-  }
-
-  public BigInteger getReplyId() {
-    return id;
-  }
-
-
-
-  public BigInteger getAnswerId() {
-    return answerId;
-  }
-
-  public void setAnswerId(BigInteger answerId) {
-    this.answerId = answerId;
-  }
+    @Override
+    public String toString() {
+        return "Reply{" +
+            "resultId=" + resultId +
+            ", replyList=" + replyList +
+            ", id=" + id +
+            '}';
+    }
 }

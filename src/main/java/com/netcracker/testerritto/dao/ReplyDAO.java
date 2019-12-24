@@ -2,12 +2,16 @@ package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.dao.ObjectEavBuilder.Builder;
 import com.netcracker.testerritto.mappers.ReplyRowMapper;
+import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
+
 import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,101 +20,139 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ReplyDAO {
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-  public Reply getReply(BigInteger id) {
-    String sql =
-        "select \n " +
-            "    reply.object_id id,\n" +
-            "    results.object_id result_id,\n" +
-            "    answer.object_id answer_id,\n" +
-            "    text_answer.value text_answer \n" +
+    private final String GET_RESULT_ID_OF_REPLY =
+        "select \n" +
+            "     results.object_id result_id \n" +
             "from \n" +
-            "    objects results,\n" +
-            "    objects answer,\n" +
-            "    objects reply,\n" +
-            "    objreference answer_2_reply,\n" +
-            "    objreference replys_2_results,\n" +
-            "    attributes text_answer\n" +
+            "     objects results, \n" +
+            "     objects reply, \n" +
+            "     objreference replys_2_results \n" +
             "where \n" +
-            "    reply.object_id = ?              /*reply_id*/          \n" +
-            "    and results.object_type_id= 5\n" +
-            "    and replys_2_results.attr_id = 31\n" +
-            "    and replys_2_results.object_id = reply.object_id\n" +
-            "    and replys_2_results.reference = results.object_id \n" +
-            "    and answer.object_type_id = 11     \n" +
-            "    and answer_2_reply.attr_id = 32\n" +
-            "    and answer_2_reply.object_id = answer.object_id\n" +
-            "    and answer_2_reply.reference = reply.object_id\n" +
-            "    and text_answer.attr_id = 20\n" +
-            "    and text_answer.object_id = answer.object_id";
+            "     reply.object_id = ?           /*reply_id*/\n" +
+            "     and results.object_type_id = 5 \n" +
+            "     and replys_2_results.attr_id = 31 \n" +
+            "     and replys_2_results.object_id = reply.object_id \n" +
+            "     and replys_2_results.reference = results.object_id";
 
-    return jdbcTemplate.queryForObject(sql, new Object[]{id.toString()}, new RowMapper<Reply>() {
-      @Override
-      public Reply mapRow(ResultSet resultSet, int i) throws SQLException {
-        Reply reply = new Reply();
-        reply.setId(new BigInteger(resultSet.getString("id")));
-        reply.setResultId(new BigInteger(resultSet.getString("result_id")));
-        reply.setAnswerId(new BigInteger(resultSet.getString("answer_id")));
-        reply.setAnswer(resultSet.getString("text_answer"));
+    private final String GET_ANSWER_LIST_FROM_REPLY =
+        "select \n" +
+            "     answer.object_id answer_id,\n" +
+            "     text_answer.value text_answer\n" +
+            "from\n" +
+            "     objects answer,\n" +
+            "     objects reply,\n" +
+            "     objreference answer_2_reply, \n" +
+            "     attributes text_answer\n" +
+            "where\n" +
+            "     reply.object_id = ?     /*reply_id*/\n" +
+            "     and answer.object_type_id = 11 \n" +
+            "     and answer_2_reply.attr_id = 32\n" +
+            "     and answer_2_reply.object_id = answer.object_id\n" +
+            "     and answer_2_reply.reference = reply.object_id\n" +
+            "     and text_answer.attr_id = 20\n" +
+            "     and text_answer.object_id = answer.object_id\n";
+
+    private final String ADD_ANSWER_QUERY =
+        "insert into objreference (attr_id, object_id, reference) values(32, ?, ? )";
+
+    private final String DELETE_ANSWER_QUERY =
+        "delete from objreference where attr_id =32 and object_id = ? /*answer_id*/ and reference = ? /*reply_id*/";
+
+    public Reply getReply(BigInteger id) {
+
+        Reply reply = jdbcTemplate
+            .queryForObject(GET_RESULT_ID_OF_REPLY, new Object[]{id.toString()}, new RowMapper<Reply>() {
+                @Override
+                public Reply mapRow(ResultSet resultSet, int i) throws SQLException {
+
+                    Reply reply = new Reply();                                      //result_id
+                    reply.setResultId(new BigInteger(resultSet.getString(1)));
+                    return reply;
+                }
+            });
+
+        List<Answer> answerList = jdbcTemplate
+            .query(GET_ANSWER_LIST_FROM_REPLY, new Object[]{id.toString()}, new RowMapper<Answer>() {
+                @Override
+                public Answer mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Answer answer = new Answer();
+                    answer.setId(new BigInteger(resultSet.getString("answer_id")));
+                    answer.setTextAnswer(resultSet.getString("text_answer"));
+                    return answer;
+                }
+            });
+
+        reply.setReplyList(answerList);
         return reply;
-      }
-    });
-  }
+
+    }
 
 
-  public void updateReply(BigInteger replyId, BigInteger answerId) {
+    public void updateReply(BigInteger replyId, BigInteger oldAnswerId, BigInteger newAnswerId) {
 
-    Reply reply = getReply(replyId);
-    new Builder(jdbcTemplate)
-        .setObjectId(reply.getAnswerId())
-        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
-        .delete();
+        Reply reply = getReply(replyId);
+        new Builder(jdbcTemplate)
+            .setObjectId(oldAnswerId)
+            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+            .delete();
 
-    new Builder(jdbcTemplate)
-        .setObjectId(answerId)
-        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
-        .createReference();
-  }
+        new Builder(jdbcTemplate)
+            .setObjectId(newAnswerId)
+            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+            .createReference();
+    }
 
-  public BigInteger createReply(BigInteger resultId, BigInteger answerId) {
-    String objectName = "Reply for question " + getQuestionId(answerId);
+    public BigInteger createReply(BigInteger resultId, BigInteger... answerId) {
+        String objectName = "Reply for question ";
+        for (BigInteger answ : answerId) {
+            objectName += getQuestionId(answ);
+            break;
+        }
+        BigInteger replyId = new Builder(jdbcTemplate)
+            .setObjectTypeId(ObjtypeProperties.REPLY)
+            .setName(objectName)
+            .setReference(AttrtypeProperties.REPLY_BELONGS, resultId)
+            .create();
+        for (BigInteger answId : answerId) {
+            new Builder(jdbcTemplate)
+                .setObjectId(answId)
+                .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+                .createReference();
+        }
+        return replyId;
+    }
 
-    BigInteger replyId = new Builder(jdbcTemplate)
-        .setObjectTypeId(ObjtypeProperties.REPLY)
-        .setName(objectName)
-        .setReference(AttrtypeProperties.REPLY_BELONGS, resultId)
-        .create();
+    public void deleteReply(BigInteger id) {
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(id)
+            .delete();
+    }
 
-    new Builder(jdbcTemplate)
-        .setObjectId(answerId)
-        .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
-        .createReference();
+    public void addAnswer(BigInteger replyId, BigInteger answerId) {
+        jdbcTemplate.update(ADD_ANSWER_QUERY, answerId.toString(), replyId.toString());
 
-    return replyId;
+    }
 
-  }
+    public void deleteAnswer(BigInteger replyId, BigInteger answerId) {
+        jdbcTemplate.update(DELETE_ANSWER_QUERY, answerId.toString(), replyId.toString());
+    }
 
-  public void deleteReply(BigInteger id) {
-    new ObjectEavBuilder.Builder(jdbcTemplate)
-        .setObjectId(id)
-        .delete();
-  }
+    private Integer getQuestionId(BigInteger answerId) {
+        String sql = ""+
+             "select answer.parent_id\n"+
+             "from objects answer\n"+
+             "where answer.object_id = ?";
 
-  private Integer getQuestionId(BigInteger answerId) {
-    String sql = ""
-        + "select answer.parent_id\n"
-        + "from objects answer\n"
-        + "where answer.object_id = ?";
-
-    return jdbcTemplate
-        .queryForObject(sql, new Object[]{answerId.toString()}, new RowMapper<Integer>() {
-          @Override
-          public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return rs.getInt(1);
-          }
-        });
-  }
+        return jdbcTemplate
+            .queryForObject(sql, new Object[]{answerId.toString()}, new RowMapper<Integer>() {
+                @Override
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getInt(1);
+                }
+            });
+    }
 
 }

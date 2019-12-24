@@ -13,7 +13,7 @@ public class ReplyRowMapper implements RowMapper<Reply> {
     Reply reply = new Reply();
     reply.setId(new BigInteger(resultSet.getString("id")));
     reply.setResultId(new BigInteger(resultSet.getString("result_id")));
-    reply.setAnswerId(new BigInteger(resultSet.getString("answer_id")));
+  //  reply.setAnswerId(new BigInteger(resultSet.getString("answer_id")));
    // reply.setAnswer(resultSet.getString("text_answer"));
 
     return reply;

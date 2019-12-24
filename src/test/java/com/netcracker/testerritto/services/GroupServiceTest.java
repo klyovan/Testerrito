@@ -163,7 +163,7 @@ public class GroupServiceTest {
         createTestValues();
         sequenceId = groupService.createGroup(groupExpected);
         Group group = new Group();
-        group.setId(null);
+        group.setId(sequenceId);
         group.setName("");
         groupService.updateGroup(group);
     }
@@ -175,8 +175,7 @@ public class GroupServiceTest {
         Group group = new Group();
         group.setId(sequenceId);
         group.setName("Very cool new group name");
-        groupService.updateGroup(group);
-        Group checkGroup = groupService.getGroupById(sequenceId);
+        Group checkGroup = groupService.updateGroup(group);
         assertEquals(group.getId(), checkGroup.getId());
         assertEquals(group.getName(), checkGroup.getName());
     }
