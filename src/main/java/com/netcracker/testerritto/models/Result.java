@@ -1,12 +1,16 @@
 package com.netcracker.testerritto.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.netcracker.testerritto.properties.ListsAttr;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import com.netcracker.testerritto.properties.Status;
+import com.netcracker.testerritto.serializers.ResultMapContentDeserializer;
+import com.netcracker.testerritto.serializers.ResultMapContentSerializer;
+import com.netcracker.testerritto.serializers.ResultMapKeyDeserializer;
+import com.netcracker.testerritto.serializers.ResultMapKeySerializer;
+
 import java.math.BigInteger;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,7 +20,8 @@ public class Result extends ObjectEav {
   private int score;
   private Status status;
   private BigInteger testId;
-  @JsonIgnore
+  @JsonSerialize(keyUsing = ResultMapKeySerializer.class, contentUsing = ResultMapContentSerializer.class)
+  @JsonDeserialize(keyUsing = ResultMapKeyDeserializer.class, contentUsing = ResultMapContentDeserializer.class)
   private Map<Question, Reply> replies;
   private BigInteger userId;
 

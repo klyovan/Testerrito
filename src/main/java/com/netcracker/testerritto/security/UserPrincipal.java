@@ -1,13 +1,14 @@
 package com.netcracker.testerritto.security;
 
 import com.netcracker.testerritto.models.User;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class UserPrincipal implements UserDetails {
   private User user;
@@ -56,5 +57,9 @@ public class UserPrincipal implements UserDetails {
     // TODO Add active status of user
     // return this.user.getActive() == 1;
     return true;
+  }
+
+  public BigInteger getUserId() {
+    return this.user.getId();
   }
 }

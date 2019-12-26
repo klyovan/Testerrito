@@ -2,24 +2,15 @@ package com.netcracker.testerritto.controllers;
 
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
-import com.netcracker.testerritto.models.Group;
-import com.netcracker.testerritto.models.Remark;
-import com.netcracker.testerritto.models.Result;
-import com.netcracker.testerritto.models.Test;
-import com.netcracker.testerritto.models.User;
+import com.netcracker.testerritto.models.*;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import com.netcracker.testerritto.services.ResultService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.math.BigInteger;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("group")

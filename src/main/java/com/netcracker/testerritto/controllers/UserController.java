@@ -1,28 +1,25 @@
 package com.netcracker.testerritto.controllers;
 
-
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
-import com.netcracker.testerritto.models.Test;
-import com.netcracker.testerritto.services.TestService;
+import com.netcracker.testerritto.models.User;
+import com.netcracker.testerritto.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigInteger;
-
 @RestController
-@RequestMapping("pass-test")
-public class PassTestController {
+@RequestMapping("user")
+public class UserController {
     @Autowired
-    TestService testService;
+    private UserService userService;
 
-    @GetMapping("/test/{id}")
-    public Test getTest(@PathVariable BigInteger id){
+    @GetMapping("/email/{email}")
+    public User getCategoryById(@PathVariable String email) {
         try {
-            return testService.getTest(id);
+            return userService.getUserByEmail(email);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

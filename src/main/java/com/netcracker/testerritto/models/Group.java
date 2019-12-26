@@ -17,8 +17,6 @@ public class Group extends ObjectEav {
     @JsonDeserialize(as = ArrayList.class, contentAs = Test.class)
     private List<Test> tests;
 
-    public Group(){}
-
     public String getName() {
         return name;
     }

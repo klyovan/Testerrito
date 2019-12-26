@@ -178,7 +178,10 @@ public class UserService {
         userDAO.exitFromGroup(userId, groupId);
 
     }
-
+//todo
+    public User getUserByEmail(String email) {
+        return userDAO.getUserByEmail(email);
+    }
 
     private void checkUserId(BigInteger id) {
         if (id == null) {
