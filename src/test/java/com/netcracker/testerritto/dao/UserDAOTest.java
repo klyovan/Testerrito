@@ -39,6 +39,25 @@ public class UserDAOTest {
   }
 
   @Test
+  public void updateUser(){
+    User newUser = new User("Gena", "Bukin",
+        "bukin@gmail", "2222", "54321");
+    newUser.setId(user1.getId());
+
+   user1 = userDAO.updateUser(newUser);
+   assertTrue(user1.equals(newUser));
+  }
+
+  @Test
+  public void updateUserSomeFields(){
+    User newUser = user1;
+    newUser.setFirstName("Valera");
+    newUser.setLastName("Shpak");
+    user1 = userDAO.updateUser(newUser);
+    assertTrue(user1.equals(newUser));
+  }
+
+  @Test
   public void creatUserAndGetUserTest() {
     User user2 = userDAO.getUser(user1.getId());
     assertNotNull(user1);

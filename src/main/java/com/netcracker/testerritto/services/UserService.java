@@ -41,35 +41,41 @@ public class UserService {
         return userDAO.createUser(user);
     }
 
+    @Deprecated
     public User getUser(BigInteger id) throws ServiceException {
         checkUserId(id);
         return userDAO.getUser(id);
     }
 
+    @Deprecated
     public void deleteUser(BigInteger id) throws ServiceException {
         checkUserId(id);
         userDAO.deleteUser(id);
     }
 
+    @Deprecated
     public void updateLastName(BigInteger id, String lastName) throws ServiceException {
         checkUserId(id);
-        checkParameter(lastName, "LastName");
+        checkParameter(lastName, "lastName");
         userDAO.updateLastName(id, lastName);
 
     }
 
+    @Deprecated
     public void updateFirstName(BigInteger id, String firstName) throws ServiceException {
         checkUserId(id);
         checkParameter(firstName, "firstName");
         userDAO.updateFirstName(id, firstName);
     }
 
+    @Deprecated
     public void updateEmail(BigInteger id, String email) throws ServiceException {
         checkUserId(id);
         checkUniqueEmailConstraint(email);
         userDAO.updateEmail(id, email);
     }
 
+    @Deprecated
     public void updatePassword(BigInteger id, String password) throws ServiceException {
         checkUserId(id);
         checkParameter(password, "password");
@@ -77,11 +83,36 @@ public class UserService {
 
     }
 
+    @Deprecated
     public void updatePhone(BigInteger id, String phone) throws ServiceException {
         checkUserId(id);
         checkUniquePhoneConstraint(phone);
         userDAO.updatePhone(id, phone);
 
+    }
+
+    public User updateUser(User user)throws ServiceException {
+        if (user == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
+        }
+        checkUserId(user.getId());
+        checkParameter(user.getLastName(), "lastName");
+        checkParameter(user.getFirstName(), "firstName");
+        checkParameter(user.getPassword(), "password");
+        checkParameter(user.getEmail(), "email");
+        checkParameter(user.getPhone(), "phone");
+
+        User oldUser = userDAO.getUser(user.getId());
+
+        if (!(oldUser.getEmail().equals(user.getEmail()))) {
+            checkUniqueEmailConstraint(user.getEmail());
+        }
+
+        if (!(oldUser.getPhone().equals(user.getPhone()))) {
+            checkUniquePhoneConstraint(user.getPhone());
+        }
+
+       return userDAO.updateUser(user);
     }
 
     public List<Group> getGroups(BigInteger id) throws ServiceException {
