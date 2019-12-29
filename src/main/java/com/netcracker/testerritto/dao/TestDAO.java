@@ -128,14 +128,14 @@ public class TestDAO {
     }
 
 
-    public BigInteger updateTest(Test test) {
+    public Test updateTest(Test test) {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(test.getId())
             .setStringAttribute(AttrtypeProperties.NAME_TEST, test.getNameTest())
             .update();
 
-        return test.getId();
+        return getTest(test.getId());
 
     }
 }

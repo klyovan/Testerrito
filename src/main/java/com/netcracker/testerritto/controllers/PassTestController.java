@@ -26,7 +26,7 @@ public class PassTestController {
     @Autowired
     ReplyService replyService;
 
-    private BigInteger createdResultId;
+    private BigInteger createdResultId = BigInteger.valueOf(120);
 
     @PutMapping("/test/{id}")
     public Test getTest(@PathVariable BigInteger id, @RequestBody Result result) {
@@ -38,6 +38,16 @@ public class PassTestController {
             throw new ApiRequestException(e.getMessage(), e);
         }
     }
+
+//    @GetMapping("/test/{id}")
+//    public Test getTestDetails(@PathVariable BigInteger id){
+//        try {
+//            return testService.getTest(id);
+//        } catch (IllegalArgumentException | ServiceException e) {
+//            throw new ApiRequestException(e.getMessage(), e);
+//        }
+//
+//    }
 
     @GetMapping("/reply")
     public Result getReplies() {

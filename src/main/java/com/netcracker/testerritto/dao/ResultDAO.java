@@ -183,7 +183,7 @@ public class ResultDAO {
             .create();
     }
 
-    public BigInteger updateResult(Result result) {
+    public Result updateResult(Result result) {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(result.getId())
@@ -195,7 +195,7 @@ public class ResultDAO {
             .setReference(AttrtypeProperties.RESULT_BELONGS, result.getTestId())
             .update();
 
-        return result.getId();
+        return getResult(result.getId());
 
     }
 

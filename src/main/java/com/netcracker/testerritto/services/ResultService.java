@@ -68,7 +68,7 @@ public class ResultService {
 
     }
 
-    public BigInteger updateResult(Result result)  {
+    public Result updateResult(Result result)  {
         checkParamsForCreateUpdateResult(result);
         checkIdNotNull(result.getId());
         try {
