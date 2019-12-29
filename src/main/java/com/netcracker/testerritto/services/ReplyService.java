@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ReplyService {
@@ -38,39 +42,58 @@ public class ReplyService {
         return replyDAO.getReply(id);
     }
 
-    public BigInteger createReply(BigInteger resultId, BigInteger... answerId) throws ServiceException {
-        checkResultId(resultId);
 
-        for (BigInteger id : answerId) {
-            checkAnswerId(id);
+    public BigInteger createReply(Reply reply) throws ServiceException {
+        if (reply == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object reply can't be null");
+        }
+        checkResultId(reply.getResultId());
+
+
+        for (Answer answer : reply.getReplyList()) {
+            checkAnswerId(answer.getId());
         }
 
-        checkAllAnswerIdHaveSameQuestionId(answerId);
-        checkQuestionTypeOfAnswer(answerId);
+        checkAllAnswerIdHaveSameQuestionId(reply.getReplyList());
+        checkQuestionTypeOfAnswer(reply.getReplyList());
 
-        Result result = resultDAO.getResult(resultId);
-        Answer answer = answerDAO.getAnswerById(answerId[0]);
-        BigInteger questionId = answer.getQuestionId();
+        Result result = resultDAO.getResult(reply.getResultId());
+        BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
         Question question = questionDAO.getQuestionById(questionId);
 
         if (question.getTestId().equals(result.getTestId())) {
-            return replyDAO.createReply(resultId, answerId);
+            return replyDAO.createReply(reply);
         } else {
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter resultId: " + resultId + " is in testId: "
-                + result.getTestId() + " and Parameter answerId: " + answerId[0] + " is in testId: " + question.getTestId()
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter resultId: " + reply.getResultId() + " is in testId: "
+                + result.getTestId() + " and Parameter answerId: " + reply.getReplyList().get(0).getId() + " is in testId: " + question.getTestId()
                 + " parameters are in different tests objects");
         }
 
         return null;
     }
 
-    public void updateReply(BigInteger replyId, BigInteger oldAnswerId, BigInteger newAnswerId) throws ServiceException {
-        checkAnswerId(oldAnswerId);
-        checkAnswerId(newAnswerId);
-        checkReplyId(replyId);
 
-        checkAllAnswerIdHaveSameQuestionId(oldAnswerId, newAnswerId);
-        replyDAO.updateReply(replyId, oldAnswerId, newAnswerId);
+    // только для oneAnswer type
+    public Reply updateReply(Reply reply, Answer answer) throws ServiceException {
+        if (reply == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object reply can't be null");
+        }
+        if (answer == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object answer can't be null");
+        }
+        checkAnswerId(answer.getId());
+        checkReplyId(reply.getId());
+
+        ArrayList<Answer> answerList = new ArrayList<>();
+        for(Answer answ :reply.getReplyList() ){
+            answerList.add(answ);
+        }
+        answerList.add(answer);
+        checkAllAnswerIdHaveSameQuestionId(answerList);
+
+        checkQuestionTypeOfAnswer(reply.getReplyList());
+        return replyDAO.updateReply(reply, answer);
+
 
     }
 
@@ -80,29 +103,48 @@ public class ReplyService {
 
     }
 
-    public void addAnswer(BigInteger replyId, BigInteger answerId) throws ServiceException {
-        checkAnswerId(answerId);
-        checkReplyId(replyId);
 
-        Reply reply = getReply(replyId);
+    public Reply addAnswer(Reply reply, Answer answer) throws ServiceException {
+        if (reply == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object reply can't be null");
+        }
+        if (answer == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object answer can't be null");
+        }
+        checkAnswerId(answer.getId());
+        checkReplyId(reply.getId());
+
         BigInteger replyAnswerId = reply.getReplyList().get(0).getId();
 
-        checkQuestionTypeOfReply(replyId, "You can not add answer for ONE_ANSWER Question ");
+        checkQuestionTypeOfReply(reply, "You can not add answer for ONE_ANSWER Question ");
 
-        checkAllAnswerIdHaveSameQuestionId(replyAnswerId, answerId);
-        replyDAO.addAnswer(replyId, answerId);
+        ArrayList<Answer> answerList = new ArrayList<>();
+        for(Answer answ :reply.getReplyList() ){
+            answerList.add(answ);
+        }
+        answerList.add(answer);
+
+        checkAllAnswerIdHaveSameQuestionId(answerList);
+        return replyDAO.addAnswer(reply, answer);
     }
 
-    public void deleteAnswer(BigInteger replyId, BigInteger answerId) throws ServiceException{
-        checkAnswerId(answerId);
-        checkReplyId(replyId);
 
-        Reply reply = getReply(replyId);
+
+    public Reply deleteAnswer(Reply reply, Answer answer) throws ServiceException {
+        if (reply == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object reply can't be null");
+        }
+        if (answer == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object answer can't be null");
+        }
+        checkAnswerId(answer.getId());
+        checkReplyId(reply.getId());
+
         if (reply.getReplyList().size() <= 1) {
             serviceExceptionHandler.logAndThrowIllegalException("Reply must contain at least one value ");
         }
 
-        replyDAO.deleteAnswer(replyId, answerId);
+       return replyDAO.deleteAnswer(reply, answer);
 
     }
 
@@ -144,28 +186,28 @@ public class ReplyService {
 
     }
 
-    private void checkQuestionTypeOfAnswer(BigInteger... answerId) {
-        Answer answer = answerDAO.getAnswerById(answerId[0]);
-        BigInteger questionId = answer.getQuestionId();
+
+    private void checkQuestionTypeOfAnswer(List<Answer> answerList) {
+        BigInteger questionId = answerList.get(0).getQuestionId();
         Question question = questionDAO.getQuestionById(questionId);
-        if (question.getTypeQuestion().equals(ListsAttr.ONE_ANSWER) && answerId.length > 1) {
+        if (question.getTypeQuestion().equals(ListsAttr.ONE_ANSWER) && answerList.size() > 1) {
             serviceExceptionHandler.logAndThrowIllegalException("You can not create Reply with a lot of answer to question type "
                 + question.getTypeQuestion());
         }
     }
 
-    private void checkAllAnswerIdHaveSameQuestionId(BigInteger... answerId) {
 
-        Answer answ = answerDAO.getAnswerById(answerId[0]);
-        BigInteger constantQuestionId = answ.getQuestionId();
+
+    private void checkAllAnswerIdHaveSameQuestionId(List<Answer> answerList) {
+
+        BigInteger constantQuestionId = answerList.get(0).getQuestionId();
         StringBuilder allAnswerIds = new StringBuilder("answerIds : ");
-        for (BigInteger id : answerId) {
-            allAnswerIds.append(id);
+        for (Answer answer : answerList) {
+            allAnswerIds.append(answer.getId());
             allAnswerIds.append(" ");
         }
 
-        for (BigInteger id : answerId) {
-            Answer answer = answerDAO.getAnswerById(id);
+        for (Answer answer : answerList) {
             BigInteger questionId = answer.getQuestionId();
             if (!(constantQuestionId.equals(questionId))) {
                 serviceExceptionHandler.logAndThrowIllegalException(" all answers must have same Question answerId "
@@ -175,8 +217,9 @@ public class ReplyService {
         }
     }
 
-    private void checkQuestionTypeOfReply(BigInteger replyId, String message) {
-        Reply reply = getReply(replyId);
+
+
+    private void checkQuestionTypeOfReply(Reply reply, String message) {
         BigInteger replyAnswerId = reply.getReplyList().get(0).getId();
         BigInteger replyQuestionId = answerDAO.getAnswerById(replyAnswerId).getQuestionId();
 

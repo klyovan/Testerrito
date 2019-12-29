@@ -5,10 +5,13 @@ import static org.junit.Assert.assertTrue;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.exceptions.ServiceException;
+import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.models.Group;
+import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.User;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -29,11 +32,14 @@ public class UserServiceTest {
     private UserDAO userDAO;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private TestService testService;
 
     private User user1;
     private User user2;        //with out group
     private BigInteger user1Id;
     private BigInteger user2Id;
+    private BigInteger test1Id;
 
     private Group group1;
     private BigInteger group1Id;
@@ -56,6 +62,8 @@ public class UserServiceTest {
             "gukinn.@gmail", "1111", "56783222190");
         user2Id = userService.createUser(user2);
 
+        test1Id = testService.createTest(getNewTest());
+
 
     }
 
@@ -64,6 +72,26 @@ public class UserServiceTest {
         userService.deleteUser(user1Id);
         groupService.deleteGroup(group1Id);
         userService.deleteUser(user2Id);
+        testService.deleteTest(test1Id);
+    }
+
+
+
+
+    @Test
+    public void getUserByEmail() {
+        User newUser = userService.getUserByEmail(user1.getEmail());
+        assertTrue(newUser.getPhone().equals(user1.getPhone()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUserByEmailWrongEmail() {
+        User newUser = userService.getUserByEmail("user1.getEmail()");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUserByEmailNullEmail() {
+        User newUser = userService.getUserByEmail(null);
     }
 
     @Test
@@ -75,22 +103,16 @@ public class UserServiceTest {
         assertTrue(user1.equals(newUser));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateUserWithExistingEmail(){
-        user1.setEmail(user2.getEmail());
-        user1.setId(user2Id);
-        userService.updateUser(user1);
-    }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateUserWithExistingPhone(){
+    public void updateUserWithExistingPhone() {
         user1.setPhone(user2.getPhone());
-        user1.setId(user2Id);
+        user1.setId(user1Id);
         userService.updateUser(user1);
     }
 
     @Test(expected = ServiceException.class)
-    public void updateUserWithBadId(){
+    public void updateUserWithBadId() {
         user1.setId(BigInteger.valueOf(-12345777));
         userService.updateUser(user1);
     }
@@ -299,6 +321,31 @@ public class UserServiceTest {
         assertTrue(groupsList.size() == 0);
     }
 
+    @Test
+    public void getGroupsTest() {
+        List<Group> groupList = userService.getGroups(user1Id);
+        assertTrue(groupList.size() == 1);
+
+        List<com.netcracker.testerritto.models.Test> testsList = groupList.get(0).getTests();
+        assertTrue(testsList.size() == 1);
+
+        List<User> userList = groupList.get(0).getUsers();
+        assertTrue(userList.size() == 1);
+
+    }
+
+    @Test
+    public void getCreatedGroups(){
+        List<Group> groupList = userService.getCreatedGroups(user1Id);
+        assertTrue(groupList.size() == 1);
+
+        List<com.netcracker.testerritto.models.Test> testsList = groupList.get(0).getTests();
+        assertTrue(testsList.size() == 1);
+
+        List<User> userList = groupList.get(0).getUsers();
+        assertTrue(userList.size() == 1);
+    }
+
     @Test(expected = ServiceException.class)
     public void getGroupsBadIdTest() {
         User user = new User("Allina", "Verde",
@@ -350,6 +397,7 @@ public class UserServiceTest {
         userService.deleteCreatedGroup(id, group1Id);
     }
 
+
     @Test
     public void enterInGroupTest() {
         userService.enterInGroup(user2Id, group1Id);
@@ -385,6 +433,16 @@ public class UserServiceTest {
         BigInteger newGroupId = groupService.createGroup(newGroup);
         groupService.deleteGroup(newGroupId);
         userService.exitFromGroup(user1Id, newGroupId);
+    }
+
+
+    private com.netcracker.testerritto.models.Test getNewTest() {
+        List<GradeCategory> grades = new ArrayList<>();
+        List<User> experts = new ArrayList<>();
+        List<Question> questions = new ArrayList<>();
+
+        return new com.netcracker.testerritto.models.Test(null, group1Id, "JustTest", user1Id,
+            grades, experts, questions);
     }
 
 

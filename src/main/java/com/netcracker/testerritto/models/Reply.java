@@ -1,13 +1,24 @@
 package com.netcracker.testerritto.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Reply extends ObjectEav {
 
     private BigInteger resultId;
+    @JsonDeserialize(as = ArrayList.class, contentAs = Answer.class)
     private List<Answer> replyList;
+
+    public Reply(){}
+
+    public Reply(BigInteger resultId, List<Answer>replyList){
+        this.resultId = resultId;
+        this.replyList = replyList;
+    }
 
     public BigInteger getResultId() {
         return resultId;

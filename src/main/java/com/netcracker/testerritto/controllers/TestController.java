@@ -4,11 +4,9 @@ import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
+import com.netcracker.testerritto.models.Reply;
 import com.netcracker.testerritto.models.Test;
-import com.netcracker.testerritto.services.CategoryService;
-import com.netcracker.testerritto.services.GradeCategoryService;
-import com.netcracker.testerritto.services.GroupService;
-import com.netcracker.testerritto.services.TestService;
+import com.netcracker.testerritto.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +28,8 @@ public class TestController {
 
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private ReplyService replyService;
 
     @PostMapping("/test")
     public BigInteger createTest(@RequestBody Test test) {
@@ -153,6 +153,15 @@ public class TestController {
     public void deleteGradeCategoryByTestId(@PathVariable BigInteger id) {
         try {
             gradeCategoryService.deleteGradeCategoryByTestId(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/reply")
+    public BigInteger createReply(@RequestBody Reply reply){
+        try {
+         return replyService.createReply(reply);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

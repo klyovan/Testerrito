@@ -309,12 +309,33 @@ public class UserDAO {
             .setObjectTypeId(ObjtypeProperties.USER)
             .setStringAttribute(AttrtypeProperties.LAST_NAME, user.getLastName())
             .setStringAttribute(AttrtypeProperties.FIRST_NAME, user.getFirstName())
-            .setStringAttribute(AttrtypeProperties.EMAIL, user.getEmail())
             .setStringAttribute(AttrtypeProperties.PHONE, user.getPhone())
+            .update();
+
+        return user;
+
+    }
+
+    public User updateEmailAndPassword(User user) {
+
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(user.getId())
+            .setStringAttribute(AttrtypeProperties.EMAIL, user.getEmail())
             .setStringAttribute(AttrtypeProperties.PASSWORD, user.getPassword())
             .update();
 
         return user;
 
     }
+
+    public User updatePassword(User user) {
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(user.getId())
+            .setStringAttribute(AttrtypeProperties.PASSWORD, user.getPassword())
+            .update();
+        return user;
+    }
 }
+
+
+
