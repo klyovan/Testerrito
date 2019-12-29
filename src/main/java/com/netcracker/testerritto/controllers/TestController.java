@@ -2,11 +2,17 @@ package com.netcracker.testerritto.controllers;
 
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
+import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.GradeCategory;
-import com.netcracker.testerritto.models.Reply;
+import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Test;
-import com.netcracker.testerritto.services.*;
+import com.netcracker.testerritto.services.AnswerService;
+import com.netcracker.testerritto.services.CategoryService;
+import com.netcracker.testerritto.services.GradeCategoryService;
+import com.netcracker.testerritto.services.GroupService;
+import com.netcracker.testerritto.services.QuestionService;
+import com.netcracker.testerritto.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +33,13 @@ public class TestController {
     private GradeCategoryService gradeCategoryService;
 
     @Autowired
-    private GroupService groupService;
+    private AnswerService answerService;
+
     @Autowired
-    private ReplyService replyService;
+    private QuestionService questionService;
+
+    @Autowired
+    private GroupService groupService;
 
     @PostMapping("/test")
     public BigInteger createTest(@RequestBody Test test) {
@@ -158,10 +168,91 @@ public class TestController {
         }
     }
 
-    @PostMapping("/reply")
-    public BigInteger createReply(@RequestBody Reply reply){
+    @PostMapping("/question")
+    public BigInteger createQuestion(@RequestBody Question newQuestion){
         try {
-         return replyService.createReply(reply);
+            return questionService.createQuestion(newQuestion);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/question")
+    public void updateQuestion(@RequestBody Question question) {
+        try {
+            questionService.updateQuestion(question);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/question/{id}")
+    public void deleteQuestionById(@PathVariable BigInteger id){
+        try {
+            questionService.deleteQuestionById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/question/{id}")
+    public Question getQuestionById(@PathVariable BigInteger id) {
+        try {
+            return questionService.getQuestionById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/question/test/{id}")
+    public List<Question> getAllQuestionInTest(@PathVariable BigInteger id) {
+        try {
+            return questionService.getAllQuestionInTest(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/answer")
+    public BigInteger createAnswer(@RequestBody Answer newAnswer){
+        try {
+            return answerService.createAnswer(newAnswer);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/answer")
+    public void updateAnswer(@RequestBody Answer newAnswer) {
+        try {
+            answerService.updateAnswer(newAnswer);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/answer/{id}")
+    public void deleteAnswerById(@PathVariable BigInteger id){
+        try {
+            answerService.deleteAnswer(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/answer/{id}")
+    public Answer getAnswerById(@PathVariable BigInteger id) {
+        try {
+            return answerService.getAnswerById(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/answer/question/{id}")
+    public List<Answer> getAllAnswerInQuestion(@PathVariable BigInteger id) {
+        try {
+            return answerService.getAllAnswerInQuestion(id);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

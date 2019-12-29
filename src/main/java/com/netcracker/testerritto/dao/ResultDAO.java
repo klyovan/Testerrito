@@ -151,11 +151,15 @@ public class ResultDAO {
     }
 
     public List<Result> getResultsByUser(BigInteger userId) {
-        return jdbcTemplate.query(GET_RESULTS_BY_USER, new Object[]{userId.toString()}, new ResultRowMapper());
+        List<Result> results = jdbcTemplate.query(GET_RESULTS_BY_USER, new Object[]{userId.toString()}, new ResultRowMapper());
+        results.forEach(result -> result.setReplies(getReplies(result.getId())));
+        return results;
     }
 
     public List<Result> getResultsByTest(BigInteger userId) {
-        return jdbcTemplate.query(GET_RESULTS_BY_TEST, new Object[]{userId.toString()}, new ResultRowMapper());
+        List<Result> results = jdbcTemplate.query(GET_RESULTS_BY_TEST, new Object[]{userId.toString()}, new ResultRowMapper());
+        results.forEach(result -> result.setReplies(getReplies(result.getId())));
+        return results;
     }
 
 
