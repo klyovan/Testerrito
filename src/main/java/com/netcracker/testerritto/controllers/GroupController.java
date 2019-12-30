@@ -6,6 +6,7 @@ import com.netcracker.testerritto.models.*;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import com.netcracker.testerritto.services.ResultService;
+import com.netcracker.testerritto.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,9 @@ public class GroupController {
 
     @Autowired
     private ResultService resultService;
+
+    @Autowired
+    private UserService userService;
 
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
@@ -104,4 +108,14 @@ public class GroupController {
             throw new ApiRequestException(e.getMessage(), e);
         }
     }
+
+    @PutMapping("/exitFromGroup/{id}")
+    public void exitFromGroup(@RequestBody User user, @PathVariable BigInteger id ){
+        try {
+           userService.exitFromGroup(user.getId(), id );
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
 }

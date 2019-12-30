@@ -91,34 +91,52 @@ public class ReplyDAO {
     }
 
 
-    public void updateReply(BigInteger replyId, BigInteger oldAnswerId, BigInteger newAnswerId) {
+//    public void updateReply(BigInteger replyId, BigInteger oldAnswerId, BigInteger newAnswerId) {
+//
+//        Reply reply = getReply(replyId);
+//        new Builder(jdbcTemplate)
+//            .setObjectId(oldAnswerId)
+//            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+//            .delete();
+//
+//        new Builder(jdbcTemplate)
+//            .setObjectId(newAnswerId)
+//            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+//            .createReference();
+//    }
 
-        Reply reply = getReply(replyId);
+        public Reply updateReply(Reply reply, Answer answer ) {
+
+      //  Reply reply = getReply(replyId);
         new Builder(jdbcTemplate)
-            .setObjectId(oldAnswerId)
-            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+            .setObjectId(reply.getReplyList().get(0).getId())
+            .setReference(AttrtypeProperties.ANSWER_BELONGS, reply.getReplyId())
             .delete();
 
         new Builder(jdbcTemplate)
-            .setObjectId(newAnswerId)
-            .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
+            .setObjectId(answer.getId())
+            .setReference(AttrtypeProperties.ANSWER_BELONGS, reply.getReplyId())
             .createReference();
+
+        return getReply(reply.getId());
     }
 
-    public BigInteger createReply(BigInteger resultId, BigInteger... answerId) {
+
+/////////////////////////////
+    public BigInteger createReply(Reply reply) {
         String objectName = "Reply for question ";
-        for (BigInteger answ : answerId) {
-            objectName += getQuestionId(answ);
+        for (Answer answer: reply.getReplyList()) {
+            objectName += getQuestionId(answer.getQuestionId());
             break;
         }
         BigInteger replyId = new Builder(jdbcTemplate)
             .setObjectTypeId(ObjtypeProperties.REPLY)
             .setName(objectName)
-            .setReference(AttrtypeProperties.REPLY_BELONGS, resultId)
+            .setReference(AttrtypeProperties.REPLY_BELONGS, reply.getResultId())
             .create();
-        for (BigInteger answId : answerId) {
+        for (Answer answer : reply.getReplyList()) {
             new Builder(jdbcTemplate)
-                .setObjectId(answId)
+                .setObjectId(answer.getId()) //
                 .setReference(AttrtypeProperties.ANSWER_BELONGS, replyId)
                 .createReference();
         }
@@ -131,13 +149,14 @@ public class ReplyDAO {
             .delete();
     }
 
-    public void addAnswer(BigInteger replyId, BigInteger answerId) {
-        jdbcTemplate.update(ADD_ANSWER_QUERY, answerId.toString(), replyId.toString());
-
+    public Reply addAnswer(Reply reply, Answer answer) {
+        jdbcTemplate.update(ADD_ANSWER_QUERY, answer.getId().toString(), reply.getId().toString());
+        return getReply(reply.getId());
     }
 
-    public void deleteAnswer(BigInteger replyId, BigInteger answerId) {
-        jdbcTemplate.update(DELETE_ANSWER_QUERY, answerId.toString(), replyId.toString());
+    public Reply deleteAnswer(Reply reply, Answer answer) {
+        jdbcTemplate.update(DELETE_ANSWER_QUERY, answer.getId().toString(), reply.getId().toString());
+        return getReply(reply.getId());
     }
 
     private Integer getQuestionId(BigInteger answerId) {

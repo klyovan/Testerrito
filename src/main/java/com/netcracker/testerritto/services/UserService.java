@@ -5,13 +5,17 @@ import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Group;
+import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
-import java.math.BigInteger;
-import java.util.List;
 
 @Service
 
@@ -31,8 +35,9 @@ public class UserService {
         if (user == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
         }
-        checkUniqueEmailConstraint(user.getEmail());
         checkUniquePhoneConstraint(user.getPhone());
+        checkUniqueEmailConstraint(user.getEmail());
+
         checkParameter(user.getFirstName(), "firstName");
         checkParameter(user.getLastName(), "lastName");
         checkParameter(user.getPassword(), "password");
@@ -40,40 +45,42 @@ public class UserService {
         return userDAO.createUser(user);
     }
 
-    //TODO: cover with necessary checks and tests
-    public User getUserByEmail(String email) {
-        return userDAO.getUserByEmail(email);
-    }
 
     public User getUser(BigInteger id) throws ServiceException {
         checkUserId(id);
+
         return userDAO.getUser(id);
     }
 
+    @Deprecated
     public void deleteUser(BigInteger id) throws ServiceException {
         checkUserId(id);
         userDAO.deleteUser(id);
     }
 
+    @Deprecated
     public void updateLastName(BigInteger id, String lastName) throws ServiceException {
         checkUserId(id);
-        checkParameter(lastName, "LastName");
+        checkParameter(lastName, "lastName");
         userDAO.updateLastName(id, lastName);
 
     }
 
+    @Deprecated
     public void updateFirstName(BigInteger id, String firstName) throws ServiceException {
         checkUserId(id);
         checkParameter(firstName, "firstName");
         userDAO.updateFirstName(id, firstName);
     }
 
+    @Deprecated
     public void updateEmail(BigInteger id, String email) throws ServiceException {
         checkUserId(id);
         checkUniqueEmailConstraint(email);
         userDAO.updateEmail(id, email);
     }
 
+    @Deprecated
     public void updatePassword(BigInteger id, String password) throws ServiceException {
         checkUserId(id);
         checkParameter(password, "password");
@@ -81,6 +88,7 @@ public class UserService {
 
     }
 
+    @Deprecated
     public void updatePhone(BigInteger id, String phone) throws ServiceException {
         checkUserId(id);
         checkUniquePhoneConstraint(phone);
@@ -88,14 +96,37 @@ public class UserService {
 
     }
 
+
+    public User updateUser(User user) throws ServiceException {
+        if (user == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
+        }
+        checkUserId(user.getId());
+        checkParameter(user.getLastName(), "lastName");
+        checkParameter(user.getFirstName(), "firstName");
+        checkParameter(user.getPhone(), "phone");
+
+        User oldUser = userDAO.getUser(user.getId());
+
+        if (!(oldUser.getPhone().equals(user.getPhone()))) {
+            checkUniquePhoneConstraint(user.getPhone());
+        }
+
+        return userDAO.updateUser(user);
+    }
+
     public List<Group> getGroups(BigInteger id) throws ServiceException {
         checkUserId(id);
-        return userDAO.getGroups(id);
+
+        return fillGroupFields(userDAO.getGroups(id));
+
+
     }
+
 
     public List<Group> getCreatedGroups(BigInteger id) throws ServiceException {
         checkUserId(id);
-        return userDAO.getCreatedGroups(id);
+        return fillGroupFields(userDAO.getCreatedGroups(id));
     }
 
     public void deleteCreatedGroup(BigInteger userId, BigInteger createdGroupId) throws ServiceException {
@@ -152,10 +183,81 @@ public class UserService {
 
     }
 
+    public User getUserByEmail(String email) {
+        checkParameter(email, "email");
+        if (userDAO.isEmailExist(email)) {
+            return userDAO.getUserByEmail(email);
+        }
+        serviceExceptionHandler.logAndThrowIllegalException("This email: " + email + "don't exist");
+        return null;
+    }
+
+
+    public User updateEmailAndPassword(List<User> userList) throws ServiceException {
+        if (userList == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
+        }
+        checkUserId(userList.get(0).getId());
+        checkParameter(userList.get(0).getEmail(), "email");
+
+        User oldUser = getUser(userList.get(0).getId());
+
+        if (!(oldUser.getEmail().equals(userList.get(0).getEmail()))) {
+            checkUniqueEmailConstraint(userList.get(0).getEmail());
+
+            if (userList.get(0).getPassword() == null) {
+                userList.get(0).setPassword(oldUser.getPassword());
+                return userDAO.updateEmailAndPassword(userList.get(0));
+            }
+        }
+
+        if (userList.get(0).getPassword() != null && userList.get(0).getPassword().equals(oldUser.getPassword())) {
+            checkParameter(userList.get(1).getPassword(), "newPassword");
+
+            userList.get(0).setPassword(userList.get(1).getPassword());
+            return userDAO.updateEmailAndPassword(userList.get(0));
+        }
+
+        serviceExceptionHandler.logAndThrowIllegalException("passwords did not match");
+        return null;
+    }
+
+
+    public User updatePassword(User user) throws ServiceException {
+        if (user == null) {
+            serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
+        }
+        checkUserId(user.getId());
+        checkParameter(user.getPassword(), "password");
+        return userDAO.updatePassword(user);
+
+    }
+
+    private List<Group> fillGroupFields(List<Group> groups) {
+        List<Test> tests;
+        List<User> users;
+
+        for (Group group : groups) {
+            tests = groupDAO.getAllTestsInGroup(group.getId());
+            if (tests == null) {
+                group.setTests(new LinkedList<>());
+            }
+            group.setTests(tests);
+
+            users = groupDAO.getUsersInGroup(group.getId());
+            if (users == null) {
+                group.setUsers(new LinkedList<>());
+            }
+            group.setUsers(users);
+        }
+        return groups;
+
+    }
+
 
     private void checkUserId(BigInteger id) {
         if (id == null) {
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter user_id can't be null");
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter userId can't be null");
         }
         try {
             userDAO.getUser(id);
@@ -216,6 +318,7 @@ public class UserService {
         }
 
     }
+
 
 }
 
