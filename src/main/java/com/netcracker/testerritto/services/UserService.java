@@ -42,7 +42,9 @@ public class UserService {
 
     //TODO: cover with necessary checks and tests
     public User getUserByEmail(String email) {
-        return userDAO.getUserByEmail(email);
+        User user = userDAO.getUserByEmail(email);
+        user.setPassword("");
+        return user;
     }
 
     public User getUser(BigInteger id) throws ServiceException {
