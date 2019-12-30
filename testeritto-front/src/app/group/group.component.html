@@ -1,0 +1,64 @@
+<div *ngIf = "this.loading == true">
+ 
+  <h2>Welcome to the Group: {{group.name}}</h2>
+ <div>Share link to invite people: {{group.link}}<button class="btn btn-info btn-lg" (click)="copyLinkToClipboard()">Copy link</button>
+ </div> 
+ 
+  <button class="btn btn-info btn-lg" [routerLink]="['users']"></button>
+  <div class="container">
+    <table class="row justify-content-center">
+      <div class="row justify-content-start">
+        <tr>
+          <td class="col-6">
+            <div *ngIf="this.testsLoaded == true">    
+                <table class="table table-striped">
+                  <tr>
+                    <th class="col-6">Names</th>
+                    <th class="col-6">Actions</th>    
+                  </tr>
+                  <tbody>
+                    <tr *ngFor = "let test of group.tests">
+                      <td class="col-6">{{test.nameTest}}</td>
+                      <td class="col-3"><button class="btn btn-info btn-lg" (click)="passTest(test.id)">Pass test</button></td>
+                      <td class="col-3"><button class="btn btn-info btn-lg" (click)="seeResultsOnTest(test.id)">See results</button></td>
+                    </tr>
+                  </tbody>
+                </table>    
+                <div *ngIf = "this.group.creatorUserId == this.user.id">
+                  <button class="btn btn-info btn-lg btn-block" [routerLink]="['/test']">Create new Test</button>
+                </div>    
+            </div>
+          </td>
+      
+          <td class="col-6" *ngIf = "this.showResult == true">
+            <table class="table table-striped">
+              <tr>
+                <th class="col-3">Status</th>
+                <th class="col-3">Date</th> 
+                <th class="col-3">Score</th>   
+                <th class="col-3">Action</th>       
+              </tr>
+              <tbody>
+                <tr *ngFor = "let result of this.user.results">
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.status}}</td>  
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.date}}</td>  
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.score}}</td>  
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId"><button class="btn btn-info btn-lg" [routerLink]="['/group/result/',result.id]">Details</button></td>   
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId && result.status == 'Passed'"><button class="btn btn-info btn-lg" [routerLink]="['/group/result/',result.id]">Details</button></td>   
+                  <td class="col-3" *ngIf="this.selectedTest == result.testId && result.status == 'Not passed'"><button class="btn btn-info btn-lg">Finish it!</button></td>          
+                </tr>
+              </tbody>
+            </table>    
+          </td>
+      
+        </tr>
+      </div>
+      
+    </table>
+  </div>
+
+  
+
+</div>
+  
+
