@@ -12,6 +12,7 @@ import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.ListsAttr;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ public class ReplyDAOTest {
     private BigInteger answerId;
     private BigInteger answer2Id;
     private BigInteger questionId;
+    private Reply reply;
 
 
     @Before
@@ -89,17 +91,25 @@ public class ReplyDAOTest {
         answer.setScore(25);
         answer.setQuestionId(questionId);
         answerId = answerDAO.createAnswer(answer);
+        answer.setId(answerId);
 
         Answer answer2 = new Answer();
         answer2.setTextAnswer("I like bud");
         answer2.setScore(25);
         answer2.setQuestionId(questionId);
         answer2Id = answerDAO.createAnswer(answer2);
-        BigInteger[] answers = new BigInteger[2];
-        answers[0] = (answerId);
-        answers[1] = (answer2Id);
+        answer2.setId(answer2Id);
+        //  BigInteger[] answers = new BigInteger[2];
+        //  answers[0] = (answerId);
+        //  answers[1] = (answer2Id);
 
-        replyId = replyDAO.createReply(resultId, answers);
+        List<Answer> answers = Arrays.asList(answer, answer2);
+        reply = new Reply(resultId, answers);
+
+
+        //    replyId = replyDAO.createReply(resultId, answers);
+        replyId = replyDAO.createReply(reply);
+        reply.setId(replyId);
 
 
     }
@@ -131,11 +141,15 @@ public class ReplyDAOTest {
         answer.setScore(25);
         answer.setQuestionId(questionId);
         BigInteger newAnswerId = answerDAO.createAnswer(answer);
+        //
+        answer.setId(newAnswerId);
 
 
         Reply oldReply = replyDAO.getReply(replyId);
         BigInteger oldAnswer = oldReply.getReplyList().get(0).getId();
-        replyDAO.updateReply(replyId, oldAnswer, newAnswerId);
+//        replyDAO.updateReply(replyId, oldAnswer, newAnswerId);
+
+        replyDAO.updateReply(reply, answer);
 
         Reply newReply = replyDAO.getReply(replyId);
         List<Answer> replys = newReply.getReplyList();
@@ -156,8 +170,10 @@ public class ReplyDAOTest {
         answer.setScore(25);
         answer.setQuestionId(questionId);
         answerId = answerDAO.createAnswer(answer);
+        //
+        answer.setId(answerId);
 
-        replyDAO.addAnswer(replyId, answerId);
+        replyDAO.addAnswer(reply, answer);
         Reply reply = replyDAO.getReply(replyId);
         assertTrue(reply.getReplyList().size() == 3);
 
@@ -173,9 +189,11 @@ public class ReplyDAOTest {
         answer.setScore(25);
         answer.setQuestionId(questionId);
         answerId = answerDAO.createAnswer(answer);
+        //
+        answer.setId(answerId);
 
-        replyDAO.addAnswer(replyId, answerId);
-        replyDAO.deleteAnswer(replyId, answerId);
+        replyDAO.addAnswer(reply, answer);
+        replyDAO.deleteAnswer(reply, answer);
 
         Reply reply = replyDAO.getReply(replyId);
         assertTrue(reply.getReplyList().size() == 2);

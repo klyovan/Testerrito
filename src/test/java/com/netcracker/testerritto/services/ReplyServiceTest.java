@@ -16,8 +16,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,12 +53,20 @@ public class ReplyServiceTest {
     private BigInteger answer3Id;
     private BigInteger question1Id;
     private BigInteger question2Id;
-    private BigInteger MultipleQuestion1Id;
-    private BigInteger MultipleQuestion2Id;
+    private BigInteger multipleQuestion1Id;
+    private BigInteger multipleQuestion2Id;
     private BigInteger multipleAnswerId1;
     private BigInteger multipleAnswerId2;
     private BigInteger multipleAnswerId3;
     private BigInteger multipleReplyId;
+    private Result result;
+    private Answer answer1;
+    private Answer answer2;
+    private Answer answer3;
+    private Answer multipleAnswer1;
+    private Answer multipleAnswer2;
+    private Answer multipleAnswer3;
+    private Reply reply1;
 
     @Before
     public void init() {
@@ -67,21 +77,47 @@ public class ReplyServiceTest {
         userId = userService.createUser(user);
         groupId = groupService.createGroup(getNewGroup());
         test1Id = testService.createTest(getNewTest());
-        resultId = resultService.createResult(getNewResult());
+        result = getNewResult();
+        resultId = resultService.createResult(result);
+        result.setId(resultId);
         question1Id = questionDAO.createQuestion(getNewQuestion(test1Id));
-        answer1Id = answerDAO.createAnswer(getNewAnswer(question1Id));
-        answer3Id = answerDAO.createAnswer(getNewAnswer(question1Id));
-        replyId = replyService.createReply(resultId, answer1Id);
+
+        answer1 = getNewAnswer(question1Id);
+        answer1Id = answerDAO.createAnswer(answer1);
+        answer1.setId(answer1Id);
+
+        answer3 = getNewAnswer(question1Id);
+        answer3Id = answerDAO.createAnswer(answer3);
+        answer3.setId(answer3Id);
+
+        List<Answer> answerList = Arrays.asList(answer1);
+        reply1 = new Reply(resultId, answerList);
+        //   replyId = replyService.createReply(resultId, answer1Id);
+        replyId = replyService.createReply(reply1);
+        reply1.setId(replyId);
+        //reply.setId();
+
 
         test2Id = testService.createTest(getNewTest());
         question2Id = questionDAO.createQuestion(getNewQuestion(test2Id));
-        answer2Id = answerDAO.createAnswer(getNewAnswer(question2Id));
+        answer2 = getNewAnswer(question2Id);
+        answer2Id = answerDAO.createAnswer(answer2);
+        answer2.setId(answer2Id);
 
-        MultipleQuestion1Id = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
-        MultipleQuestion2Id = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
-        multipleAnswerId1 = answerDAO.createAnswer(getNewAnswer(MultipleQuestion1Id));
-        multipleAnswerId2 = answerDAO.createAnswer(getNewAnswer(MultipleQuestion1Id));
-        multipleAnswerId3 = answerDAO.createAnswer(getNewAnswer(MultipleQuestion2Id));
+        multipleQuestion1Id = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
+        multipleQuestion2Id = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
+
+        multipleAnswer1 = getNewAnswer(multipleQuestion1Id);
+        multipleAnswerId1 = answerDAO.createAnswer(multipleAnswer1);
+        multipleAnswer1.setId(multipleAnswerId1);
+
+        multipleAnswer2 = getNewAnswer(multipleQuestion1Id);
+        multipleAnswerId2 = answerDAO.createAnswer(multipleAnswer2);
+        multipleAnswer2.setId(multipleAnswerId2);
+
+        multipleAnswer3 = getNewAnswer(multipleQuestion2Id);
+        multipleAnswerId3 = answerDAO.createAnswer(multipleAnswer2);
+        multipleAnswer3.setId(multipleAnswerId3);
         // multipleReplyId = replyService.createReply(resultId,multipleAnswerId1, multipleAnswerId2)
 
     }
@@ -100,8 +136,8 @@ public class ReplyServiceTest {
         questionDAO.deleteQuestionById(question2Id);
         answerDAO.deleteAnswer(answer2Id);
 
-        questionDAO.deleteQuestionById(MultipleQuestion1Id);
-        questionDAO.deleteQuestionById(MultipleQuestion2Id);
+        questionDAO.deleteQuestionById(multipleQuestion1Id);
+        questionDAO.deleteQuestionById(multipleQuestion2Id);
         answerDAO.deleteAnswer(multipleAnswerId1);
         answerDAO.deleteAnswer(multipleAnswerId2);
         answerDAO.deleteAnswer(multipleAnswerId3);
@@ -127,8 +163,11 @@ public class ReplyServiceTest {
     public void deleteReplyBadIdTest() {
         BigInteger newResultId = resultService.createResult(getNewResult());
         BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
-        BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
+        List<Answer> answerList = Arrays.asList(answerDAO.getAnswerById(newAnswerId));
+        Reply reply = new Reply(newResultId, answerList);
+//        BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
 
+        BigInteger newReplyId = replyService.createReply(reply);
         replyService.deleteReply(newReplyId);
         resultService.deleteResult(newResultId);
         answerDAO.deleteAnswer(newAnswerId);
@@ -139,11 +178,17 @@ public class ReplyServiceTest {
     @Test
     public void deleteReplyTest() {
         BigInteger newResultId = resultService.createResult(getNewResult());
-        BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
-        BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
+
+        Answer newAnswer = getNewAnswer(question1Id);
+        newAnswer.setId(answerDAO.createAnswer(newAnswer));
+
+        List<Answer> newAnswerList = Arrays.asList(newAnswer);
+        Reply newReply = new Reply(newResultId, newAnswerList);
+
+        BigInteger newReplyId = replyService.createReply(newReply);
 
         replyService.deleteReply(newReplyId);
-        answerDAO.deleteAnswer(newAnswerId);
+        answerDAO.deleteAnswer(newAnswer.getId());
         resultService.deleteResult(newResultId);
     }
 
@@ -157,35 +202,49 @@ public class ReplyServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createReplyWithResultAndAnswerInDifferentTests() {
-        replyService.createReply(resultId, answer2Id);
+        List<Answer> newAnswerList = Arrays.asList(answer2);
+        Reply reply = new Reply(resultId, newAnswerList);
+        replyService.createReply(reply);
 
     }
 
     @Test(expected = ServiceException.class)
     public void createReplyWithBadResultIdTest() {
         BigInteger newResultId = resultService.createResult(getNewResult());
-        BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
+        Answer newAnswer = getNewAnswer(question1Id);
+        BigInteger newAnswerId = answerDAO.createAnswer(newAnswer);
 
+        List<Answer> newAnswerList = Arrays.asList(newAnswer);
         resultService.deleteResult(newResultId);
         answerDAO.deleteAnswer(newAnswerId);
 
-        replyService.createReply(newResultId, newAnswerId);
+        Reply reply = new Reply(newResultId, newAnswerList);
+        replyService.createReply(reply);
     }
 
     @Test
     public void createReplyForMultipleAnswerTest() {
         BigInteger newMultipleQuestionId = questionDAO.createQuestion(getNewMultipleAnswerQuestion(test1Id));
-        BigInteger newAnswerId1 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
-        BigInteger newAnswerId2 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
-        BigInteger newAnswerId3 = answerDAO.createAnswer(getNewAnswer(newMultipleQuestionId));
 
-        BigInteger[] arr = {newAnswerId1, newAnswerId2, newAnswerId3};
-        int i = 0;
-        BigInteger newReplyId = replyService.createReply(resultId, newAnswerId1, newAnswerId2, newAnswerId3);
+        Answer newAnswer1 = getNewAnswer(newMultipleQuestionId);
+        BigInteger newAnswerId1 = answerDAO.createAnswer(newAnswer1);
+        newAnswer1.setId(newAnswerId1);
+
+        Answer newAnswer2 = getNewAnswer(newMultipleQuestionId);
+        BigInteger newAnswerId2 = answerDAO.createAnswer(newAnswer2);
+        newAnswer2.setId(newAnswerId2);
+
+        Answer newAnswer3 = getNewAnswer(newMultipleQuestionId);
+        BigInteger newAnswerId3 = answerDAO.createAnswer(newAnswer3);
+        newAnswer3.setId(newAnswerId3);
+
+        List<Answer> newAnswerList = Arrays.asList(newAnswer1, newAnswer2, newAnswer3);
+
+        Reply newReply = new Reply(resultId, newAnswerList);
+        BigInteger newReplyId = replyService.createReply(newReply);
         Reply reply = replyService.getReply(newReplyId);
-        for (Answer answer : reply.getReplyList()) {
-            assertTrue(answer.getId().equals(arr[i++]));
-        }
+
+        assertTrue(reply.getReplyList().size() == 3);
 
         answerDAO.deleteAnswer(newAnswerId1);
         answerDAO.deleteAnswer(newAnswerId2);
@@ -199,39 +258,48 @@ public class ReplyServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createReplyForMultipleAnswerWithDifferentAnswerIdTest() {
-        multipleReplyId = replyService.createReply(resultId,
-            multipleAnswerId1, multipleAnswerId2, multipleAnswerId3);
+        List<Answer> newAnswerList = Arrays.asList(multipleAnswer1, multipleAnswer2, multipleAnswer3);
+        Reply newReply = new Reply(resultId,newAnswerList);
+        multipleReplyId = replyService.createReply(newReply);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createReplyForOneAnswerWithManyAnswerIdsTest() {
-        BigInteger replayId = replyService.createReply(resultId, answer1Id, answer3Id);
+        List<Answer> newAnswerList = Arrays.asList(answer1, answer3);
+        Reply newReply = new Reply(resultId, newAnswerList);
+        BigInteger replayId = replyService.createReply(newReply);
 
     }
 
     @Test
     public void addAnswerTest() {
-        multipleReplyId = replyService.createReply(resultId, multipleAnswerId1);
-        replyService.addAnswer(multipleReplyId, multipleAnswerId2);
+        List<Answer> newAnswerList = Arrays.asList(multipleAnswer1);
+        Reply newReply = new Reply(resultId, newAnswerList);
+        multipleReplyId = replyService.createReply(newReply);
+        newReply.setId(multipleReplyId);
+        replyService.addAnswer(newReply, multipleAnswer2);
 
         assertTrue(replyService.getReply(multipleReplyId).getReplyList().size() == 2);
         replyService.deleteReply(multipleReplyId);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void addAnswerForOneAnswerTest(){
-        replyService.addAnswer(replyId, answer3Id);
+    public void addAnswerForOneAnswerTest() {
+        replyService.addAnswer(reply1, answer3);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void deleteAnswerForOneAnswerTest(){
-        replyService.deleteAnswer(replyId, answer1Id);
+    public void deleteAnswerForOneAnswerTest() {
+        replyService.deleteAnswer(reply1, answer1);
     }
 
     @Test
     public void deleteAnswerTest() {
-        multipleReplyId = replyService.createReply(resultId, multipleAnswerId1, multipleAnswerId2);
-        replyService.deleteAnswer(multipleReplyId, multipleAnswerId2);
+        List<Answer> newAnswerList = Arrays.asList(multipleAnswer1, multipleAnswer2);
+        Reply newReply = new Reply(resultId, newAnswerList);
+        multipleReplyId = replyService.createReply(newReply);
+        newReply.setId(multipleReplyId);
+        replyService.deleteAnswer(newReply, multipleAnswer2);
 
         assertTrue(replyService.getReply(multipleReplyId).getReplyList().size() == 1);
         replyService.deleteReply(multipleReplyId);
@@ -240,14 +308,15 @@ public class ReplyServiceTest {
 
     @Test
     public void updateReplyTest() {
-        Answer answer = new Answer();
-        answer.setTextAnswer("pizza");
-        answer.setScore(25);
-        answer.setQuestionId(question1Id);
+        Answer newAnswer = new Answer();
+        newAnswer.setTextAnswer("pizza");
+        newAnswer.setScore(25);
+        newAnswer.setQuestionId(question1Id);
 
-        BigInteger newAnswerId = answerDAO.createAnswer(answer);
+        BigInteger newAnswerId = answerDAO.createAnswer(newAnswer);
+        newAnswer.setId(newAnswerId);
 
-        replyService.updateReply(replyId, answer1Id, newAnswerId);
+        replyService.updateReply(reply1, newAnswer);
 
         Reply reply = replyService.getReply(replyId);
         assertTrue(reply.getReplyList().get(0).getTextAnswer().equals("pizza"));
@@ -258,27 +327,32 @@ public class ReplyServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateReplyWithNullReplyIdTest() {
-        replyService.updateReply(null, answer1Id, null);
+        replyService.updateReply(null,  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateReplyWithNullAnswerIdTest() {
-        replyService.updateReply(replyId, null, null);
+        replyService.updateReply(reply1, null);
     }
 
     @Test(expected = ServiceException.class)
     public void updateReplyWithBadIdTest() {
         BigInteger newResultId = resultService.createResult(getNewResult());
-        BigInteger newAnswerId = answerDAO.createAnswer(getNewAnswer(question1Id));
-        BigInteger newReplyId = replyService.createReply(newResultId, newAnswerId);
+        Answer newAnswer = getNewAnswer(question1Id);
+        BigInteger newAnswerId = answerDAO.createAnswer(newAnswer);
+        newAnswer.setId(newAnswerId);
+
+        List<Answer> newAnswerList = Arrays.asList(newAnswer);
+        Reply newReply = new Reply(newResultId, newAnswerList);
+
+        BigInteger newReplyId = replyService.createReply(newReply);
 
         replyService.deleteReply(newReplyId);
         resultService.deleteResult(newResultId);
         answerDAO.deleteAnswer(newAnswerId);
-        replyService.updateReply(newReplyId, newAnswerId, null);
+        replyService.updateReply(newReply, newAnswer);
 
     }
-
 
 
     private Result getNewResult() {

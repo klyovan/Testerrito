@@ -40,29 +40,21 @@ public class QuestionDAO {
 
   private String QUERY_FOR_SELECT_ALL_QUESTIONS_IN_TEST =
     "select " +
-      "question.object_id as id," +
-      "question_text.value as text," +
-      "question_type.list_value_id as type_question," +
-      "question.parent_id as test_id," +
-      "match_category.reference as category_id," +
-      "caused_by_question.reference as remark_id " +
-    "from " +
-      "objects question," +
-      "attributes question_text," +
-      "attributes question_type," +
-      "objreference match_category," +
-      "objreference caused_by_question " +
-    "where " +
-      "question.parent_id = ?" +
-      "and question.object_type_id = 10" +
-      "and question.object_id = question_text.object_id " +
-      "and question_text.attr_id = 18 " +
+      "question.object_id as id,\n" +
+      "question_text.value as text,\n" +
+      "question_type.list_value_id as question_type,\n" +
+      "question.parent_id as test_id\n" +
+    "from \n" +
+      "objects question,\n" +
+      "attributes question_type,\n"+
+      "attributes question_text\n" +
+    "where \n" +
+      "question.parent_id = ?\n" +
+      "and question.object_type_id = 10\n" +
+      "and question.object_id = question_text.object_id \n" +
+      "and question_text.attr_id = 18 \n" +
       "and question.object_id = question_type.object_id\n" +
-      "and question_type.attr_id = 19 " +
-      "and question.object_id = match_category.object_id " +
-      "and match_category.attr_id = 34 " +
-      "and question.object_id = caused_by_question.object_id " +
-      "and caused_by_question.attr_id = 28";
+      "and question_type.attr_id = 19 \n";
 
   public QuestionDAO(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;

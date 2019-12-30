@@ -185,6 +185,7 @@ public class UserDAO {
             .create();
     }
 
+    @Deprecated
     public void updateLastName(BigInteger id, String lastName) {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
@@ -194,6 +195,7 @@ public class UserDAO {
 
     }
 
+    @Deprecated
     public void updateFirstName(BigInteger id, String firstName) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(id)
@@ -201,6 +203,7 @@ public class UserDAO {
             .update();
     }
 
+    @Deprecated
     public void updateEmail(BigInteger id, String email) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(id)
@@ -209,6 +212,7 @@ public class UserDAO {
 
     }
 
+    @Deprecated
     public void updatePassword(BigInteger id, String password) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(id)
@@ -217,6 +221,7 @@ public class UserDAO {
 
     }
 
+    @Deprecated
     public void updatePhone(BigInteger id, String phone) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(id)
@@ -295,4 +300,42 @@ public class UserDAO {
             new Object[]{5, phone}, Integer.class);
         return (i == 1);
     }
+
+
+    public User updateUser(User user) {
+
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(user.getId())
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setStringAttribute(AttrtypeProperties.LAST_NAME, user.getLastName())
+            .setStringAttribute(AttrtypeProperties.FIRST_NAME, user.getFirstName())
+            .setStringAttribute(AttrtypeProperties.PHONE, user.getPhone())
+            .update();
+
+        return user;
+
+    }
+
+    public User updateEmailAndPassword(User user) {
+
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(user.getId())
+            .setStringAttribute(AttrtypeProperties.EMAIL, user.getEmail())
+            .setStringAttribute(AttrtypeProperties.PASSWORD, user.getPassword())
+            .update();
+
+        return user;
+
+    }
+
+    public User updatePassword(User user) {
+        new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectId(user.getId())
+            .setStringAttribute(AttrtypeProperties.PASSWORD, user.getPassword())
+            .update();
+        return user;
+    }
 }
+
+
+
