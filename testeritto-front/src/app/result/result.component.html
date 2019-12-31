@@ -1,0 +1,15 @@
+
+<h4>You passed this test: {{result.date}}</h4>
+
+<h4>Your score: {{result.score}}</h4>
+
+<h4>Your answers</h4>
+<h3>Тут категория вначале (кинь камень ее не достать)</h3>
+<ol>
+    <li *ngFor="let reply of result.replies | keyvalue">
+      
+        <h4>{{reply.key}}</h4>
+        <h4>вот тут как бы должен быть Ансвер - но тут пусто потому что запрсо считывает value а не ListValue {{reply.value}}</h4>
+    </li>
+</ol>
+<h3>Вконце оценка данной категории GradeCategory - чему соответсвуют набраные балы</h3>

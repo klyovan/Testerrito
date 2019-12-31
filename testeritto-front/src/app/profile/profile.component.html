@@ -1,0 +1,106 @@
+<div>
+  <div class="row justify-content-center border profileForm">
+    <h3 class="mb-4 text-center">Profile setting</h3>
+    <form class="col-10" [formGroup]="profileForm" (ngSubmit)="onSubmitProfile($event)">
+    <div class="form-group row">
+        <div class="col-6">
+            <label for="lastName">Last name:</label>
+            <input
+                class="form-control"
+                id="lastName"
+                name="lastName"
+                type="text"
+                formControlName="lastName">
+              <div *ngIf="profileForm.controls.lastName.hasError('required') && isSubmited" class="not-valid">
+                Last name is required
+              </div>  
+        </div>
+        <div class="col-6">
+            <label for="firstName">First name:</label>
+            <input
+                class="form-control"
+                id="firstName"
+                name="firstName"
+                type="text"
+                formControlName="firstName">
+              <div *ngIf="profileForm.controls.firstName.hasError('required') && isSubmited" class="not-valid">
+                First name is required
+              </div>  
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input
+            id="phone"
+            name="phone"
+            class="form-control"
+            type="text"
+            formControlName="phone">
+        <div *ngIf="profileForm.controls.phone.hasError('required') && isSubmited" class="not-valid">
+          Phone is required
+        </div>
+    </div>
+    <div class="row justify-content-start">
+      <div *ngIf="isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-success" type="button" (click)=(onSubmitProfile())>Save</button>
+      </div>
+      <div *ngIf="isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-danger" type="button" (click)=(onCancelProfile())>Cancel</button>
+      </div>
+      <div *ngIf="!isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-secondary" type="button" (click)=(onEditProfile())>Edit</button>
+      </div>
+    </div>
+    </form>
+  </div>
+  <div class="row justify-content-center border accountForm">
+    <h3 class="mb-4 text-center">Account setting</h3>
+    <form class="col-10" [formGroup]="accountForm" (ngSubmit)="onSubmitAccount($event)">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+            class="form-control"
+            id="email"
+            name="email"
+            type="text"
+            value="{{user.email}}"
+            formControlName="email">
+        <div *ngIf="accountForm.controls.email.hasError('required') && isSubmited" class="not-valid">
+          Email is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="passwordNew">New password:</label>
+        <input
+            class="form-control"
+            id="passwordNew"
+            name="passwordNew"
+            type="text"
+            formControlName="passwordNew">
+      </div>
+      <div class="form-group">
+        <label for="passwordConfirm">Confirmation password:</label>
+        <input
+            class="form-control"
+            id="passwordConfirm"
+            name="passwordConfirm"
+            type="text"
+            formControlName="passwordConfirm">
+        <div *ngIf="accountForm.controls.passwordNew != accountForm.controls.passwordConfirm && isSubmited" class="not-valid">
+          Password for confirmation doesn't match new password
+        </div>
+      </div>
+      <div class="row justify-content-start">
+        <div *ngIf="isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-success" type="submit" (click)=(onSubmitAccount())>Save</button>
+        </div>
+        <div *ngIf="isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-danger" type="button" (click)=(onCancelAccount())>Cancel</button>
+        </div>
+        <div *ngIf="!isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-secondary" type="button" (click)=(onEditAccount())>Edit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

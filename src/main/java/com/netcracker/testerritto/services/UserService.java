@@ -7,15 +7,13 @@ import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 

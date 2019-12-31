@@ -8,14 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("user")
 public class UserController {
     @Autowired
     private UserService userService;
-/////////хер пойми
+
     @GetMapping("/email/{email}")
     public User getCategoryById(@PathVariable String email) {
         try {
