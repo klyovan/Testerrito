@@ -186,7 +186,10 @@ public class UserService {
     public User getUserByEmail(String email) {
         checkParameter(email, "email");
         if (userDAO.isEmailExist(email)) {
-            return userDAO.getUserByEmail(email);
+           User user = userDAO.getUserByEmail(email);
+            user.setGroups(userDAO.getGroups(user.getId()));
+            user.setCreatedGroups(userDAO.getCreatedGroups(user.getId()));
+            return user;
         }
         serviceExceptionHandler.logAndThrowIllegalException("This email: " + email + "don't exist");
         return null;

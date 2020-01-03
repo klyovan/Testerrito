@@ -87,6 +87,12 @@ public class TestDAOTest {
         testDAO.getTest(deletedId);
     }
 
+    @Test
+    public void  getCategoriesIdByTest(){
+        List<BigInteger> salo = testDAO.getCategoriesIdByTest(BigInteger.valueOf(25));
+        System.out.println(salo.get(0)+ "-lol)");
+    }
+
 
     @Test
     public void createTest() {

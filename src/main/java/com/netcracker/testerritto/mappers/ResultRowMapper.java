@@ -19,6 +19,7 @@ public class ResultRowMapper implements RowMapper<Result> {
     result.setScore(resultSet.getInt("result_score"));
     result.setStatus(Status.getValueById(BigInteger.valueOf(resultSet.getInt("result_status"))));
     result.setUserId(BigInteger.valueOf(resultSet.getInt("user_id")));
+    result.setCategoryId(BigInteger.valueOf(resultSet.getInt("category_id")));
     return result;
   }
 }

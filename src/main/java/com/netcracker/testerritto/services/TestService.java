@@ -25,6 +25,7 @@ public class TestService {
         checkIdNotNull(testId);
         try {
             return testDAO.getTest(testId);
+
         } catch (DataAccessException e) {
             serviceExceptionHandler.logAndThrowServiceException("Failed getTest()", e);
         }

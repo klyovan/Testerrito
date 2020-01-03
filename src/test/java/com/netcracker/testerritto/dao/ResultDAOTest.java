@@ -2,6 +2,7 @@ package com.netcracker.testerritto.dao;
 
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.DataSourceConfig;
+import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
@@ -36,6 +37,8 @@ public class ResultDAOTest {
     private UserDAO userDAO;
     @Autowired
     private GroupDAO groupDAO;
+    @Autowired
+    private CategoryDAO categoryDAO;
 
 
     private BigInteger isCreated;
@@ -44,6 +47,7 @@ public class ResultDAOTest {
     private BigInteger testUserId;
     private BigInteger testTestId;
     private BigInteger testGroupId;
+    private BigInteger testCategoryId;
 
 
     @Before
@@ -68,6 +72,10 @@ public class ResultDAOTest {
         test.setCreatorUserId(testUserId);
         testTestId = testDAO.createTest(test);
 
+        Category category = new Category();
+        category.setNameCategory("NameCategory...");
+        testCategoryId = categoryDAO.createCategory(category);
+
         createdResult = getNewResult();
         isCreated = resultDAO.createResult(createdResult);
         createdResult.setId(isCreated);
@@ -79,6 +87,7 @@ public class ResultDAOTest {
         userDAO.deleteUser(testUserId);
         groupDAO.deleteGroup(testGroupId);
         testDAO.deleteTest(testTestId);
+        categoryDAO.deleteCategoryById(testCategoryId);
     }
 
     @Test
@@ -146,6 +155,7 @@ public class ResultDAOTest {
         result.setStatus(Status.PASSED);
         result.setTestId(testTestId);
         result.setUserId(testUserId);
+        result.setCategoryId(testCategoryId);
         result.setReplies(replies);
 
         return result;
