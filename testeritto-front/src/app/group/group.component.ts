@@ -66,15 +66,15 @@ export class GroupComponent implements OnInit {
     document.execCommand('copy');
   }
 
-  passTest(id: BigInteger) {
-    var now = new Date();
-    var nowDate = (now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate()).toString();
-    var checkResult = this.user.results.find( element => 
-      element.date.toString() == nowDate.toString() && element.testId == id
-    )
-    if(checkResult == null)      
-      this.router.navigateByUrl('/pass-test/'+id);
-    else alert("You already passed test today. Come back tomorrow :)" + checkResult.id);
-  }
+  // passTest(id: BigInteger) {
+  //   var now = new Date();
+  //   var nowDate = (now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate()).toString();
+  //   var checkResult = this.user.results.find( element => 
+  //     element.date.toString() == nowDate.toString() && element.testId == id
+  //   )
+  //   if(checkResult == null)      
+  //     this.router.navigateByUrl('/pass-test/'+id);
+  //   else alert("You already passed test today. Come back tomorrow :)" + checkResult.id);
+  // }
 
 }

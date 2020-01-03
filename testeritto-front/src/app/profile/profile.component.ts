@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnChanges } from '@angular/core';
 import { User } from '../core/models/user.model';
 import { UserService } from '../core/api/user.service';
 import { Observable } from 'rxjs';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/api/auth.service';
 
@@ -15,18 +15,23 @@ export class ProfileComponent implements OnInit {
   public user = new User();
   profileForm: FormGroup;
   accountForm: FormGroup;
+  deleteForm: FormGroup;
   isShowBtnsProfile = false;
   isShowBtnsAccount = false;
+  isSubmittedAccount = false;
+  isSubmittedProfile = false;
+  isDelettedAccount = false;
+  isEqualsPswrds = true;
 
   constructor(private formBuilder: FormBuilder,
               private userService: UserService,
-              private router: Router,
               private authService: AuthService) {
   }
 
   ngOnInit() {
     this.buildFormProfile();
     this.buildFormAccount();
+    this.buildFormDelete();
     this.userService.getUser()
       .subscribe((user: User) => {
       this.user.id = user.id;
@@ -66,11 +71,9 @@ export class ProfileComponent implements OnInit {
 
   private buildFormProfile() {
     this.profileForm = this.formBuilder.group({
-      // tslint:disable-next-line: max-line-length
-      lastName: [ null, [Validators.required]],
-      // tslint:disable-next-line: max-line-length
-      firstName: [ null, [Validators.required]],
-      phone: [ null, [Validators.required]]
+      lastName: [ null, [Validators.required, Validators.pattern('^([a-zA-Z -.]{2,40})$')]],
+      firstName: [ null, [Validators.required, Validators.pattern('^([a-zA-Z -.]{2,40})$')]],
+      phone: [ null, [Validators.required, Validators.pattern('[\+0-9\(\) -]{7,18}')]]
     });
   }
 
@@ -83,42 +86,92 @@ export class ProfileComponent implements OnInit {
     this.accountForm.disable();
     this.isShowBtnsAccount = false;
     this.accountForm.get('email').setValue(this.user.email);
+    this.accountForm.get('passwordOld').reset();
     this.accountForm.get('passwordNew').reset();
     this.accountForm.get('passwordConfirm').reset();
+    this.isEqualsPswrds = true;
   }
 
   private buildFormAccount() {
     this.accountForm = this.formBuilder.group({
       email: [ null, [Validators.required, Validators.email, Validators.maxLength(40)]],
-      passwordNew: [ null ],
-      passwordConfirm: [ null ],
+      passwordNew: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ],
+      passwordConfirm: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ],
+      passwordOld: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ]
+    });
+  }
+
+  private buildFormDelete() {
+    this.deleteForm = this.formBuilder.group({
+      password: [null, [Validators.required, Validators.pattern('^[^а-яА-Я]{8,}$')] ]
     });
   }
 
   onSubmitProfile() {
+    this.isSubmittedProfile = true;
+    console.log(this.profileForm.controls.phone.hasError('pattern'));
+    if (this.profileForm.invalid) {
+      return;
+    }
     const updatedUser = new User();
     const formValue = this.profileForm.value;
     updatedUser.id = this.user.id;
     updatedUser.firstName = formValue.firstName;
     updatedUser.lastName = formValue.lastName;
     updatedUser.phone = formValue.phone;
-    this.userService.updateUser(updatedUser).subscribe(() => this.onSuccess());
+    this.userService.updateUser(updatedUser).subscribe(() => this.onSuccess(), () => this.onFailed());
     this.isShowBtnsProfile = false;
+    this.profileForm.disable();
   }
 
   onSubmitAccount() {
+    this.isSubmittedAccount = true;
+    if (this.accountForm.invalid) {
+      return;
+    }
     const updatedUser = new User();
+    const userWithOldPswd = new User();
     const formValue = this.accountForm.value;
-    updatedUser.id = this.user.id;
-    updatedUser.email = formValue.email;
-    updatedUser.password = formValue.passwordNew;
-    this.userService.updateUserCredentials(updatedUser).subscribe(() => this.onSuccess());
-    this.isShowBtnsAccount = false;
+    if (formValue.passwordNew === formValue.passwordConfirm) {
+      updatedUser.id = this.user.id;
+      updatedUser.email = formValue.email;
+      updatedUser.password = formValue.passwordNew;
+      userWithOldPswd.id = this.user.id;
+      userWithOldPswd.email = formValue.email;
+      userWithOldPswd.password = formValue.passwordOld;
+      this.userService.updateUserCredentials(userWithOldPswd, updatedUser).subscribe(() => this.onSuccess(), () => this.onFailed());
+      this.isShowBtnsAccount = false;
+      this.accountForm.disable();
+    } else {
+      this.isEqualsPswrds = false;
+    }
+  }
+
+  onDeleteAccount() {
+    this.isDelettedAccount = true;
+    if (this.deleteForm.invalid) {
+      return;
+    }
+    const formValue = this.deleteForm.value;
+    this.userService.deleteUser(formValue.password).subscribe(() => this.onSuccessDel(), () => this.onFailedDel());
+  }
+
+  onFailedDel() {
+    console.log("Failed to delete");
+  }
+
+  onSuccessDel() {
+    console.log("Success to delete");
+    this.authService.logout();
   }
 
   private onSuccess() {
-    this.router.navigate(['/profile']);
+    this.isSubmittedAccount = false;
+    this.ngOnInit();
   }
 
+  private onFailed() {
+    console.log("SMTH INCORRECT");
+  }
 }
 
