@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 import { environment } from 'src/environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { deprecate } from 'util';
 
 
 
@@ -53,6 +54,13 @@ export class AuthService {
     const decodedToken = jwtService.decodeToken(this.accessToken);
     // tslint:disable-next-line: no-string-literal
     return decodedToken['sub'];
+  }
+
+  getUserId(): string {
+    const jwtService = new JwtHelperService();
+    const decodedToken = jwtService.decodeToken(this.accessToken);
+    // tslint:disable-next-line: no-string-literal
+    return decodedToken['userId'];
   }
 
   private saveToken(accessToken: string) {

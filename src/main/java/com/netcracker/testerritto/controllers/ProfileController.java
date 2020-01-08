@@ -36,10 +36,20 @@ public class ProfileController {
         }
     }
 
+    @Deprecated
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable BigInteger id){
         try{
              userService.deleteUser(id);
+        }catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/delete/user/{id}")
+    public void deleteUser(@PathVariable BigInteger id, @RequestParam String password){
+        try{
+            userService.deleteUser(id, password);
         }catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

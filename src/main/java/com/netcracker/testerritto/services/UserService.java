@@ -56,6 +56,35 @@ public class UserService {
         userDAO.deleteUser(id);
     }
 
+    public void deleteUser(BigInteger id, String password) throws ServiceException {
+        checkUserId(id);
+        checkUserPassword(password);
+        User userDel = userDAO.getUser(id);
+        if (userDel.getPassword().equals(password)) {
+            userDAO.deleteUser(id);
+        } else {
+            try {
+                throw new IllegalArgumentException(
+                    "Passwords don't match. Can't delete user with id = " + id);
+            } catch (IllegalArgumentException ex) {
+                serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
+            }
+        }
+
+
+    }
+
+    private void checkUserPassword(String password) {
+        if (password == null ) {
+            try {
+                throw new IllegalArgumentException(
+                    "Password is null or empty string");
+            } catch (IllegalArgumentException ex) {
+                serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
+            }
+        }
+    }
+
     @Deprecated
     public void updateLastName(BigInteger id, String lastName) throws ServiceException {
         checkUserId(id);
