@@ -69,6 +69,7 @@ public class RemarkDAOTest {
             .create();
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
+        remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
     }
 
@@ -98,6 +99,7 @@ public class RemarkDAOTest {
         assertEquals(remarkExpected.getText(), remark.getText());
         assertEquals(remarkExpected.getQuestionId(), remark.getQuestionId());
         assertEquals(remarkExpected.getUserSenderId(), remark.getUserSenderId());
+        assertEquals(remarkExpected.getUserRecipientId(), remark.getUserRecipientId());
     }
 
     @Test(expected = EmptyResultDataAccessException.class)

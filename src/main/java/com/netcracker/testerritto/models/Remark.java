@@ -7,6 +7,7 @@ public class Remark extends ObjectEav{
 
     private String text;
     private BigInteger userSenderId;
+    private BigInteger userRecipientId;
     private BigInteger questionId;
 
     public void setText(String text) {
@@ -31,6 +32,14 @@ public class Remark extends ObjectEav{
 
     public void setQuestionId(BigInteger questionId) {
         this.questionId = questionId;
+    }
+
+    public BigInteger getUserRecipientId() {
+        return userRecipientId;
+    }
+
+    public void setUserRecipientId(BigInteger userRecipientId) {
+        this.userRecipientId = userRecipientId;
     }
 
     @Override

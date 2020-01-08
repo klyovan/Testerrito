@@ -84,6 +84,7 @@ public class RemarkServiceTest {
         assertEquals(remarkExpected.getText(), remark.getText());
         assertEquals(remarkExpected.getQuestionId(), remark.getQuestionId());
         assertEquals(remarkExpected.getUserSenderId(), remark.getUserSenderId());
+        assertEquals(remarkExpected.getUserRecipientId(), remark.getUserRecipientId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -133,6 +134,7 @@ public class RemarkServiceTest {
         Remark remark = new Remark();
         remark.setQuestionId(new BigInteger("1"));
         remark.setUserSenderId(new BigInteger("-666"));
+        remark.setUserRecipientId(new BigInteger("1"));
         remark.setText("New Next");
         remarkService.createRemark(remark);
     }
@@ -142,6 +144,7 @@ public class RemarkServiceTest {
         Remark remark = new Remark();
         remark.setQuestionId(new BigInteger("-666"));
         remark.setUserSenderId(new BigInteger("2"));
+        remark.setUserRecipientId(new BigInteger("2"));
         remark.setText("New Text");
         remarkService.createRemark(remark);
     }
@@ -187,6 +190,7 @@ public class RemarkServiceTest {
             .create();
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
+        remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
     }
 }
