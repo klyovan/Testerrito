@@ -7,6 +7,7 @@ public class Remark extends ObjectEav{
 
     private String text;
     private BigInteger userSenderId;
+    private BigInteger userRecipientId;
     private BigInteger questionId;
 
     public void setText(String text) {
@@ -33,6 +34,14 @@ public class Remark extends ObjectEav{
         this.questionId = questionId;
     }
 
+    public BigInteger getUserRecipientId() {
+        return userRecipientId;
+    }
+
+    public void setUserRecipientId(BigInteger userRecipientId) {
+        this.userRecipientId = userRecipientId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,12 +50,13 @@ public class Remark extends ObjectEav{
         return id.equals(remark.id) &&
                 text.equals(remark.text) &&
                 userSenderId.equals(remark.userSenderId) &&
-                questionId.equals(remark.questionId);
+                questionId.equals(remark.questionId)&&
+                userRecipientId.equals(remark.userRecipientId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, userSenderId, questionId);
+        return Objects.hash(id, text, userSenderId, questionId, userRecipientId);
     }
 
     @Override
@@ -54,7 +64,8 @@ public class Remark extends ObjectEav{
         return "Remark{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", userId=" + userSenderId +
+                ", userSenderId=" + userSenderId +
+                ", userRecipientId=" + userRecipientId+
                 ", questionId=" + questionId +
                 '}';
     }

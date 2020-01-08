@@ -26,7 +26,11 @@ public class GroupService {
     public Group getGroupById(BigInteger groupId) throws ServiceException {
         checkIdNotNull(groupId);
         try {
-            return groupDAO.getGroupById(groupId);
+            Group group = groupDAO.getGroupById(groupId);
+            group.setTests(groupDAO.getAllTestsInGroup(groupId));
+            group.setUsers(groupDAO.getUsersInGroup(groupId));
+            return group;
+
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetGroupById().", exception);
             return null;

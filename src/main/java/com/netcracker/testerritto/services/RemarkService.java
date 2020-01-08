@@ -33,6 +33,7 @@ public class RemarkService {
     public BigInteger createRemark(Remark remark) throws ServiceException {
         checkIdNotNull(remark.getUserSenderId());
         checkIdNotNull(remark.getQuestionId());
+        checkIdNotNull(remark.getUserRecipientId());
         checkStringNotNull(remark.getText());
         try {
             return remarkDAO.createRemark(remark);

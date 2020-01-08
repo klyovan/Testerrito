@@ -56,7 +56,17 @@ public class GroupController {
         }
     }
 
+
     @GetMapping("/{groupId}")
+    public Group getGroupById(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
+        try {
+            return groupService.getGroupById(groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("lol/{groupId}")
     public List<Test> getAllTestsInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
             return groupService.getAllTestsInGroup(groupId);
