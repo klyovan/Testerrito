@@ -7,15 +7,13 @@ import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 
@@ -56,6 +54,35 @@ public class UserService {
     public void deleteUser(BigInteger id) throws ServiceException {
         checkUserId(id);
         userDAO.deleteUser(id);
+    }
+
+    public void deleteUser(BigInteger id, String password) throws ServiceException {
+        checkUserId(id);
+        checkUserPassword(password);
+        User userDel = userDAO.getUser(id);
+        if (userDel.getPassword().equals(password)) {
+            userDAO.deleteUser(id);
+        } else {
+            try {
+                throw new IllegalArgumentException(
+                    "Passwords don't match. Can't delete user with id = " + id);
+            } catch (IllegalArgumentException ex) {
+                serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
+            }
+        }
+
+
+    }
+
+    private void checkUserPassword(String password) {
+        if (password == null ) {
+            try {
+                throw new IllegalArgumentException(
+                    "Password is null or empty string");
+            } catch (IllegalArgumentException ex) {
+                serviceExceptionHandler.logAndThrowIllegalException(ex.getMessage());
+            }
+        }
     }
 
     @Deprecated

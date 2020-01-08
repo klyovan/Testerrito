@@ -1,0 +1,145 @@
+<div>
+  <div class="row justify-content-center border profileForm">
+    <h3 class="mb-4 text-center">Profile setting</h3>
+    <form class="col-10" [formGroup]="profileForm" (ngSubmit)="onSubmitProfile($event)">
+    <div class="form-group row">
+        <div class="col-6">
+          <label for="lastName">Last name:</label>
+          <input
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              type="text"
+              formControlName="lastName">
+          <div *ngIf="(profileForm.controls.lastName.hasError('required') || profileForm.controls.lastName.hasError('pattern')) && isSubmittedProfile" class="alert alert-danger">
+            Last name is invalid
+          </div>  
+        </div>
+        <div class="col-6">
+            <label for="firstName">First name:</label>
+            <input
+                class="form-control"
+                id="firstName"
+                name="firstName"
+                type="text"
+                formControlName="firstName">
+              <div *ngIf="(profileForm.controls.firstName.hasError('required') || profileForm.controls.firstName.hasError('pattern')) && isSubmittedProfile" class="alert alert-danger">
+                First name is invalid
+              </div>  
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input
+            id="phone"
+            name="phone"
+            class="form-control"
+            type="text"
+            formControlName="phone">
+        <div *ngIf="(profileForm.controls.phone.hasError('required') || profileForm.controls.phone.hasError('pattern')) && isSubmittedProfile" class="alert alert-danger">
+          Phone is invalid
+        </div>
+    </div>
+    <div class="row justify-content-start">
+      <div *ngIf="isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-success" type="button" (click)=(onSubmitProfile())>Save</button>
+      </div>
+      <div *ngIf="isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-danger" type="button" (click)=(onCancelProfile())>Cancel</button>
+      </div>
+      <div *ngIf="!isShowBtnsProfile" class="mt-4 col-2">
+        <button class="pl-3 pr-3 btn btn-secondary" type="button" (click)=(onEditProfile())>Edit</button>
+      </div>
+    </div>
+    </form>
+  </div>
+  <div class="row justify-content-center border accountForm">
+    <h3 class="mb-4 text-center">Account setting</h3>
+    <form class="col-10" [formGroup]="accountForm" (ngSubmit)="onSubmitAccount($event)">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+            class="form-control"
+            id="email"
+            name="email"
+            type="text"
+            value="{{user.email}}"
+            formControlName="email">
+        <div *ngIf="(accountForm.controls.email.hasError('required') || accountForm.controls.email.hasError('email')) && isSubmittedAccount" class="alert alert-danger">
+          Email is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="passwordOld">Old password:</label>
+        <input
+            class="form-control"
+            id="passwordOld"
+            name="passwordOld"
+            type="password"
+            formControlName="passwordOld">
+      </div>
+      <div *ngIf="accountForm.controls.passwordOld.hasError('pattern') && isSubmittedAccount" class="alert alert-danger">
+        Old password is invalid
+      </div>
+      <div class="form-group">
+        <label for="passwordNew">New password:</label>
+        <input
+            class="form-control"
+            id="passwordNew"
+            name="passwordNew"
+            type="password"
+            formControlName="passwordNew">
+      </div>
+      <div *ngIf="accountForm.controls.passwordNew.hasError('pattern') && isSubmittedAccount" class="alert alert-danger">
+        New password is invalid
+      </div>
+      <div class="form-group">
+        <label for="passwordConfirm">Confirmation password:</label>
+        <input
+            class="form-control"
+            id="passwordConfirm"
+            name="passwordConfirm"
+            type="password"
+            formControlName="passwordConfirm">
+        <div *ngIf="accountForm.controls.passwordConfirm.hasError('pattern') && isSubmittedAccount" class="alert alert-danger">
+          Confirmation password is invalid
+        </div>
+        <div *ngIf="!isEqualsPswrds && isSubmittedAccount" class="alert alert-danger">
+          Password for confirmation doesn't match new password
+        </div>
+      </div>
+      <div class="row justify-content-start">
+        <div *ngIf="isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-success" type="submit" (click)=(onSubmitAccount())>Save</button>
+        </div>
+        <div *ngIf="isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-danger" type="button" (click)=(onCancelAccount())>Cancel</button>
+        </div>
+        <div *ngIf="!isShowBtnsAccount" class="mt-4 col-2">
+          <button class="pl-3 pr-3 btn btn-secondary" type="button" (click)=(onEditAccount())>Edit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row justify-content-center border accountForm">
+    <h3 class="mb-4 text-center">Delete account</h3>
+    <form class="col-10" [formGroup]="deleteForm" (ngSubmit)="onDeleteAccount($event)">
+      <div class="form-group">
+        <label for="password">Provide current password to confirm that you really want to delete account:</label>
+        <input
+            class="form-control"
+            id="password"
+            name="password"
+            type="password"
+            formControlName="password">
+        <div *ngIf="(deleteForm.controls.password.hasError('required') || deleteForm.controls.password.hasError('pattern')) && isDelettedAccount" class="alert alert-danger">
+          Password is invalid
+        </div>
+      </div>
+      <button class="pl-3 pr-3 btn btn-danger" type="button" (click)=(onDeleteAccount())>Delete</button>
+    </form>
+  </div >
+</div>
+
+
+

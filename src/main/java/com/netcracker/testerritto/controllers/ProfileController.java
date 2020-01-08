@@ -3,7 +3,6 @@ package com.netcracker.testerritto.controllers;
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Group;
-import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +36,20 @@ public class ProfileController {
         }
     }
 
+    @Deprecated
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable BigInteger id){
         try{
              userService.deleteUser(id);
+        }catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/delete/user/{id}")
+    public void deleteUser(@PathVariable BigInteger id, @RequestParam String password){
+        try{
+            userService.deleteUser(id, password);
         }catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

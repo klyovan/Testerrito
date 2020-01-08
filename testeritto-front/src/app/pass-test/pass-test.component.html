@@ -1,0 +1,31 @@
+<!--<div class="container">-->
+<!--<div class="row justify-content-end">-->
+
+  <!--<div class="col col-md-4 offset-md-4">-->
+<!--<button   (click)="iterateIndex()" class="btn btn-danger btn-sm"> Пожаловаться </button>-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="row">
+  <h1>{{test.nameTest}}</h1>
+<div class="card  border shadow p-3  bg-white rounded col"  style="width: max-content" >
+  <!--<img class="card-img-top " height="50px" width="100px"  alt="Card image cap">-->
+  <div class="card-body">
+    <h5 class="card-title" >{{test.questions[index].textQuestion}}</h5>
+    <div class="form-check mb-2"  *ngFor="let answer of test.questions[index].answers" >
+      <input type="radio" class="form-check-input" required="required" id="materialUnchecked" name="materialExampleRadios">
+      <label class="form-check-label ml-4" for="materialUnchecked">{{answer.textAnswer}}</label>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="row">
+  <div class="col-4 .col-md-3 .offset-md-3">
+<button  (click)="iterateIndex()" class="btn btn-info btn-lg">Следующий вопрос</button>
+  </div>
+
+
+
+</div>
+

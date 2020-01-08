@@ -7,19 +7,28 @@ import com.netcracker.testerritto.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("user")
 public class UserController {
     @Autowired
     private UserService userService;
-/////////хер пойми
+
     @GetMapping("/email/{email}")
-    public User getCategoryById(@PathVariable String email) {
+    public User getUserByEmail(@PathVariable String email) {
         try {
             return userService.getUserByEmail(email);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable BigInteger id) {
+        try {
+            return userService.getUser(id);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
