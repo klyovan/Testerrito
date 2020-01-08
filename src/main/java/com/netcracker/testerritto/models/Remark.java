@@ -50,12 +50,13 @@ public class Remark extends ObjectEav{
         return id.equals(remark.id) &&
                 text.equals(remark.text) &&
                 userSenderId.equals(remark.userSenderId) &&
-                questionId.equals(remark.questionId);
+                questionId.equals(remark.questionId)&&
+                userRecipientId.equals(remark.userRecipientId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, userSenderId, questionId);
+        return Objects.hash(id, text, userSenderId, questionId, userRecipientId);
     }
 
     @Override
@@ -63,7 +64,8 @@ public class Remark extends ObjectEav{
         return "Remark{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", userId=" + userSenderId +
+                ", userSenderId=" + userSenderId +
+                ", userRecipientId=" + userRecipientId+
                 ", questionId=" + questionId +
                 '}';
     }

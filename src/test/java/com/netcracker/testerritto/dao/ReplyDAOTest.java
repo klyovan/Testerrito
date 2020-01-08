@@ -84,6 +84,7 @@ public class ReplyDAOTest {
         question.setTextQuestion("What?");
         question.setTypeQuestion(ListsAttr.ONE_ANSWER);
         question.setTestId(testId);
+        question.setCategoryId(new BigInteger("-10"));
         questionId = questionDAO.createQuestion(question);
 
         Answer answer = new Answer();
@@ -212,6 +213,7 @@ public class ReplyDAOTest {
         result.setTestId(testId);
         result.setUserId(userId);
         result.setReplies(replies);
+        result.setCategoryId(new BigInteger("-10"));
 
         return result;
     }

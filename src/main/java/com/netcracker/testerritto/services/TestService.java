@@ -25,6 +25,7 @@ public class TestService {
         checkIdNotNull(testId);
         try {
             return testDAO.getTest(testId);
+
         } catch (DataAccessException e) {
             serviceExceptionHandler.logAndThrowServiceException("Failed getTest()", e);
         }
@@ -41,7 +42,7 @@ public class TestService {
         return null;
     }
 
-    public BigInteger updateTest(Test test)  {
+    public Test updateTest(Test test)  {
         checkParamsForCreateUpdateTest(test);
         checkIdNotNull(test.getId());
         try {

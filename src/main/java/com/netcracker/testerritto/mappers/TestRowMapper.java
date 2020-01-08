@@ -11,10 +11,10 @@ public class TestRowMapper implements RowMapper<Test> {
     @Override
     public Test mapRow(ResultSet resultSet, int i) throws SQLException {
         Test test = new Test();
-        test.setId(BigInteger.valueOf(resultSet.getInt("test_id")));
-        test.setGroupId(BigInteger.valueOf(resultSet.getInt("group_id")));
+        test.setId(new BigInteger(resultSet.getString("test_id")));
+        test.setGroupId(new BigInteger(resultSet.getString("group_id")));
         test.setNameTest(resultSet.getString("test_name"));
-        test.setCreatorUserId(BigInteger.valueOf(resultSet.getInt("creator_id")));
+        test.setCreatorUserId(new BigInteger(resultSet.getString("creator_id")));
         return test;
     }
 }

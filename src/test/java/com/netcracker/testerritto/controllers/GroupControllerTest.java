@@ -52,6 +52,7 @@ public class GroupControllerTest {
     private BigInteger remarkerId;
     private BigInteger sequenceId;
     private BigInteger creatorId;
+    private BigInteger recipientId;
     private Remark remarkExpected = new Remark();
     private Group groupExpected = new Group();
 
@@ -72,6 +73,8 @@ public class GroupControllerTest {
             listForDelete.add(remarkerId);
         if (sequenceId != null)
             listForDelete.add(sequenceId);
+        if (sequenceId != null)
+            listForDelete.add(recipientId);
         for (BigInteger id : listForDelete) {
             new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setObjectId(id)
@@ -260,10 +263,15 @@ public class GroupControllerTest {
             .setObjectTypeId(ObjtypeProperties.USER)
             .setName("USER_REMARKER")
             .create();
+        recipientId = new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_REMARKER")
+            .create();
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
         remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
+        remarkExpected.setUserRecipientId(recipientId);
     }
 
     private void createTestValuesGroup(){

@@ -1,11 +1,14 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.ResultDAO;
+import com.netcracker.testerritto.dao.TestDAO;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Result;
 import com.netcracker.testerritto.properties.Status;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +21,8 @@ public class ResultService {
 
     @Autowired
     private ResultDAO resultDAO;
+    @Autowired
+    private TestDAO testDAO;
 
     @Autowired
     private ServiceExceptionHandler serviceExceptionHandler;
@@ -68,7 +73,36 @@ public class ResultService {
 
     }
 
-    public BigInteger updateResult(Result result)  {
+    public List<BigInteger> createResultsByCategories(BigInteger testId, BigInteger userId) {
+        checkIdNotNull(testId);
+        checkIdNotNull(userId);
+        try {
+
+            Result result = new Result();
+            result.setDate(new Date());
+            result.setScore(0);
+            result.setStatus(Status.NOT_PASSED);
+            result.setTestId(testId);
+            result.setUserId(userId);
+
+            List<BigInteger> categories = testDAO.getCategoriesIdByTest(testId);
+            List<BigInteger> createdResults = new ArrayList<>();
+            BigInteger createdResultId;
+
+            for (BigInteger category : categories) {
+                result.setCategoryId(category);
+                createdResultId = resultDAO.createResult(result);
+                createdResults.add(createdResultId);
+            }
+
+            return createdResults;
+        } catch (DataAccessException e) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed createResultsByCategories()", e);
+        }
+        return new ArrayList<>();
+    }
+
+    public Result updateResult(Result result) {
         checkParamsForCreateUpdateResult(result);
         checkIdNotNull(result.getId());
         try {

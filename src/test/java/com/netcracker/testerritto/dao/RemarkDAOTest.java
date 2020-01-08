@@ -39,6 +39,7 @@ public class RemarkDAOTest {
     private BigInteger questionId;
     private BigInteger remarkerId;
     private BigInteger sequenceId;
+    private BigInteger recipientId;
     private Remark remarkExpected = new Remark();
 
     @Before
@@ -67,10 +68,16 @@ public class RemarkDAOTest {
             .setObjectTypeId(ObjtypeProperties.USER)
             .setName("USER_REMARKER")
             .create();
+        recipientId = new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_REMARKER")
+            .create();
+
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
         remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
+        remarkExpected.setUserRecipientId(recipientId);
     }
 
     @After
@@ -81,6 +88,7 @@ public class RemarkDAOTest {
         listForDelete.add(testId);
         listForDelete.add(questionId);
         listForDelete.add(remarkerId);
+        listForDelete.add(recipientId);
         if(sequenceId != null)
             listForDelete.add(sequenceId);
         for(BigInteger id : listForDelete){

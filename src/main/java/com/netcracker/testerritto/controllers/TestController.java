@@ -51,7 +51,7 @@ public class TestController {
     }
 
     @PutMapping("/test")
-    public BigInteger updateTest(@RequestBody Test test) {
+    public Test updateTest(@RequestBody Test test) {
         try {
             return testService.updateTest(test);
         } catch (IllegalArgumentException | ServiceException e) {

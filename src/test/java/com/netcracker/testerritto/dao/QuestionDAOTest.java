@@ -25,6 +25,8 @@ public class QuestionDAOTest {
   @Autowired
   QuestionDAO questionDAO;
   @Autowired
+  CategoryDAO categoryDAO;
+  @Autowired
   private JdbcTemplate jdbcTemplate;
 
   private Question expectedQuestion;
@@ -83,6 +85,7 @@ public class QuestionDAOTest {
     question.setTextQuestion("What?");
     question.setTypeQuestion(ListsAttr.ONE_ANSWER);
     question.setTestId(new BigInteger("-1025"));
+    question.setCategoryId(new BigInteger("-10"));
     return question;
   }
 }
