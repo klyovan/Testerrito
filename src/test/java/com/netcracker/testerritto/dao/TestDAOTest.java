@@ -89,7 +89,8 @@ public class TestDAOTest {
 
     @Test
     public void  getCategoriesIdByTest(){
-        List<BigInteger> salo = testDAO.getCategoriesIdByTest(BigInteger.valueOf(25));
+
+
     }
 
 
@@ -112,6 +113,8 @@ public class TestDAOTest {
         List<GradeCategory> grades = new ArrayList<>();
         List<User> experts = new ArrayList<>();
         List<Question> questions = new ArrayList<>();
+        GradeCategory gradeCategory = new GradeCategory();
+
 
         return new com.netcracker.testerritto.models.Test(null, testGroupId, "JustTest", testUserId,
             grades, experts, questions);

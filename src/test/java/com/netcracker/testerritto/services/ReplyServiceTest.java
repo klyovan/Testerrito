@@ -367,6 +367,7 @@ public class ReplyServiceTest {
         result.setTestId(test1Id);
         result.setUserId(userId);
         result.setReplies(replies);
+        result.setCategoryId(new BigInteger("-10"));
 
         return result;
     }
@@ -392,6 +393,7 @@ public class ReplyServiceTest {
         question.setTextQuestion("What?");
         question.setTypeQuestion(ListsAttr.ONE_ANSWER);
         question.setTestId(testId);
+        question.setCategoryId(new BigInteger("-10"));
         return question;
     }
 
@@ -400,6 +402,7 @@ public class ReplyServiceTest {
         question.setTextQuestion("What?");
         question.setTypeQuestion(ListsAttr.MULTIPLE_ANSWER);
         question.setTestId(testId);
+        question.setCategoryId(new BigInteger("-10"));
         return question;
     }
 

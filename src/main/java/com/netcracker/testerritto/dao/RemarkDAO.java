@@ -21,7 +21,7 @@ public class RemarkDAO {
              "    remark_text.value as text,\n"+
              "    sender.reference as user_id,\n"+
              "    caused_by_question.reference  as question_id,\n"+
-             "    recepient.reference as recipient_id\n"+
+             "    recipient.reference as recipient_id\n"+
              "from\n"+
              "    objects remarks,\n"+
              "    attributes remark_text,\n"+

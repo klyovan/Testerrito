@@ -101,6 +101,7 @@ public class QuestionDAO {
       .setParentId(newQuestion.getTestId())
       .setStringAttribute(AttrtypeProperties.TEXT_QUESTION, newQuestion.getTextQuestion())
       .setListAttribute(AttrtypeProperties.TYPE_QUESTION,newQuestion.getTypeQuestion().getId())
+      .setReference(AttrtypeProperties.MATCH_CATEGORY, newQuestion.getCategoryId())
       .create();
   }
 

@@ -81,72 +81,68 @@ public class PassTestController {
     }
 
     @PostMapping("/reply")
-    public BigInteger createReply(@RequestBody Reply reply ) {
+    public BigInteger createReply(@RequestBody Reply reply) {
         try {
 
-            if (reply.getReplyList().size()  > 0){
-             oldReplyList = new ArrayList<>();
+            if (reply.getReplyList().size() > 0) {
+                oldReplyList = new ArrayList<>();
 
-
-         for (Reply item : createdReplies){
-             if (item.getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())){
-                 isUpdate++;
-                 reply.setId(item.getId());
-                 reply.setResultId(item.getResultId());
-                 oldReplyList.add(item.getReplyList().get(0));
-             }
-         }
-
-
-
-
-            if(isUpdate == 0){
-            BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
-            Question question = questionService.getQuestionById(questionId);
-            BigInteger answer2category = question.getCategoryId();
-
-            for (BigInteger createdResult : createdResults) {
-                if (resultService.getResult(createdResult).getCategoryId().equals(answer2category)) {
-                    reply.setResultId(createdResult);
+                for (Reply item : createdReplies) {
+                    if (item.getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())) {
+                        isUpdate++;
+                        reply.setId(item.getId());
+                        reply.setResultId(item.getResultId());
+                        oldReplyList.add(item.getReplyList().get(0));
+                    }
                 }
-            }
 
-               replyId = replyService.createReply(reply);
-               reply.setId(replyId);
-              createdReplies.add(reply);
+                if (isUpdate == 0) {
+                    BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
+                    Question question = questionService.getQuestionById(questionId);
+                    BigInteger answer2category = question.getCategoryId();
 
-                isUpdate = 0;
+                    for (BigInteger createdResult : createdResults) {
+                        if (resultService.getResult(createdResult).getCategoryId().equals(answer2category)) {
+                            reply.setResultId(createdResult);
+                        }
+                    }
 
-            return replyId ;
-            } else if (isUpdate > 0){
+                    replyId = replyService.createReply(reply);
+                    reply.setId(replyId);
+                    createdReplies.add(reply);
 
-              BigInteger questionId =  reply.getReplyList().get(0).getQuestionId();
-             ListsAttr answerType = questionService.getQuestionById(questionId).getTypeQuestion();
-
-                if (answerType == ListsAttr.ONE_ANSWER || answerType == ListsAttr.OPEN) {
-
-                    reply.setReplyList(oldReplyList);
-
-                    replyService.updateReply(reply, reply.getReplyList().get(0));
                     isUpdate = 0;
 
-                } else if(answerType == ListsAttr.MULTIPLE_ANSWER){
+                    return replyId;
+                } else if (isUpdate > 0) {
 
-                    replyService.deleteReply(reply.getId());
-                    createdReplies.remove(reply); // very nedd
+                    BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
+                    ListsAttr answerType = questionService.getQuestionById(questionId).getTypeQuestion();
 
+                    if (answerType == ListsAttr.ONE_ANSWER || answerType == ListsAttr.OPEN) {
 
-                   replyId = replyService.createReply(reply);
-                   reply.setId(replyId);
+                        reply.setReplyList(oldReplyList);
 
-                   createdReplies.add(reply);
+                        replyService.updateReply(reply, reply.getReplyList().get(0));
+                        isUpdate = 0;
 
-                    isUpdate = 0;
-                return replyId;
+                    } else if (answerType == ListsAttr.MULTIPLE_ANSWER) {
+
+                        replyService.deleteReply(reply.getId());
+                        createdReplies.remove(reply); // very nedd
+
+                        replyId = replyService.createReply(reply);
+                        reply.setId(replyId);
+
+                        createdReplies.add(reply);
+
+                        isUpdate = 0;
+                        return replyId;
+                    }
                 }
-            }}else{
+            } else {
                 System.out.println("OK");
-            return null;
+                return null;
             }
             return null;
         } catch (IllegalArgumentException | ServiceException e) {
@@ -164,28 +160,26 @@ public class PassTestController {
     }
 
     @GetMapping("{userId}/test/result/{testId}")
-    public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId){
+    public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {
 
-          List<Result> results =  resultService.getResultsByTest(testId);
+            List<Result> results = resultService.getResultsByTest(testId);
             List<Result> createdResults = new ArrayList<>();
 
-
-            for (Result result : results){
-                if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED){
+            for (Result result : results) {
+                if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED) {
                     createdResults.add(result);
                 }
             }
 
-
-            for (Result result : results){
-                if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED){
+            for (Result result : results) {
+                if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED) {
                     resultService.deleteResult(result.getId());
                 }
             }
 
             return testService.getTest(testId);
-        } catch (IllegalArgumentException | IndexOutOfBoundsException  | ServiceException e) {
+        } catch (IllegalArgumentException | IndexOutOfBoundsException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
 
