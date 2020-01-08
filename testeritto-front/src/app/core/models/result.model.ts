@@ -4,6 +4,7 @@ import {Reply} from './reply.model';
 
 
 export class Result implements Deserializable {
+  id: BigInteger; //
   date: Date;
   score: number;
   status: string;

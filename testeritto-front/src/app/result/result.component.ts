@@ -15,7 +15,7 @@ export class ResultComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private resultService: ResultService) {
     this.result = new Result();
-    this.subscription = route.params.subscribe(params=>this.result.id=params['resultId']);  
+    this.subscription = route.params.subscribe(params=>this.result.id = params['resultId']);
    }
 
   ngOnInit() {

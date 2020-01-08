@@ -5,6 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { GroupComponent } from './group/group.component';
 import { ResultComponent } from './result/result.component';
 import {PassTestComponent} from './pass-test/pass-test.component';
+import {RegisterComponent} from "./register/register.component";
 
 
 const routes: Routes = [
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'group/:groupId', component: GroupComponent },
   { path: 'group/result/:resultId', component: ResultComponent},
   { path: 'group/:groupId/users', component: GroupComponent },
-  {path: 'pass-test/:userId/test/:id', component: PassTestComponent}
+  { path: 'pass-test/:userId/test/:id', component: PassTestComponent},
+  { path: 'registration', component: RegisterComponent }
 ];
 
 @NgModule({

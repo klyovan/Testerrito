@@ -79,4 +79,8 @@ export class UserService {
                                           this.authService.getUserId(),
                                           { params: {password: password}});
   }
+
+    register(user: User) {
+        return this.httpClient.post(`${environment.apiUrl}/registration`, user);
+    }
 }
