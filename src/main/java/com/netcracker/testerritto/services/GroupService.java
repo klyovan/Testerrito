@@ -1,9 +1,11 @@
 package com.netcracker.testerritto.services;
 
 import com.netcracker.testerritto.dao.GroupDAO;
+import com.netcracker.testerritto.dao.RemarkDAO;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.handlers.ServiceExceptionHandler;
 import com.netcracker.testerritto.models.Group;
+import com.netcracker.testerritto.models.Remark;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,18 @@ public class GroupService {
     private GroupDAO groupDAO;
 
     @Autowired
+    private RemarkDAO remarkDAO;
+
+    @Autowired
     private ServiceExceptionHandler serviceExceptionHandler;
 
     public Group getGroupById(BigInteger groupId) throws ServiceException {
         checkIdNotNull(groupId);
         try {
-            return groupDAO.getGroupById(groupId);
+            Group group = groupDAO.getGroupById(groupId);
+            group.setTests(groupDAO.getAllTestsInGroup(groupId));
+            group.setUsers(new ArrayList<>());
+            return group;
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetGroupById().", exception);
             return null;
@@ -81,6 +89,16 @@ public class GroupService {
             return groupDAO.getAllTestsInGroup(groupId);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetAllTestsInGroup().", exception);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Remark> getAllRemarksInGroup(BigInteger groupId) throws ServiceException {
+        checkIdNotNull(groupId);
+        try {
+            return groupDAO.getAllRemarksInGroup(groupId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed GetAllRemarksInGroup().", exception);
             return new ArrayList<>();
         }
     }

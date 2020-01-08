@@ -29,6 +29,33 @@ public class GroupController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/create")
+    public BigInteger createGroup(@RequestBody Group group) {
+        try {
+            return groupService.createGroup(group);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/{groupId}")
+    public Group getGroupBuId(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
+        try {
+            return groupService.getGroupById(groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/{groupId}")
+    public void deleteGroupById(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
+        try {
+            groupService.deleteGroup(groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
         try {
@@ -56,7 +83,7 @@ public class GroupController {
         }
     }
 
-    @GetMapping("/{groupId}")
+    @GetMapping("/{groupId}/alltests")
     public List<Test> getAllTestsInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
             return groupService.getAllTestsInGroup(groupId);
@@ -74,11 +101,14 @@ public class GroupController {
         }
     }
 
-    //maybe we need method getAllRemarks()????
-   /* @GetMapping("/remark")
-    public Remark getAllRemarksInGroup(BigInteger groupId) throws IllegalArgumentException, ServiceException {
-        return groupService.getAllRemarksInGroup(groupId);
-    }*/
+    @GetMapping("/{groupId}/remarks")
+    public List<Remark> getAllRemarksInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
+        try {
+            return groupService.getAllRemarksInGroup(groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
 
     @GetMapping("/result/{id}")
     public Result getResultPassedTest(@PathVariable BigInteger id) {
@@ -118,4 +148,8 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/{id}/results")
+    public void showResultsForTest(@PathVariable BigInteger id){
+
+    }
 }
