@@ -90,7 +90,6 @@ public class TestDAOTest {
     @Test
     public void  getCategoriesIdByTest(){
         List<BigInteger> salo = testDAO.getCategoriesIdByTest(BigInteger.valueOf(25));
-        System.out.println(salo.get(0)+ "-lol)");
     }
 
 

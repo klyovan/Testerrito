@@ -13,13 +13,13 @@ public class ResultRowMapper implements RowMapper<Result> {
   @Override
   public Result mapRow(ResultSet resultSet, int i) throws SQLException {
     Result result = new Result();
-    result.setId(BigInteger.valueOf(resultSet.getInt("id")));
-    result.setTestId(BigInteger.valueOf(resultSet.getInt("test_id")));
+    result.setId(new BigInteger(resultSet.getString("id")));
+    result.setTestId(new BigInteger(resultSet.getString("test_id")));
     result.setDate(resultSet.getDate("result_date"));
     result.setScore(resultSet.getInt("result_score"));
     result.setStatus(Status.getValueById(BigInteger.valueOf(resultSet.getInt("result_status"))));
-    result.setUserId(BigInteger.valueOf(resultSet.getInt("user_id")));
-    result.setCategoryId(BigInteger.valueOf(resultSet.getInt("category_id")));
+    result.setUserId(new BigInteger(resultSet.getString("user_id")));
+    result.setCategoryId(new BigInteger(resultSet.getString("category_id")));
     return result;
   }
 }

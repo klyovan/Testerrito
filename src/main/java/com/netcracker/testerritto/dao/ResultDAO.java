@@ -76,7 +76,7 @@ public class ResultDAO {
     private static final String GET_RESULTS_BY_TEST =
             "select  results.object_id id, result2test.reference test_id,   "+
              "   result_date.date_value result_date, result_score.value result_score ,   "+
-             "   result_status.list_value_id result_status, result2user.reference user_id   "+
+             "   result_status.list_value_id result_status, result2user.reference user_id,   "+
              "   result2category.reference category_id  " +
              "from  objects results,   "+
              "   attributes result_date, "+
