@@ -1,0 +1,33 @@
+
+<table class="table table-striped">
+    <tr>
+        <th>User surname</th>
+        <th>User name</th>
+        <th>User email</th>
+        <th>Show passed tests</th>
+    </tr>
+    <tbody *ngFor="let user of this.groupService.users">
+        <tr>
+            <td>{{user.lastName}}</td>
+            <td>{{user.firstName}}</td>
+            <td>{{user.email}}</td>
+            <td><button class="btn btn-info btn-sm" (click)="seeAllPassedTestsByUser(user.id)">See tests</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<table *ngIf="showPassedTests == true" class="table table-striped">
+    <tr>
+        <th>Test name</th>
+        <th>See results</th>
+    </tr>
+    <tbody *ngFor="let test of this.tests">        
+        <th>{{test.nameTest}}</th>
+        <th><button class="btn btn-info btn-sm" (click)="seeResultsForTest(test.id)" >See results</button></th>
+        <div *ngIf="showResults == true && selectedTest == test.id">
+            <tr  *ngFor="let result of this.userResults">{{result.id}}
+                <button class="btn btn-info btn-sm" (click)="showDetailsOnResult(result.date)" ></button>
+            </tr>    
+        </div>
+    </tbody>
+</table>
