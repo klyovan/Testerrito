@@ -16,7 +16,11 @@ import { ResultComponent } from './result/result.component';
 import { ResultService } from './core/api/result.service';
 import { PassTestComponent } from './pass-test/pass-test.component';
 import { PassTestService } from './core/api/pass-test.service';
-
+import { DatePipe } from '@angular/common';
+import { GroupusersComponent } from './groupusers/groupusers.component';
+import { RemarkComponent } from './remark/remark.component';
+import { GrouplistComponent } from './grouplist/grouplist.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +29,10 @@ import { PassTestService } from './core/api/pass-test.service';
     ProfileComponent,
     GroupComponent,
     ResultComponent,
-    PassTestComponent
+    PassTestComponent,
+    GroupusersComponent,
+    RemarkComponent,
+    GrouplistComponent
   ],
   imports: [
     BrowserModule,
@@ -33,9 +40,10 @@ import { PassTestService } from './core/api/pass-test.service';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CoreModule
+    CoreModule,
+    NgbModule
   ],
-  providers: [UserService, GroupService, ResultService, PassTestService],
+  providers: [UserService, GroupService, ResultService, PassTestService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
