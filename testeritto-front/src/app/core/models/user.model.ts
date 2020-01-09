@@ -16,9 +16,12 @@ export class User implements Deserializable {
 
     deserialize(input: any): this {
         Object.assign(this, input);
-        this.groups = input.groups.map(group => new Group().deserialize(group));
-        this.createdGroups = input.createdGroups.map(createdGroup => new Group().deserialize(createdGroup));
-        this.results = input.results.map(result => new Result().deserialize(result));
+        if(input.groups != null)
+          this.groups = input.groups.map(group => new Group().deserialize(group));
+        if(input.createdGroups != null)
+          this.createdGroups = input.createdGroups.map(createdGroup => new Group().deserialize(createdGroup));
+        if(input.results != null)
+          this.results = input.results.map(result => new Result().deserialize(result));
         return this;
       }
 }
