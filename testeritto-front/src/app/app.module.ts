@@ -28,6 +28,7 @@ import {RegisterComponent} from "./register/register.component";
         ResultComponent,
         PassTestComponent,
         RegisterComponent
+
     ],
     imports: [
         BrowserModule,

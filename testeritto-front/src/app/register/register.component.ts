@@ -2,6 +2,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Component, OnInit} from "@angular/core";
 import {first} from "rxjs/operators";
 import {UserService} from "../core/api/user.service";
+import {Router} from "@angular/router";
+import {UsernameValidator} from "./username.validator";
+import {MustMatch} from "./match.validator";
 
 
 @Component({templateUrl: 'register.component.html'})
@@ -9,10 +12,12 @@ export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
     loading = false;
     submitted = false;
+   // router: any;
    // private formBuilder: any;
 
     constructor( private formBuilder: FormBuilder,
-                 private userService: UserService ) {
+                 private userService: UserService,
+                 private router: Router) {
     }
 
 
@@ -21,11 +26,14 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            firstName: ['',[ Validators.required, UsernameValidator.cannotContainNonAlphabetChar, Validators.minLength(3)]],
+            lastName: ['', [Validators.required, Validators.pattern(/[A-Za-z]+/), Validators.minLength(3)]],
             email: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(6)]],
-            phone:['', Validators.required]
+            phone:['',[Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+            confirmPassword: ['', Validators.required]
+        }, {
+            validator: MustMatch('password', 'confirmPassword')
         });
     }
 
@@ -45,8 +53,10 @@ export class RegisterComponent implements OnInit {
             .subscribe(
                 data => {
                     //this.alertService.success('Registration successful', true);
-                    //this.router.navigate(['/login']);
+                    this.router.navigate(['/login']);
                 });
 
     }
+
+
 }
