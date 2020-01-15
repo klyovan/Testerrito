@@ -11,190 +11,166 @@ import {ResultService} from '../core/api/result.service';
 import {Category} from '../core/models/category.model';
 import {Remark} from '../core/models/remark.model';
 import {Reply} from '../core/models/reply.model';
+import {MatDialog} from '@angular/material';
+import {ModalRemarkComponent} from '../modal-remark/modal-remark.component';
+import {Question} from '../core/models/question.model';
 
 
 @Component({
-  selector: 'app-pass-test',
-  templateUrl: './pass-test.component.html',
-  styleUrls: ['./pass-test.component.css']
+    selector: 'app-pass-test',
+    templateUrl: './pass-test.component.html',
+    styleUrls: ['./pass-test.component.css']
 })
 export class PassTestComponent implements OnInit {
-  id: BigInteger;
-  test: Test;
-  userId: BigInteger;
-  questionId = 0;
-  user: User;
-  buttonType = 1;
-  answers: Array<Answer> = new Array<Answer>();
-  isExist = false;
-  createdReply: BigInteger;
-  createdRemark: BigInteger;
-  results: Array<Result>;
-  testResult: Result;
-  testReplies: Map<string, Array<string>>;
-  isQuestions = true;
-  category: Category;
-  isFirst = true;
-  remark: Remark;
-  reply: Reply;
+    id: BigInteger;
+    test: Test;
+    userId: BigInteger;
+    questionId = 0;
+    user: User;
+    buttonType = 1;
+    answers: Array<Answer> = [];
+    createdReply: BigInteger;
+    results: Array<Result>;
+    isQuestions = true;
+    category: Category;
+    isFirst = true;
+    isTestNeedExpert = false;
+    remarkText: string;
+    remarkQuestion: string;
+    reply: Reply;
+    openAnswer: string;
+    answer: Answer;
+    panelOpenState: boolean;
+    remark: Remark;
+    selectedAnswer: Answer;
+    remarkAnswer: string;
 
 
+    constructor(private route: ActivatedRoute, private router: Router,
+                private passTestService: PassTestService,
+                public dialog: MatDialog) {
+        this.route.params.subscribe((params) => {
+            this.id = params.id;
+            this.userId = params.userId;
+        });
 
-  constructor(private route: ActivatedRoute, private router: Router,
-              private passTestService: PassTestService, private userService: UserService, private resultService: ResultService) {
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-      this.userId = params['userId'];
-    });
-
-  }
-
-  ngOnInit() {
-    this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => this.test = test);
-    window.addEventListener('beforeunload', function (e) {
-      let confirmationMessage = '\o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage;
-      return confirmationMessage;
-    });
-
-  }
-
-  incrementIndex() {
-    this.isFirst = false;
-    if (this.questionId < this.test.questions.length - 1) {
-
-      console.log(this.questionId + "/questionIF");
-
-      this.reply = new Reply;
-
-      this.reply.replyList = this.answers;
-
-      this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
-
-      console.log(this.createdReply);
-      this.answers = [];
-      this.reply = new Reply();
-      return this.questionId++;
-    } else {
-      this.reply = new Reply;
-      this.reply.replyList = this.answers;
-      this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
-      this.questionId++;
-      this.buttonType = 2;
     }
-  }
+
+    ngOnInit() {
+        this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => {
+
+            this.test = test;
+            this.test.questions.forEach((question: Question) => {
+                if (question.typeQuestion === 'OPEN') {
+                    this.isTestNeedExpert = true;
+                }
+            });
+        });
 
 
-  decrementIndex() {
-    if (this.questionId > 0) {
+        window.addEventListener('beforeunload', function(e) {
+            const confirmationMessage = '\o/';
+            console.log('refresh..');
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
 
-      this.answers = [];
-      this.questionId--;
-      this.buttonType = 1;
+
     }
-  }
 
-  addReply(answer: Answer) {
-    this.isExist = false;
-    if (this.answers.length > 0) {
-      this.answers.forEach((value: Answer) => {
-          if (value.id === answer.id) {
-            console.log('already exist ' + answer.textAnswer + ' id =' + answer.id);
-            this.isExist = true;
-            return;
-          }
+    incrementIndex() {
+        this.isFirst = false;
+        if (this.questionId < this.test.questions.length - 1) {
+
+            this.reply = new Reply;
+
+            if (this.selectedAnswer !== undefined) {
+                this.answers.push(this.selectedAnswer);
+                this.selectedAnswer = undefined;
+            }
+
+            this.reply.replyList = this.answers.slice();
+            this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
+
+            this.answers = [];
+            this.reply = new Reply();
+            this.openAnswer = null;
+            this.remarkAnswer = null;
+            return this.questionId++;
+        } else {
+            this.reply = new Reply;
+            if (this.selectedAnswer !== undefined) {
+                this.answers.push(this.selectedAnswer);
+                this.selectedAnswer = undefined;
+            }
+
+            this.reply.replyList = this.answers.slice();
+            this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
+
+            this.questionId++;
+            this.buttonType = 2;
+            this.answers = [];
+            this.remarkAnswer = null;
+            this.openAnswer = null;
         }
-      );
-      if (this.isExist) {
-        return;
-      }
-      console.log(this.answers + ' Added ' + answer.textAnswer);
-      return this.answers.push(answer);
-    } else {
-      console.log('frist add');
-      return this.answers.push(answer);
-    }
-  }
+        this.openAnswer = null;
 
-  addReplyWithOneAnswer(answer: Answer) {
-    this.isExist = false;
-    if (this.answers.length > 0) {
-      this.answers.forEach((value: Answer) => {
-          if (value.id === answer.id) {
-            console.log('already exist ' + answer.textAnswer + ' id =' + answer.id);
-            this.isExist = true;
-            return;
-          }
+    }
+
+
+    decrementIndex() {
+        if (this.questionId > 0) {
+
+            this.answers = [];
+            this.questionId--;
+            this.buttonType = 1;
+            this.remarkAnswer = null;
         }
-      );
-      if (this.isExist) {
-        return;
-      }
-      console.log(this.answers + ' Added ' + answer.textAnswer);
-      this.answers = [];
-      return this.answers.push(answer);
-    } else {
-      console.log('frist add');
-      return this.answers.push(answer);
     }
-  }
 
 
-  testEnd() {
-    console.log('End lol ');
-    this.isFirst = true;
-    this.isQuestions = false;
-    this.passTestService.getReplies().subscribe((results) => this.results = results);
+    testEnd() {
+        this.isFirst = true;
+        this.isQuestions = false;
+        this.passTestService.getReplies().subscribe((results) => this.results = results);
 
-    console.log(this.results);
-    this.buttonType = 3;
-  }
-
-
-
-  getCategoryName(categoryId: BigInteger): string {
-    this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category );
-    console.log(this.category.nameCategory);
-    return this.category.nameCategory;
-
-  }
-
-  showReport() {
-    let report = prompt('Please enter your report for question \"'+ this.test.questions[this.questionId].textQuestion +'\" :', '');
-
-    if (report != null && report.length > 0) {
-      // txt = "User cancelled the prompt.";
-
-
-      // txt = "Hello " + report + "! How are you today?";
-      this.remark = new Remark();
-
-      this.remark.userRecipientId = this.test.creatorUserId;
-      this.remark.text = report;
-      this.remark.userSenderId = this.userId;
-      this.remark.questionId = this.test.questions[this.questionId].id;
-      this.passTestService.addRemark(this.remark).subscribe((value => this.createdRemark = value));
-
-    } else if (report.length === 0 || report == null) {
-      alert('Input your report please!');
-      return false;
-
+        this.buttonType = 3;
     }
-    else {
-      console.log(report.length);
-      alert('Entry Cancelled By User');
-      return false;
+
+
+    getCategoryName(categoryId: BigInteger): string {
+        this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category);
+        console.log(this.category.nameCategory);
+        return this.category.nameCategory;
 
     }
 
-  }
+    showReport(): void {
+        this.remarkQuestion = this.test.questions[this.questionId].textQuestion;
+
+        const dialogRef = this.dialog.open(ModalRemarkComponent, {
+            width: '400px',
+            data: {remarkQuestion: this.remarkQuestion, remarkText: this.remarkText}
+        });
+
+        this.remark = new Remark();
+        this.remark.text = '';
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.remark.text = result;
+                this.remark.userSenderId = this.userId;
+                this.remark.userRecipientId = this.test.creatorUserId;
+                this.remark.questionId = this.test.questions[this.questionId].id;
+                this.passTestService.addRemark(this.remark).subscribe();
+                this.remark = undefined;
+                this.remarkAnswer = dialogRef.componentInstance.closeMessage;
+
+            }
+            console.log('LOLOLOL');
+        });
+    }
 
 
 
-
-
-  // getValues(results: Array<Result>):[string, Array<Result>] {
-  //
-  // }
 }

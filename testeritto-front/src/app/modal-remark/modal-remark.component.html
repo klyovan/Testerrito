@@ -1,0 +1,9 @@
+<mat-form-field style="width: 350px" class="example-full-width">
+    <textarea matInput [formControl] = "remarkForm" [(ngModel)]="data.remarkText" type="text" placeholder="Enter your remark for '{{data.remarkQuestion}}'"
+              minlength="10" maxlength="300"  required></textarea>
+    <mat-error *ngIf="remarkForm.invalid" > {{getErrorMessage()}}</mat-error>
+</mat-form-field>
+<div mat-dialog-actions>
+    <button mat-button  (click)="onNoClick()">No Thanks</button>
+    <button mat-button [disabled] = "remarkForm.invalid" [mat-dialog-close]="data.remarkText">Ok</button>
+</div>
