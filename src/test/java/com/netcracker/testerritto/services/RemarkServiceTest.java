@@ -46,19 +46,19 @@ public class RemarkServiceTest {
     @After
     public void setDown(){
         ArrayList<BigInteger> listForDelete = new ArrayList<>();
-        if (sequenceId != null)
+        if (authorId != null)
             listForDelete.add(authorId);
-        if (sequenceId != null)
+        if (groupId != null)
             listForDelete.add(groupId);
-        if (sequenceId != null)
+        if (testId != null)
             listForDelete.add(testId);
-        if (sequenceId != null)
+        if (questionId != null)
             listForDelete.add(questionId);
-        if (sequenceId != null)
+        if (remarkerId != null)
             listForDelete.add(remarkerId);
         if (sequenceId != null)
             listForDelete.add(sequenceId);
-        if (sequenceId != null)
+        if (recipientId != null)
             listForDelete.add(recipientId);
         for (BigInteger id : listForDelete) {
             new ObjectEavBuilder.Builder(jdbcTemplate)

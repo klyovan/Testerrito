@@ -43,6 +43,15 @@ public class RemarkService {
         }
     }
 
+    public void updateRemarkViewStatus(BigInteger remarkId) {
+        checkIdNotNull(remarkId);
+        try {
+            remarkDAO.updateRemarkViewStatus(remarkId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed UpdateViewStatus().", exception);
+        }
+    }
+
     public void deleteRemark(BigInteger remarkId) throws ServiceException {
         checkIdNotNull(remarkId);
         try {
@@ -61,4 +70,6 @@ public class RemarkService {
         if ("".equals(string) || string == null)
             serviceExceptionHandler.logAndThrowIllegalException("String parameter can not be NULL OR EMPTY.");
     }
+
+
 }
