@@ -20,7 +20,7 @@ import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.compone
   styleUrls: ['./group.component.css']
 })
 export class GroupComponent implements OnInit {
-  group: Group;
+  group: Group = new Group();
   user: User;
   results: Array<Result> = new Array();
   finalResult: Map<Date,String>;
@@ -48,7 +48,6 @@ export class GroupComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog,
               private datePipe: DatePipe) {
-    this.group = new Group;
     route.params.subscribe(params=>this.group.id=params['groupId']);  
    }
 
@@ -137,8 +136,7 @@ export class GroupComponent implements OnInit {
 
   showUsersInGroup() { 
     this.groupService.getUsersInGroup(this.group.id).subscribe(data => {
-      this.groupService.users = data; 
-     // this.groupService.users.slice(this.groupService.users.findIndex(user => user.id == this.group.creatorUserId),1);//???
+      this.groupService.users = data//.filter(user => user.id != this.group.creatorUserId); 
       this.router.navigateByUrl('/group/'+this.group.id+'/users');
     });   
   }

@@ -1,29 +1,35 @@
 <div [hidden]="!loading"> 
   <div class="container">
     <div class="row" >
-      <div class="col-6">
+      <div  class="col-6">
         <h2>{{group.name}}</h2> 
-      </div>
-      <div class="col-6" [hidden] = "group.creatorUserId != user.id">
-        <button class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
-        <button class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
-        <button class="btn btn-info btn-sm" (click)="showAllRemarks()">Remarks</button>
-        <button class="btn btn-info btn-sm" [routerLink]="['/test']">Create Test</button>
-      </div>      
+      </div >
+      <div class="col-6" [hidden]="user == undefined">
+        <div  [hidden] = "group.creatorUserId != user.id">
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showAllRemarks()">Remarks</button>
+          <button style="width: 100px;" class="btn btn-info btn-sm" [routerLink]="['/test']">Create Test</button>
+        </div> 
+      </div>           
      </div>
   </div>  
   <div class="container">
     <div class="row">
       <div class="col-7" [hidden]="!testsLoaded">  
-        <div [hidden] = "group.tests.length != 0">
-          <div [hidden] = "group.creatorUserId == user.id">
-            <h5>There is no tests yet. Please wait until admin creates one</h5>
+        <div [hidden] = "group.tests != undefined && group.tests.length != 0">
+          <div [hidden]="user == undefined">
+            <div [hidden] = "group.creatorUserId == user.id">
+              <h5>There is no tests yet. Please wait until admin creates one</h5>
+            </div>
           </div>
-          <div [hidden] = "group.creatorUserId != user.id">
-            <h5>There is no tests yet. Create a new one!</h5>
-          </div>
+          <div [hidden]="user == undefined">
+            <div [hidden] = "group.creatorUserId != user.id">
+              <h5>There is no tests yet. Create a new one!</h5>
+            </div>
+          </div>         
         </div>
-        <div [hidden] = "group.tests.length == 0" class="mat-elevation-z8">
+        <div [hidden] = "group.tests == undefined" class="mat-elevation-z8">
           <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="testsDataSource">
             <ng-container  matColumnDef="nameTest">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Names</th>
