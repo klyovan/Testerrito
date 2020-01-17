@@ -20,7 +20,13 @@ import { DatePipe } from '@angular/common';
 import { GroupusersComponent } from './groupusers/groupusers.component';
 import { RemarkComponent } from './remark/remark.component';
 import { GrouplistComponent } from './grouplist/grouplist.component';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
+import { MatProgressSpinnerModule, MatTableModule, MatTabsModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableDataSource, MatSortModule  } from '@angular/material';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { CreateGroupFormComponent } from './create-group-form/create-group-form.component';
+import { TestService } from './core/api/test.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +38,9 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     PassTestComponent,
     GroupusersComponent,
     RemarkComponent,
-    GrouplistComponent
+    GrouplistComponent,
+    ConfirmDeleteComponent,
+    CreateGroupFormComponent
   ],
   imports: [
     BrowserModule,
@@ -41,9 +49,22 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     HttpClientModule,
     CoreModule,
-    NgbModule
+    NgbModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatTabsModule,
+    MatProgressSpinnerModule
   ],
-  providers: [UserService, GroupService, ResultService, PassTestService, DatePipe],
-  bootstrap: [AppComponent]
+  exports: [
+    MatFormFieldModule
+  ],
+  providers: [UserService, GroupService, ResultService, TestService, PassTestService, DatePipe, MatDialog, MatTableDataSource],
+  bootstrap: [AppComponent],
+  entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]
 })
 export class AppModule { }
