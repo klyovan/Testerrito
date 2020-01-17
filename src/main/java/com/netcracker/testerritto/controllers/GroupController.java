@@ -139,17 +139,26 @@ public class GroupController {
         }
     }
 
-    @PutMapping("/exitFromGroup/{id}")
-    public void exitFromGroup(@RequestBody User user, @PathVariable BigInteger id ){
+    @DeleteMapping("/{groupId}/exitfromgroup/{userId}")
+    public void exitFromGroup(@PathVariable BigInteger groupId, @PathVariable BigInteger userId ){
         try {
-           userService.exitFromGroup(user.getId(), id );
+           userService.exitFromGroup(userId, groupId);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
     }
 
-    @GetMapping("/{id}/results")
+   /* @GetMapping("/{id}/results")
     public void showResultsForTest(@PathVariable BigInteger id){
 
+    }*/
+
+    @PutMapping("/remarkviewed/{remarkId}")
+    public void updateRemarkViewStatus(@PathVariable BigInteger remarkId){
+        try {
+            remarkService.updateRemarkViewStatus(remarkId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
     }
 }
