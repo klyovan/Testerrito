@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { GroupService } from '../core/api/group.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Test } from '../core/models/test.model';
 import { Result } from '../core/models/result.model';
 import { ResultService } from '../core/api/result.service';
+import { MatDialog, MatTableDataSource, MatPaginator, MatSort, MatTabChangeEvent } from '@angular/material';
+import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
+import { User } from '../core/models/user.model';
 
 @Component({
   selector: 'app-groupusers',
@@ -18,9 +21,21 @@ export class GroupusersComponent implements OnInit {
   selectedTest: BigInteger;
   showPassedTests: Boolean = false;
   showResults: Boolean = false;
+  selectedIndex: number = 0;
+
+
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
+  @ViewChildren(MatSort) sort = new QueryList<MatSort>();
+  usersDataSource = new MatTableDataSource<User>();
+  testsDataSource = new MatTableDataSource<Test>();
+  resultsDataSource = new MatTableDataSource<Result>();
+  displayedUsersColumns: string[] = ['lastName','firstName','seeTests','kickOut']
+  displayedTestsColumns: string[] = ['nameTest','seeResults']
+  displayedResultsColumns: string[] = ['date', 'status', 'action'];
   constructor(private route: ActivatedRoute,
               private router: Router,
               private groupService: GroupService,
+              public dialog: MatDialog,
               private resultService: ResultService) {
     route.params.subscribe(params=>this.groupId=params['groupId']);  
     if(this.groupService.users == undefined){      
@@ -29,6 +44,25 @@ export class GroupusersComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
+    this.usersDataSource.paginator = this.paginator.toArray()[0];
+    this.usersDataSource.sort = this.sort.toArray()[0];
+  }
+
+  tabChanged(tabChangeEvent: MatTabChangeEvent) {
+    this.selectedIndex = tabChangeEvent.index;
+    if(this.selectedIndex == 0) {
+      this.usersDataSource.paginator = this.paginator.toArray()[0];
+      this.usersDataSource.sort = this.sort.toArray()[0];
+    }
+    else if(this.selectedIndex == 1) {
+      this.testsDataSource.paginator = this.paginator.toArray()[1];
+      this.testsDataSource.sort = this.sort.toArray()[1];
+    }
+    else {
+      this.testsDataSource.paginator = this.paginator.toArray()[2];
+      this.testsDataSource.sort = this.sort.toArray()[2];
+    }
   }
 
   seeAllPassedTestsByUser(id: BigInteger) {
@@ -49,10 +83,15 @@ export class GroupusersComponent implements OnInit {
       this.tests.add(this.groupService.tests.find(test => test.id == result.testId))
     })
     this.showPassedTests = true;
+    var testsToDisplay = new Array();
+    this.tests.forEach(test => testsToDisplay.push(test))
+    this.testsDataSource = new MatTableDataSource<Test>(testsToDisplay);
+    this.selectedIndex = 1;
+    this.showResults = false;
   }
 
   seeResultsForTest(id: BigInteger) {
-    this.selectedTest = id;//отсортировать, сделать кнопку по одному резалту
+    this.selectedTest = id;
     var result = this.groupService.users.find(user => user.id = this.selectedUser).results.filter(element => element.testId == this.selectedTest);
     result.forEach(element => {
       if(this.userResults.find(elem => elem.status == element.status && elem.date == element.date) == undefined) {
@@ -60,6 +99,8 @@ export class GroupusersComponent implements OnInit {
       }
     });
     this.showResults = true;
+    this.resultsDataSource = new MatTableDataSource<Result>(this.userResults);
+    this.selectedIndex = 2;
   }
 
   showDetailsOnResult(date: Date) {
@@ -67,5 +108,26 @@ export class GroupusersComponent implements OnInit {
        && element.date == date && element.status == "PASSED");
     this.resultService.results = result;
     this.router.navigateByUrl('/group/'+this.groupId+'/results');
+  }
+
+  kickOutUser(id: BigInteger) {
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: {title: "KICK OUT FROM GROUP", 
+             text: "Are You sure that you want to kick out " +  this.groupService.users.find(user => user.id == id).lastName 
+                   +" "+ this.groupService.users.find(user => user.id == id).firstName + " from this group?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.groupService.exitFromGroup(id, this.groupId).subscribe();
+        var index = this.groupService.users.findIndex(user => user.id == id);
+        if(index != -1)
+          this.groupService.users.splice(index, 1); 
+      }
+    });
+  }
+
+  goBackToGroup() {
+    this.router.navigateByUrl('/group/'+this.groupId);
   }
 }

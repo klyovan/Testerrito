@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { UserService } from '../core/api/user.service';
 import { User } from '../core/models/user.model';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GroupService } from '../core/api/group.service';
+import {MatDialog } from '@angular/material/dialog';
+import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
+import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
+import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Group } from '../core/models/group.model';
 
 @Component({
@@ -13,17 +16,24 @@ import { Group } from '../core/models/group.model';
 })
 export class GrouplistComponent implements OnInit {
   user: User;
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
+  @ViewChildren(MatSort) sort = new QueryList<MatSort>();
+  createdGroupsDataSourse = new MatTableDataSource<Group>();  
+  consistGroupsDataSourse = new MatTableDataSource<Group>();  
+  displayedCreatedGroupsColumns: string[] = ['name', 'show', 'update', 'delete'];
+  displayedConsistGroupsColumns: string[] = ['name', 'show', 'delete'];
   loading: Boolean = false;
-  loadCreateForm: Boolean = false;
-  createGroupForm: FormGroup;
-  isSubmited: Boolean = false;
-  error: string;
-  constructor(private formBuilder: FormBuilder,
-              private userService: UserService,
+  isConstistEmpty: Boolean = false;
+  isCreatedGroupsEmpty: Boolean = false;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  constructor(private userService: UserService,
               private groupService: GroupService,
-              private router: Router) { }
+              public dialog: MatDialog,
+              private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.userService.getUser().subscribe(data => {
       this.user = data;
       this.user.createdGroups.forEach(createdGroup => {
@@ -31,36 +41,26 @@ export class GrouplistComponent implements OnInit {
         if(index != -1)
           this.user.groups.splice(index, 1);        
       })
-      this.loading = true;
-    });
+      this.loading = true;      
+      this.changeCreatedGroupsDataSourse();
+      this.changeConsistGroupsDataSourse();
+    });    
   }
 
-  private buildForm() {
-    this.createGroupForm = this.formBuilder.group({
-      GroupName: [ null, Validators.required ],
-    });
+  changeCreatedGroupsDataSourse() {
+    this.createdGroupsDataSourse = new MatTableDataSource<Group>(this.user.createdGroups);
+    if(this.createdGroupsDataSourse.data.length == 0)
+      this.isCreatedGroupsEmpty = true;   
+    this.createdGroupsDataSourse.paginator = this.paginator.toArray()[0];     
+    this.createdGroupsDataSourse.sort = this.sort.toArray()[0];   
   }
 
-  onSubmit() {
-    this.isSubmited = true;
-    this.error = null;
-
-    if (this.createGroupForm.invalid) {
-      this.error = 'Invalid name';
-      return;
-    }
-
-    const formValue = this.createGroupForm.value;
-    this.groupService.group = new Group();
-    this.groupService.group.name = formValue.GroupName;
-    this.groupService.group.link = "someNewLink";
-    this.groupService.group.creatorUserId = this.user.id;
-    this.groupService.create(this.groupService.group)
-      .subscribe((data) => {
-        this.groupService.group.id=data;
-        this.groupService.getGroup(data).subscribe(group => this.user.createdGroups.push(group));
-        this.loadCreateForm = false;
-      });
+  changeConsistGroupsDataSourse() {
+    this.consistGroupsDataSourse = new MatTableDataSource<Group>(this.user.groups);   
+    if(this.consistGroupsDataSourse.data.length == 0)
+      this.isConstistEmpty = true;   
+    this.consistGroupsDataSourse.paginator = this.paginator.toArray()[1];     
+    this.consistGroupsDataSourse.sort = this.sort.toArray()[1];  
   }
 
   goToGroup(id: BigInteger) {
@@ -68,14 +68,69 @@ export class GrouplistComponent implements OnInit {
   }
 
   createGroup() {
-    this.loadCreateForm = true;
-    this.buildForm();
+    const dialogRef = this.dialog.open(CreateGroupFormComponent, {
+      data: {action: "create", groupName: '', creatorUserId: this.user.id },
+      width: "450px"
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) 
+        this.groupService.getGroup(result).subscribe(group => {
+          this.user.createdGroups.push(group);
+          this.changeCreatedGroupsDataSourse();
+        })
+    })
   }
 
-  deleteGroup(id: BigInteger) {
-    this.groupService.deleteGroup(id).subscribe();
-    var index = this.user.createdGroups.findIndex(group => group.id == id);
-        if(index != -1)
-          this.user.createdGroups.splice(index, 1); 
+  updateGroup(id: BigInteger) {
+    const dialogRef = this.dialog.open(CreateGroupFormComponent, {
+      data: {action: "update", 
+             groupName: this.user.createdGroups.find(group => group.id == id).name, 
+             groupId: id, 
+             creatorUserId: this.user.id },
+      width: "450px"
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.user.createdGroups.find(group => group.id == result.id).name = result.name;
+        this.changeCreatedGroupsDataSourse();
+      }
+    })
+  }
+
+  deleteGroup(id: BigInteger) { 
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: {title: "DELETE GROUP", text: "Are You sure that you want to delete this group?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.groupService.deleteGroup(id).subscribe();
+        var index = this.user.createdGroups.findIndex(group => group.id == id);
+        if(index != -1) {
+          this.user.createdGroups.splice(index, 1);
+          this.changeCreatedGroupsDataSourse();
+        }          
+      }
+    });
+  }
+
+  exitFromGroup(id: BigInteger) {
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: {title: "EXIT FROM GROUP", text: "Are You sure that you want exit from this group?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.groupService.exitFromGroup(this.user.id, id).subscribe();
+        var index = this.user.groups.findIndex(group => group.id == id);
+        if(index != -1) {
+          this.user.groups.splice(index, 1); 
+          this.changeConsistGroupsDataSourse();
+        }
+      }
+    });
+    
   }
 }
