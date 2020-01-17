@@ -45,6 +45,7 @@ public class GroupService {
         checkIdNotNull(group.getCreatorUserId());
         checkStringNotNull(group.getLink());
         checkStringNotNull(group.getName());
+        checkUniqueName(group.getCreatorUserId(), group.getName());
        try {
             return groupDAO.createGroup(group);
         } catch (DataAccessException exception) {
@@ -56,6 +57,7 @@ public class GroupService {
     public Group updateGroup(Group group) throws ServiceException {
         checkIdNotNull(group.getId());
         checkStringNotNull(group.getName());
+        checkUniqueName(group.getCreatorUserId(), group.getName());
         try {
             return groupDAO.updateGroup(group);
         } catch (DataAccessException exception) {
@@ -110,6 +112,11 @@ public class GroupService {
 
     private void checkStringNotNull(String string) {
         if ("".equals(string) || string == null)
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter Text can not be NULL.");
+            serviceExceptionHandler.logAndThrowIllegalException("Parameter Text can not be NULL");
+    }
+
+    private void checkUniqueName(BigInteger userId, String groupName) {
+        if(groupDAO.isGroupNameExist(userId, groupName))
+            serviceExceptionHandler.logAndThrowIllegalException("Group with name " + groupName + " already exist");
     }
 }

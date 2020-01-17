@@ -175,6 +175,7 @@ public class GroupServiceTest {
         Group group = new Group();
         group.setId(sequenceId);
         group.setName("Very cool new group name");
+        group.setCreatorUserId(creatorId);
         Group checkGroup = groupService.updateGroup(group);
         assertEquals(group.getId(), checkGroup.getId());
         assertEquals(group.getName(), checkGroup.getName());

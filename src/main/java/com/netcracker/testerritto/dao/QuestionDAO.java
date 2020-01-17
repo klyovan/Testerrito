@@ -46,23 +46,26 @@ public class QuestionDAO {
         + "      and question2category.object_id = question.object_id";
 
   private String QUERY_FOR_SELECT_ALL_QUESTIONS_IN_TEST =
-    "select " +
-      "question.object_id as id,\n" +
-      "question_text.value as text,\n" +
-      "question_type.list_value_id as question_type,\n" +
-      "question.parent_id as test_id\n" +
-    "from \n" +
-      "objects question,\n" +
-      "attributes question_type,\n"+
-      "attributes question_text\n" +
-    "where \n" +
-      "question.parent_id = ?\n" +
-      "and question.object_type_id = 10\n" +
-      "and question.object_id = question_text.object_id \n" +
-      "and question_text.attr_id = 18 \n" +
-      "and question.object_id = question_type.object_id\n" +
-      "and question_type.attr_id = 19 \n";
-
+    "  select    \n" +
+    "       question.object_id as id,    \n" +
+    "       question_text.value as text,    \n" +
+    "       question_type.list_value_id as question_type,    \n" +
+    "       question.parent_id as test_id,\n" +
+    "       question2category.reference as category_id\n" +
+    "     from     \n" +
+    "       objects question,    \n" +
+    "       attributes question_type,   \n" +
+    "       attributes question_text,\n" +
+    "       objreference question2category\n" +
+    "     where     \n" +
+    "       question.parent_id = ?    \n" +
+    "       and question.object_type_id = 10    \n" +
+    "       and question.object_id = question_text.object_id     \n" +
+    "       and question_text.attr_id = 18     \n" +
+    "       and question.object_id = question_type.object_id    \n" +
+    "       and question_type.attr_id = 19\n" +
+    "       and question2category.object_id = question.object_id\n" +
+    "       and question2category.attr_id = 34";
   public QuestionDAO(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }

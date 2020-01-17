@@ -91,31 +91,48 @@ public class GroupDAO{
         "    and test2creator.attr_id = 24 /* CREATE_TEST_BY */";
 
     private String GET_ALL_REMARKS =
-        "select\n" +
-        "    question2remark.object_id as id,\n" +
-        "    remark_text.value as text,\n" +
-        "    sender.reference as user_id,\n" +
-        "    question2remark.reference as question_id,\n" +
-        "    recipient.reference as recipient_id\n" +
-        "from\n" +
-        "    objects tests,    \n" +
-        "    objects questions,    \n" +
-        "    objreference question2remark,\n" +
-        "    attributes remark_text,\n" +
-        "    objreference sender,\n" +
-        "    objreference recipient \n" +
-        "where    \n" +
-        "    tests.parent_id = ? /*groupId*/    \n" +
-        "    and questions.parent_id = tests.object_id    \n" +
-        "    and questions.object_type_id = 10 /*Question*/    \n" +
-        "    and question2remark.attr_id = 28    /*CAUSED_BY*/    \n" +
-        "    and question2remark.reference = questions.object_id\n" +
-        "    and remark_text.object_id = question2remark.object_id\n" +
-        "    and remark_text.attr_id = 8 /* REMARK_TEXT */\n" +
-        "    and sender.object_id = question2remark.object_id\n" +
-        "    and sender.attr_id = 26 /* SEND */\n" +
-        "    and recipient.attr_id = 27  /*PROCESS_BY*/    \n" +
-        "    and recipient.object_id = question2remark.object_id";
+        "select    \n" +
+        "     question2remark.object_id as id,    \n" +
+        "     remark_text.value as text,    \n" +
+        "     sender.reference as user_id,    \n" +
+        "     question2remark.reference as question_id,    \n" +
+        "     recipient.reference as recipient_id,\n" +
+        "     viewed_status.value as viewed\n" +
+        " from    \n" +
+        "     objects tests,        \n" +
+        "     objects questions,        \n" +
+        "     objreference question2remark,    \n" +
+        "     attributes remark_text,    \n" +
+        "     attributes viewed_status,\n" +
+        "     objreference sender,    \n" +
+        "     objreference recipient     \n" +
+        " where        \n" +
+        "     tests.parent_id = ? /*groupId*/        \n" +
+        "     and questions.parent_id = tests.object_id        \n" +
+        "     and questions.object_type_id = 10 /*Question*/        \n" +
+        "     and question2remark.attr_id = 28    /*CAUSED_BY*/        \n" +
+        "     and question2remark.reference = questions.object_id    \n" +
+        "     and remark_text.object_id = question2remark.object_id    \n" +
+        "     and remark_text.attr_id = 8 /* REMARK_TEXT */  \n" +
+        "     and viewed_status.object_id = question2remark.object_id\n" +
+        "     and viewed_status.attr_id = 39 /* REMARK_VIEWED */\n" +
+        "     and sender.object_id = question2remark.object_id    \n" +
+        "     and sender.attr_id = 26 /* SEND */    \n" +
+        "     and recipient.attr_id = 27  /*PROCESS_BY*/        \n" +
+        "     and recipient.object_id = question2remark.object_id ";
+
+    private String CHECK_UNIQUE_GROUP_NAME=
+        "select \n"+
+        "    count(*) \n"+
+        "from\n"+
+        "    objreference group2user,\n"+
+        "    attributes group_attributes\n"+
+        "where\n"+
+        "    group2user.attr_id = 25 /* CREATE_GROUP_BY */\n"+
+        "    and group2user.reference = ? /* userId */\n"+
+        "    and group2user.object_id = group_attributes.object_id\n"+
+        "    and group_attributes.attr_id = 6 /* NAME_GROUP */\n"+
+        "    and group_attributes.value = ? /* groupName */";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -123,6 +140,11 @@ public class GroupDAO{
     @Autowired
     public GroupDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public boolean isGroupNameExist(BigInteger userId, String groupName) {
+        Integer i = jdbcTemplate.queryForObject(CHECK_UNIQUE_GROUP_NAME, new Object[]{userId.toString(), groupName}, Integer.class);
+        return (i == 1);
     }
 
     public Group getGroupById(BigInteger groupId) {

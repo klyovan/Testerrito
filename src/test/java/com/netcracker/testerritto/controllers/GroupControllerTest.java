@@ -73,7 +73,7 @@ public class GroupControllerTest {
             listForDelete.add(remarkerId);
         if (sequenceId != null)
             listForDelete.add(sequenceId);
-        if (sequenceId != null)
+        if (recipientId != null)
             listForDelete.add(recipientId);
         for (BigInteger id : listForDelete) {
             new ObjectEavBuilder.Builder(jdbcTemplate)
@@ -125,6 +125,7 @@ public class GroupControllerTest {
         Group group = new Group();
         group.setId(sequenceId);
         group.setName("Very cool new group name");
+        group.setCreatorUserId(creatorId);
         Group checkGroup = groupController.updateGroup(group);
         assertEquals(group.getId(), checkGroup.getId());
         assertEquals(group.getName(), checkGroup.getName());
