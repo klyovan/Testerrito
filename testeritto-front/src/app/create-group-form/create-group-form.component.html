@@ -1,0 +1,58 @@
+<div *ngIf="data.action == 'create'">
+  <h1 mat-dialog-title>CREATE GROUP</h1>
+  <hr>
+  <div mat-dialog-content>
+    <h4>Write name to the new group</h4>
+    <mat-form-field style="width: 400px;"  appearance="outline">
+      <mat-label>Group name</mat-label>
+      <input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div class="row justify-content-end" mat-dialog-actions>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Cancel</button>
+    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesCreate()">Create</button>
+  </div>
+</div>
+
+<div *ngIf="data.action == 'update'">
+  <h1 mat-dialog-title>UPDATE GROUP</h1>
+  <hr>
+  <div mat-dialog-content>
+    <h4>Write new name to the new group</h4>
+    <mat-form-field style="width: 400px;"  appearance="outline">
+      <mat-label>Group name</mat-label>
+      <input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div class="row justify-content-end" mat-dialog-actions>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Cancel</button>
+    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesUpdate()">Update</button>
+  </div>
+</div>
+
+<div *ngIf="data.action == 'invite'">
+  <h1 mat-dialog-title>INVITE NEW MEMBERS</h1>
+  <hr>
+  <div mat-dialog-content>
+    <h4>Share this link with people you want to invite:</h4>   
+    <div class="row">
+      <mat-form-field style="width: 350px;"  appearance="outline">
+        <div class="col-10">
+          <input style="width: 350px;" (blur)="resetLink()" matInput [formControl]="link">
+        </div>
+      </mat-form-field>
+      <div class="col-2">
+        <button class="btn btn-success" cdkFocusInitial mat-button (click)="onCopy()">Copy</button>
+      </div>
+    </div>        
+  </div>
+  <div class="row justify-content-end" mat-dialog-actions>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
+  </div>
+</div>
