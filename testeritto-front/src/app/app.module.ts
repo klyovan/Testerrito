@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { HeaderComponent } from './header/header.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -27,6 +27,9 @@ import { MatProgressSpinnerModule, MatTableModule, MatTabsModule, MatFormFieldMo
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { CreateGroupFormComponent } from './create-group-form/create-group-form.component';
 import { TestService } from './core/api/test.service';
+import { AuthGuard } from './guard/auth.guard';
+import { NoauthGuard } from './guard/noauth.guard';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,7 +66,17 @@ import { TestService } from './core/api/test.service';
   exports: [
     MatFormFieldModule
   ],
-  providers: [UserService, GroupService, ResultService, TestService, PassTestService, DatePipe, MatDialog, MatTableDataSource],
+  providers: [UserService, 
+              GroupService, 
+              ResultService, 
+              TestService, 
+              PassTestService, 
+              DatePipe, 
+              MatDialog, 
+              MatTableDataSource, 
+              AuthGuard,
+              NoauthGuard,
+              ],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]
 })
