@@ -21,8 +21,8 @@ export class GroupusersComponent implements OnInit {
   selectedTest: BigInteger;
   showPassedTests: Boolean = false;
   showResults: Boolean = false;
-  selectedIndex: number = 0;
-
+  selectedIndex: number = null;
+  loading: Boolean = false;
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
@@ -32,6 +32,9 @@ export class GroupusersComponent implements OnInit {
   displayedUsersColumns: string[] = ['lastName','firstName','seeTests','kickOut']
   displayedTestsColumns: string[] = ['nameTest','seeResults']
   displayedResultsColumns: string[] = ['date', 'status', 'action'];
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
   constructor(private route: ActivatedRoute,
               private router: Router,
               private groupService: GroupService,
@@ -47,6 +50,8 @@ export class GroupusersComponent implements OnInit {
     this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
     this.usersDataSource.paginator = this.paginator.toArray()[0];
     this.usersDataSource.sort = this.sort.toArray()[0];
+    this.loading = true;
+    this.selectedIndex = 0;
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {

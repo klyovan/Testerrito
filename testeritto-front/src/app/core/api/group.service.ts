@@ -58,18 +58,14 @@ export class GroupService {
     }
 
     createGroup(group: Group): Observable<BigInteger> {
-       // const headers = new HttpHeaders().set('content-type', 'application/json'); 
-        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/group/create`, group).pipe(
-            catchError(err => { return throwError(err); })
-        );   
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/group/create`, group);   
     }
 
     updateGroup(group: Group): Observable<Group> {
         return this.httpClient.put<Group>(`${environment.apiUrl}/group`, group).pipe(
             map((group: Group) => {             
                 return new Group().deserialize(group);
-            }),
-            catchError(err => { return throwError(err); })
+            })
         );
     }
 
