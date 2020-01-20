@@ -43,7 +43,8 @@ import { NoauthGuard } from './guard/noauth.guard';
     RemarkComponent,
     GrouplistComponent,
     ConfirmDeleteComponent,
-    CreateGroupFormComponent
+    CreateGroupFormComponent,
+    ModalRemarkComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +55,8 @@ import { NoauthGuard } from './guard/noauth.guard';
     CoreModule,
     NgbModule,
     BrowserAnimationsModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
@@ -61,7 +64,16 @@ import { NoauthGuard } from './guard/noauth.guard';
     MatPaginatorModule,
     MatSortModule,
     MatTabsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatExpansionModule,
+    MatListModule,
+    MatDividerModule,
+    ChartsModule
   ],
   exports: [
     MatFormFieldModule
@@ -76,8 +88,9 @@ import { NoauthGuard } from './guard/noauth.guard';
               MatTableDataSource, 
               AuthGuard,
               NoauthGuard,
+              TestService
               ],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]
+  entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent,ModalRemarkComponent]
 })
 export class AppModule { }

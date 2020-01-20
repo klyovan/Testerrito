@@ -40,8 +40,11 @@ export class PassTestService {
  }
 
   public getFinishTest(userId: BigInteger, testId: BigInteger ): Observable<any> {
-    console.log("zashlo" + userId +"testid "+ testId);
     return this.httpClient.get(`${environment.apiUrl}/pass-test/${userId}/test/result/${testId}`);
+  }
+
+  public addAnswer(answer: Answer): Observable<any> {
+      return this.httpClient.post(`${environment.apiUrl}/test/answer`, answer);
   }
 
 }

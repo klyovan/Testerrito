@@ -12,6 +12,12 @@ export class TestService {
         
     }     
 
+
+    public getTest(id: BigInteger): Observable<any> {
+        console.log('zahod');
+        return this.httpClient.get(`${environment.apiUrl}/test/${id}`);
+    }
+
     getTestGradeCategories(id: BigInteger): Observable<GradeCategory[]> {
         return this.httpClient.get<GradeCategory[]>(`${environment.apiUrl}/test/category/grade/test/`+id).pipe(
             map(grades => {
@@ -23,7 +29,7 @@ export class TestService {
     }
 
     getTestQuestions(id: BigInteger): Observable<Question[]> {
-        return this.httpClient.get<Question[]>(`${environment.apiUrl}/test/question/test/`+id).pipe(
+        return this.httpClient.get<Question[]>(`${environment.apiUrl}/test/category/grade/test/` + id).pipe(
             map(questions => {
                 return questions.map(question => {
                     return new Question().deserialize(question);

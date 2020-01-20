@@ -38,22 +38,26 @@ public class ReplyDAO {
             "     and replys_2_results.reference = results.object_id";
 
     private final String GET_ANSWER_LIST_FROM_REPLY =
-        "select \n" +
-            "     answer.object_id answer_id,\n" +
-            "     text_answer.value text_answer\n" +
-            "from\n" +
-            "     objects answer,\n" +
-            "     objects reply,\n" +
-            "     objreference answer_2_reply, \n" +
-            "     attributes text_answer\n" +
-            "where\n" +
-            "     reply.object_id = ?     /*reply_id*/\n" +
-            "     and answer.object_type_id = 11 \n" +
-            "     and answer_2_reply.attr_id = 32\n" +
-            "     and answer_2_reply.object_id = answer.object_id\n" +
-            "     and answer_2_reply.reference = reply.object_id\n" +
-            "     and text_answer.attr_id = 20\n" +
-            "     and text_answer.object_id = answer.object_id\n";
+        "    select  \n"
+            + "                 answer.object_id answer_id, \n"
+            + "                 text_answer.value text_answer,\n"
+            + "                 score.value score\n"
+            + "            from \n"
+            + "                 objects answer, \n"
+            + "                 objects reply, \n"
+            + "                 objreference answer_2_reply,  \n"
+            + "                 attributes text_answer,\n"
+            + "                 attributes score\n"
+            + "            where \n"
+            + "                 reply.object_id = ?     /*reply_id*/ \n"
+            + "                 and answer.object_type_id = 11  \n"
+            + "                 and answer_2_reply.attr_id = 32 \n"
+            + "                 and answer_2_reply.object_id = answer.object_id \n"
+            + "                 and answer_2_reply.reference = reply.object_id \n"
+            + "                 and text_answer.attr_id = 20\n"
+            + "                 and text_answer.object_id = answer.object_id\n"
+            + "                 and score.attr_id = 21\n"
+            + "                 and score.object_id = answer.object_id";
 
     private final String ADD_ANSWER_QUERY =
         "insert into objreference (attr_id, object_id, reference) values(32, ?, ? )";
@@ -81,6 +85,7 @@ public class ReplyDAO {
                     Answer answer = new Answer();
                     answer.setId(new BigInteger(resultSet.getString("answer_id")));
                     answer.setTextAnswer(resultSet.getString("text_answer"));
+                    answer.setScore(resultSet.getInt("score"));
                     return answer;
                 }
             });

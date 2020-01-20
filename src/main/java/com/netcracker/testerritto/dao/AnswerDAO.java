@@ -63,20 +63,20 @@ public class AnswerDAO {
           "answer.parent_id question_id," +
           "answer_text.value text," +
           "answer_score.value score," +
-          "answer2reply.reference" +
-    "from" +
+          "answer2reply.reference " +
+    "from " +
           "objects answer," +
           "attributes answer_text," +
           "attributes answer_score," +
-          "objreference answer2reply" +
+          "objreference answer2reply " +
     "where " +
-          "answer2reply.reference = ?" +
-          "and answer2reply.attr_id = 32" +
-          "and answer2reply.object_id = answer.object_id" +
-          "and answer.object_type_id = 11" +
-          "and answer_text.attr_id = 20" +
-          "and answer_text.object_id = answer.object_id" +
-          "and answer_score.attr_id = 21" +
+          "answer2reply.reference = ? " +
+          "and answer2reply.attr_id = 32 " +
+          "and answer2reply.object_id = answer.object_id " +
+          "and answer.object_type_id = 11 " +
+          "and answer_text.attr_id = 20 " +
+          "and answer_text.object_id = answer.object_id " +
+          "and answer_score.attr_id = 21 " +
           "and answer_score.object_id = answer.object_id";
 
   public AnswerDAO(JdbcTemplate jdbcTemplate) {
@@ -106,7 +106,7 @@ public class AnswerDAO {
 
   public BigInteger createAnswer(Answer newAnswer){
     return new ObjectEavBuilder.Builder(jdbcTemplate)
-        .setName("Answer " + newAnswer.getId())
+        .setName("Answer for q" + newAnswer.getQuestionId())
         .setObjectTypeId(ObjtypeProperties.ANSWER)
         .setParentId(newAnswer.getQuestionId())
         .setStringAttribute(AttrtypeProperties.TEXT_ANSWER, newAnswer.getTextAnswer())

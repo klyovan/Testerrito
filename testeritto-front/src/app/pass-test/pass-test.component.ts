@@ -4,197 +4,248 @@ import {UserService} from '../core/api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Result} from '../core/models/result.model';
 import {User} from '../core/models/user.model';
-import {Observable} from 'rxjs';
 import {Test} from '../core/models/test.model';
 import {Answer} from '../core/models/answer.model';
-import {ResultService} from '../core/api/result.service';
 import {Category} from '../core/models/category.model';
 import {Remark} from '../core/models/remark.model';
 import {Reply} from '../core/models/reply.model';
+import {MatDialog} from '@angular/material';
+import {ModalRemarkComponent} from '../modal-remark/modal-remark.component';
+import {Question} from '../core/models/question.model';
+import {FormControl, Validators} from '@angular/forms';
 
 
 @Component({
-  selector: 'app-pass-test',
-  templateUrl: './pass-test.component.html',
-  styleUrls: ['./pass-test.component.css']
+    selector: 'app-pass-test',
+    templateUrl: './pass-test.component.html',
+    styleUrls: ['./pass-test.component.css']
 })
 export class PassTestComponent implements OnInit {
-  id: BigInteger;
-  test: Test;
-  userId: BigInteger;
-  questionId = 0;
-  user: User;
-  buttonType = 1;
-  answers: Array<Answer> = new Array<Answer>();
-  isExist = false;
-  createdReply: BigInteger;
-  createdRemark: BigInteger;
-  results: Array<Result>;
-  testResult: Result;
-  testReplies: Map<string, Array<string>>;
-  isQuestions = true;
-  category: Category;
-  isFirst = true;
-  remark: Remark;
-  reply: Reply;
+    id: BigInteger;
+    test: Test;
+    userId: BigInteger;
+    questionId = 0;
+    user: User;
+    buttonType = 1;
+    results: Array<Result>;
+    isQuestions = true;
+    category: Category;
+    isFirst = true;
+    isTestNeedExpert = false;
+    remarkText: string;
+    remarkQuestion: string;
+    reply: Reply;
+    openAnswer: string;
+    answer: Answer;
+    remark: Remark;
+    selectedAnswer: Answer;
+    selectedAnswers: Array<Answer> = [];
+    remarkAnswer: string;
+    openAnswerForm = new FormControl('', [Validators.required]);
+    selectionForm = new FormControl(Validators.required);
+    radioForm = new FormControl('',[Validators.required]);
+    markedAnswers: Map<BigInteger, Array<Answer>> = new Map();
 
+    constructor(private route: ActivatedRoute, private router: Router,
+                private passTestService: PassTestService,
+                public dialog: MatDialog) {
+        this.route.params.subscribe((params) => {
+            this.id = params.id;
+            this.userId = params.userId;
+        });
 
-
-  constructor(private route: ActivatedRoute, private router: Router,
-              private passTestService: PassTestService, private userService: UserService, private resultService: ResultService) {
-    this.route.params.subscribe((params) => {
-      this.id = params['id'];
-      this.userId = params['userId'];
-    });
-
-  }
-
-  ngOnInit() {
-    this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => this.test = test);
-    window.addEventListener('beforeunload', function (e) {
-      let confirmationMessage = '\o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage;
-      return confirmationMessage;
-    });
-
-  }
-
-  incrementIndex() {
-    this.isFirst = false;
-    if (this.questionId < this.test.questions.length - 1) {
-
-      console.log(this.questionId + "/questionIF");
-
-      this.reply = new Reply;
-
-      this.reply.replyList = this.answers;
-
-      this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
-
-      console.log(this.createdReply);
-      this.answers = [];
-      this.reply = new Reply();
-      return this.questionId++;
-    } else {
-      this.reply = new Reply;
-      this.reply.replyList = this.answers;
-      this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
-      this.questionId++;
-      this.buttonType = 2;
     }
-  }
+
+    ngOnInit() {
+        this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => {
+
+            this.test = test;
+            this.test.questions.forEach((question: Question) => {
+                if (question.typeQuestion === 'OPEN') {
+                    this.isTestNeedExpert = false; //// true nado
+                }
+            });
+            // this.selectedAnswer = test.questions[0].answers[0];
+        });
 
 
-  decrementIndex() {
-    if (this.questionId > 0) {
+        window.addEventListener('beforeunload', function(e) {
+            const confirmationMessage = '\o/';
+            console.log('refresh..');
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
 
-      this.answers = [];
-      this.questionId--;
-      this.buttonType = 1;
+
     }
-  }
 
-  addReply(answer: Answer) {
-    this.isExist = false;
-    if (this.answers.length > 0) {
-      this.answers.forEach((value: Answer) => {
-          if (value.id === answer.id) {
-            console.log('already exist ' + answer.textAnswer + ' id =' + answer.id);
-            this.isExist = true;
-            return;
-          }
+    markAnswer(markedAnswers: Array<Answer>): void {
+        this.markedAnswers.set(markedAnswers[0].questionId, markedAnswers);
+        console.log(this.markedAnswers);
+    }
+
+
+    incrementIndex() {
+        this.isFirst = false;
+        this.reply = new Reply;
+
+        if (this.questionId < this.test.questions.length - 1) {
+
+            if (this.selectedAnswers.length !== 0 || this.selectedAnswer !== undefined) {
+                if (this.selectedAnswer !== undefined) {
+                    this.selectedAnswers.push(this.selectedAnswer);
+                    this.selectedAnswer = undefined;
+                }
+                console.log(this.selectedAnswers + 'Aha');
+                this.reply.replyList = this.selectedAnswers.slice();
+                this.passTestService.addReply(this.reply).subscribe();
+
+                this.markAnswer(this.selectedAnswers);
+
+                this.selectedAnswers = [];
+
+                return this.questionId++;
+
+            } else if (this.openAnswer !== null) {
+                this.answer = new Answer();
+                this.answer.score = 0;
+                this.answer.questionId = this.test.questions[this.questionId].id;
+                this.answer.textAnswer = this.openAnswer;
+
+
+                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+                    this.answer.id = createdAnswerId;
+                    this.selectedAnswers.push(this.answer);
+                    this.reply.replyList = this.selectedAnswers.slice();
+                    this.passTestService.addReply(this.reply).subscribe();
+
+                    this.markAnswer(this.selectedAnswers);
+
+                    this.selectedAnswers = [];
+                });
+                return this.questionId++;
+            }
+
+
+        } else {
+
+            if (this.selectedAnswer !== undefined || this.selectedAnswers !== undefined) {
+                if (this.selectedAnswer !== undefined) {
+                    this.selectedAnswers.push(this.selectedAnswer);
+                    this.selectedAnswer = undefined;
+                }
+
+                this.reply.replyList = this.selectedAnswers.slice();
+                this.passTestService.addReply(this.reply).subscribe(() => {
+
+                    this.markAnswer(this.selectedAnswers);
+
+                    this.selectedAnswers = [];
+                });
+
+                this.buttonType = 2;
+
+                return this.questionId++;
+            } else if (this.openAnswer !== null && this.selectedAnswers === undefined) {
+                this.answer = new Answer();
+                this.answer.score = 0;
+                this.answer.questionId = this.test.questions[this.questionId].id;
+                this.answer.textAnswer = this.openAnswer;
+
+
+                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+                    this.answer.id = createdAnswerId;
+                    this.selectedAnswers.push(this.answer);
+                    this.reply.replyList = this.selectedAnswers.slice();
+                    this.passTestService.addReply(this.reply).subscribe(() => {
+
+                        this.markAnswer(this.selectedAnswers);
+
+                        this.selectedAnswers = [];
+                    });
+                    this.buttonType = 2;
+
+                    return this.questionId++;
+                });
+            }
+
         }
-      );
-      if (this.isExist) {
-        return;
-      }
-      console.log(this.answers + ' Added ' + answer.textAnswer);
-      return this.answers.push(answer);
-    } else {
-      console.log('frist add');
-      return this.answers.push(answer);
-    }
-  }
+        this.remarkAnswer = null;
+        this.selectedAnswers = [];
+        this.openAnswer = null;
 
-  addReplyWithOneAnswer(answer: Answer) {
-    this.isExist = false;
-    if (this.answers.length > 0) {
-      this.answers.forEach((value: Answer) => {
-          if (value.id === answer.id) {
-            console.log('already exist ' + answer.textAnswer + ' id =' + answer.id);
-            this.isExist = true;
-            return;
-          }
+    }
+
+
+    decrementIndex() {
+        if (this.questionId > 0) {
+
+            this.selectedAnswers = [];
+            this.questionId--;
+            this.buttonType = 1;
+            this.remarkAnswer = null;
         }
-      );
-      if (this.isExist) {
-        return;
-      }
-      console.log(this.answers + ' Added ' + answer.textAnswer);
-      this.answers = [];
-      return this.answers.push(answer);
-    } else {
-      console.log('frist add');
-      return this.answers.push(answer);
     }
-  }
 
 
-  testEnd() {
-    console.log('End lol ');
-    this.isFirst = true;
-    this.isQuestions = false;
-    this.passTestService.getReplies().subscribe((results) => this.results = results);
-
-    console.log(this.results);
-    this.buttonType = 3;
-  }
+    testEnd() {
+        this.isFirst = true;
+        this.isQuestions = false;
 
 
+        this.passTestService.getReplies().subscribe((results) => this.results = results);
 
-  getCategoryName(categoryId: BigInteger): string {
-    this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category );
-    console.log(this.category.nameCategory);
-    return this.category.nameCategory;
+        // this.router.navigateByUrl('/');
 
-  }
-
-  showReport() {
-    let report = prompt('Please enter your report for question \"'+ this.test.questions[this.questionId].textQuestion +'\" :', '');
-
-    if (report != null && report.length > 0) {
-      // txt = "User cancelled the prompt.";
-
-
-      // txt = "Hello " + report + "! How are you today?";
-      this.remark = new Remark();
-
-      this.remark.userRecipientId = this.test.creatorUserId;
-      this.remark.text = report;
-      this.remark.userSenderId = this.userId;
-      this.remark.questionId = this.test.questions[this.questionId].id;
-      this.passTestService.addRemark(this.remark).subscribe((value => this.createdRemark = value));
-
-    } else if (report.length === 0 || report == null) {
-      alert('Input your report please!');
-      return false;
-
+        this.buttonType = 3;
     }
-    else {
-      console.log(report.length);
-      alert('Entry Cancelled By User');
-      return false;
+
+
+    getCategoryName(categoryId: BigInteger): string {
+        this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category);
+        console.log(this.category.nameCategory);
+        return this.category.nameCategory;
 
     }
 
-  }
+    showReport(): void {
+        this.remarkQuestion = this.test.questions[this.questionId].textQuestion;
 
+        const dialogRef = this.dialog.open(ModalRemarkComponent, {
+            width: '400px',
+            data: {remarkQuestion: this.remarkQuestion, remarkText: this.remarkText}
+        });
 
+        this.remark = new Remark();
+        this.remark.text = '';
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.remark.text = result;
+                this.remark.userSenderId = this.userId;
+                this.remark.userRecipientId = this.test.creatorUserId;
+                this.remark.questionId = this.test.questions[this.questionId].id;
+                this.passTestService.addRemark(this.remark).subscribe();
+                this.remark = undefined;
+                this.remarkAnswer = dialogRef.componentInstance.closeMessage;
 
+            }
+        });
+    }
 
-  // getValues(results: Array<Result>):[string, Array<Result>] {
-  //
-  // }
+    getErrorMessage() {
+        return this.openAnswerForm.hasError('required') ? 'You must enter answer' :
+            'Enter more than 10 characters!';
+    }
+
+    getSelectionErrorMessage() {
+        return this.selectionForm.hasError('required') ? 'You must select a answer' :
+            'Select answer';
+    }
+
+    getRadioErrorMessage() {
+        return this.radioForm.hasError('required') ? 'You must select answer' :
+            'Select answer';
+    }
+
 }
