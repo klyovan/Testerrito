@@ -7,6 +7,12 @@ import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import com.netcracker.testerritto.services.ResultService;
 import com.netcracker.testerritto.services.UserService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,7 +129,39 @@ public class GroupController {
     @GetMapping("/result/user/{id}")
     public List<Result> getResultsPassedTestByUser(@PathVariable BigInteger id) {
         try {
-            return resultService.getResultsByUser(id);
+            Map<BigInteger, Integer> scores = new HashMap<>();
+
+            List<Result> results = resultService.getResultsByUser(id);
+
+            results.forEach(result -> {
+                scores.put(result.getCategoryId(), 0);
+            });
+
+            for (Result result : results) {
+
+                for (Entry<Question, Reply> entry : result.getReplies().entrySet()) {
+                    Question question = entry.getKey();
+                    Reply reply = entry.getValue();
+                    reply.getReplyList().forEach(answer -> {
+                        scores.forEach((categoryId, score) -> {
+                            if (categoryId.equals(result.getCategoryId())) {
+                                int newvalue = score + answer.getScore();
+                                scores.put(categoryId, newvalue);
+                            }
+                        });
+                    });
+                }
+            }
+
+            results.forEach(result -> {
+                scores.forEach((bigInteger, integer) -> {
+                    if (bigInteger.equals(result.getCategoryId())) {
+                        result.setScore(integer);
+                    }
+                });
+            });
+
+            return results;
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
@@ -140,16 +178,16 @@ public class GroupController {
     }
 
     @PutMapping("/exitFromGroup/{id}")
-    public void exitFromGroup(@RequestBody User user, @PathVariable BigInteger id ){
+    public void exitFromGroup(@RequestBody User user, @PathVariable BigInteger id) {
         try {
-           userService.exitFromGroup(user.getId(), id );
+            userService.exitFromGroup(user.getId(), id);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
     }
 
     @GetMapping("/{id}/results")
-    public void showResultsForTest(@PathVariable BigInteger id){
+    public void showResultsForTest(@PathVariable BigInteger id) {
 
     }
 }

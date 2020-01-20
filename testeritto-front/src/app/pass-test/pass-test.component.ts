@@ -4,16 +4,15 @@ import {UserService} from '../core/api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Result} from '../core/models/result.model';
 import {User} from '../core/models/user.model';
-import {Observable} from 'rxjs';
 import {Test} from '../core/models/test.model';
 import {Answer} from '../core/models/answer.model';
-import {ResultService} from '../core/api/result.service';
 import {Category} from '../core/models/category.model';
 import {Remark} from '../core/models/remark.model';
 import {Reply} from '../core/models/reply.model';
 import {MatDialog} from '@angular/material';
 import {ModalRemarkComponent} from '../modal-remark/modal-remark.component';
 import {Question} from '../core/models/question.model';
+import {FormControl, Validators} from '@angular/forms';
 
 
 @Component({
@@ -28,8 +27,6 @@ export class PassTestComponent implements OnInit {
     questionId = 0;
     user: User;
     buttonType = 1;
-    answers: Array<Answer> = [];
-    createdReply: BigInteger;
     results: Array<Result>;
     isQuestions = true;
     category: Category;
@@ -40,11 +37,14 @@ export class PassTestComponent implements OnInit {
     reply: Reply;
     openAnswer: string;
     answer: Answer;
-    panelOpenState: boolean;
     remark: Remark;
     selectedAnswer: Answer;
+    selectedAnswers: Array<Answer> = [];
     remarkAnswer: string;
-
+    openAnswerForm = new FormControl('', [Validators.required]);
+    selectionForm = new FormControl(Validators.required);
+    radioForm = new FormControl('',[Validators.required]);
+    markedAnswers: Map<BigInteger, Array<Answer>> = new Map();
 
     constructor(private route: ActivatedRoute, private router: Router,
                 private passTestService: PassTestService,
@@ -62,9 +62,10 @@ export class PassTestComponent implements OnInit {
             this.test = test;
             this.test.questions.forEach((question: Question) => {
                 if (question.typeQuestion === 'OPEN') {
-                    this.isTestNeedExpert = true;
+                    this.isTestNeedExpert = false; //// true nado
                 }
             });
+            // this.selectedAnswer = test.questions[0].answers[0];
         });
 
 
@@ -78,41 +79,99 @@ export class PassTestComponent implements OnInit {
 
     }
 
+    markAnswer(markedAnswers: Array<Answer>): void {
+        this.markedAnswers.set(markedAnswers[0].questionId, markedAnswers);
+        console.log(this.markedAnswers);
+    }
+
+
     incrementIndex() {
         this.isFirst = false;
+        this.reply = new Reply;
+
         if (this.questionId < this.test.questions.length - 1) {
 
-            this.reply = new Reply;
+            if (this.selectedAnswers.length !== 0 || this.selectedAnswer !== undefined) {
+                if (this.selectedAnswer !== undefined) {
+                    this.selectedAnswers.push(this.selectedAnswer);
+                    this.selectedAnswer = undefined;
+                }
+                console.log(this.selectedAnswers + 'Aha');
+                this.reply.replyList = this.selectedAnswers.slice();
+                this.passTestService.addReply(this.reply).subscribe();
 
-            if (this.selectedAnswer !== undefined) {
-                this.answers.push(this.selectedAnswer);
-                this.selectedAnswer = undefined;
+                this.markAnswer(this.selectedAnswers);
+
+                this.selectedAnswers = [];
+
+                return this.questionId++;
+
+            } else if (this.openAnswer !== null) {
+                this.answer = new Answer();
+                this.answer.score = 0;
+                this.answer.questionId = this.test.questions[this.questionId].id;
+                this.answer.textAnswer = this.openAnswer;
+
+
+                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+                    this.answer.id = createdAnswerId;
+                    this.selectedAnswers.push(this.answer);
+                    this.reply.replyList = this.selectedAnswers.slice();
+                    this.passTestService.addReply(this.reply).subscribe();
+
+                    this.markAnswer(this.selectedAnswers);
+
+                    this.selectedAnswers = [];
+                });
+                return this.questionId++;
             }
 
-            this.reply.replyList = this.answers.slice();
-            this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
 
-            this.answers = [];
-            this.reply = new Reply();
-            this.openAnswer = null;
-            this.remarkAnswer = null;
-            return this.questionId++;
         } else {
-            this.reply = new Reply;
-            if (this.selectedAnswer !== undefined) {
-                this.answers.push(this.selectedAnswer);
-                this.selectedAnswer = undefined;
+
+            if (this.selectedAnswer !== undefined || this.selectedAnswers !== undefined) {
+                if (this.selectedAnswer !== undefined) {
+                    this.selectedAnswers.push(this.selectedAnswer);
+                    this.selectedAnswer = undefined;
+                }
+
+                this.reply.replyList = this.selectedAnswers.slice();
+                this.passTestService.addReply(this.reply).subscribe(() => {
+
+                    this.markAnswer(this.selectedAnswers);
+
+                    this.selectedAnswers = [];
+                });
+
+                this.buttonType = 2;
+
+                return this.questionId++;
+            } else if (this.openAnswer !== null && this.selectedAnswers === undefined) {
+                this.answer = new Answer();
+                this.answer.score = 0;
+                this.answer.questionId = this.test.questions[this.questionId].id;
+                this.answer.textAnswer = this.openAnswer;
+
+
+                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+                    this.answer.id = createdAnswerId;
+                    this.selectedAnswers.push(this.answer);
+                    this.reply.replyList = this.selectedAnswers.slice();
+                    this.passTestService.addReply(this.reply).subscribe(() => {
+
+                        this.markAnswer(this.selectedAnswers);
+
+                        this.selectedAnswers = [];
+                    });
+                    this.buttonType = 2;
+
+                    return this.questionId++;
+                });
             }
 
-            this.reply.replyList = this.answers.slice();
-            this.passTestService.addReply(this.reply).subscribe(value => this.createdReply = value);
-
-            this.questionId++;
-            this.buttonType = 2;
-            this.answers = [];
-            this.remarkAnswer = null;
-            this.openAnswer = null;
         }
+        this.remarkAnswer = null;
+        this.selectedAnswers = [];
         this.openAnswer = null;
 
     }
@@ -121,7 +180,7 @@ export class PassTestComponent implements OnInit {
     decrementIndex() {
         if (this.questionId > 0) {
 
-            this.answers = [];
+            this.selectedAnswers = [];
             this.questionId--;
             this.buttonType = 1;
             this.remarkAnswer = null;
@@ -132,7 +191,11 @@ export class PassTestComponent implements OnInit {
     testEnd() {
         this.isFirst = true;
         this.isQuestions = false;
+
+
         this.passTestService.getReplies().subscribe((results) => this.results = results);
+
+        // this.router.navigateByUrl('/');
 
         this.buttonType = 3;
     }
@@ -167,10 +230,22 @@ export class PassTestComponent implements OnInit {
                 this.remarkAnswer = dialogRef.componentInstance.closeMessage;
 
             }
-            console.log('LOLOLOL');
         });
     }
 
+    getErrorMessage() {
+        return this.openAnswerForm.hasError('required') ? 'You must enter answer' :
+            'Enter more than 10 characters!';
+    }
 
+    getSelectionErrorMessage() {
+        return this.selectionForm.hasError('required') ? 'You must select a answer' :
+            'Select answer';
+    }
+
+    getRadioErrorMessage() {
+        return this.radioForm.hasError('required') ? 'You must select answer' :
+            'Select answer';
+    }
 
 }

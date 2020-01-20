@@ -20,41 +20,50 @@
                 <!--<img class="card-img-top " href="" height="50px" width="100px"  alt="Card image cap">-->
                 <div *ngIf="test.questions[questionId].typeQuestion == 'ONE_ANSWER'" class="card-body">
                     <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
-                    <mat-radio-group [(ngModel)]="selectedAnswer">
-                        <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers">
-                            <mat-radio-button [value]="answer" color="primary"> {{answer.textAnswer}} </mat-radio-button>
-                        </div>
-                    </mat-radio-group>
-                </div>
+                    <mat-radio-group  name="radio" required [formControl]="radioForm"  [(ngModel)]="selectedAnswer">
+                            <!--<p>{{markedAnswers.get(test.questions[questionId].id) !== false}}</p>-->
+                            <!--<mat-radio-button [checked]=" answer ===this.markedAnswers.get(this.test.questions[this.questionId].id)[0]"  style="margin-bottom: 2px" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>-->
+                            <mat-radio-button   style="flex-flow: column;" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>
 
+                        <mat-error *ngIf="radioForm.invalid" > {{getRadioErrorMessage()}}</mat-error>
+
+                    </mat-radio-group>
+
+
+                    <!--<pre>{{requiredForm|json}}</pre>-->
+                </div>
 
                 <div *ngIf="test.questions[questionId].typeQuestion == 'MULTIPLE_ANSWER'" class="card-body">
                     <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
 
-
-                    <mat-selection-list #answersCheck [(ngModel)]="answers">
-                        <mat-list-option checkboxPosition="before" color="primary" *ngFor="let answer of test.questions[questionId].answers;
+                    <!--markedAnswers.get(test.questions[questionId].id) ? markedAnswers.get(test.questions[questionId].id) : selectedAnswers-->
+                    <mat-selection-list name="select" [formControl]="selectionForm" required  [(ngModel)]="selectedAnswers">
+                        <mat-list-option    checkboxPosition="before" color="primary" *ngFor="let answer of test.questions[questionId].answers;
                          let i = index" [value]="answer">
                             {{answer.textAnswer}}
                         </mat-list-option>
+                        <mat-error *ngIf="selectionForm.invalid" > {{getSelectionErrorMessage()}}</mat-error>
                     </mat-selection-list>
+
                 </div>
 
                 <div *ngIf="test.questions[questionId].typeQuestion == 'OPEN'" class="card-body">
                     <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
-                    <mat-form-field required="true" class="form-check mb-2" minlength="10" maxlength="200">
-                        <textarea [(ngModel)]="openAnswer" matInput placeholder="Enter your answer"></textarea>
+                    <mat-form-field style="width: 250px" required="true" class="form-check mb-2" minlength="10" maxlength="200">
+                        <textarea [(ngModel)]="openAnswer"  [formControl]="openAnswerForm" matInput placeholder="Enter your answer"  minlength="10" maxlength="300"  required></textarea>
+                        <mat-error *ngIf="openAnswerForm.invalid" > {{getErrorMessage()}}</mat-error>
                     </mat-form-field>
                 </div>
             </div>
 
-            <!--<div *ngIf="isTestNeedExpert"><h1>{{isTestNeedExpert}}</h1></div>-->
 
 
         </div>
 
 
     </div>
+
+    <!--<pre>{{markedAnswers.values() | json}}</pre>-->
 
 
     <div *ngIf="results && isTestNeedExpert">
@@ -70,9 +79,9 @@
         </div>
 
         <div *ngIf="buttonType == 1" class="col-sm-1">
-            <button [disabled]="selectedAnswer == undefined && openAnswer == null && answers.length == 0" (click)="incrementIndex()" class="btn btn-primary btn-lg">
-                <i *ngIf="answers != undefined " class="glyphicon glyphicon-arrow-right"></i>
-                <i *ngIf="answers == undefined" matTooltip="Choose at least one answer!" class="glyphicon glyphicon-arrow-right"></i>
+            <button type="submit" [disabled]="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid"  (click)="incrementIndex()" class="btn btn-primary btn-lg">
+                <i *ngIf="selectedAnswer  != undefined || selectedAnswers.length != 0 || openAnswerForm.invalid != true " class="glyphicon glyphicon-arrow-right"></i>
+                <i *ngIf="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid == true" matTooltip="Choose at least one answer!" class="glyphicon glyphicon-arrow-right"></i>
             </button>
         </div>
 
@@ -95,27 +104,28 @@
 
 
 <div *ngIf="results && !isTestNeedExpert">
-    <h2 class="row">Your answers</h2>
-    <div>
 
-        <div *ngFor="let result of results; let i = index">
-            <mat-expansion-panel class="row" (opened)="panelOpenState = true"
-                                 (closed)="panelOpenState = false"
-                                 *ngFor="let value of results[i].replies | keyvalue">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        {{value.key  }}
-                    </mat-panel-title>
-                    <mat-panel-description style="flex: 0 0 auto;">
-                        {{value.value + '' | slice:0:10}}...
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p><strong>{{value.value}}</strong></p>
-            </mat-expansion-panel>
+    <!--<h2 class="row">Your answers</h2>-->
+    <!--<div>-->
+
+        <!--<div *ngFor="let result of results; let i = index">-->
+            <!--<mat-expansion-panel class="row" (opened)="panelOpenState = true"-->
+                                 <!--(closed)="panelOpenState = false"-->
+                                 <!--*ngFor="let value of results[i].replies | keyvalue">-->
+                <!--<mat-expansion-panel-header>-->
+                    <!--<mat-panel-title>-->
+                        <!--{{value.key  }}-->
+                    <!--</mat-panel-title>-->
+                    <!--<mat-panel-description style="flex: 0 0 auto;">-->
+                        <!--{{value.value + '' | slice:0:10}}...-->
+                    <!--</mat-panel-description>-->
+                <!--</mat-expansion-panel-header>-->
+                <!--<p><strong>{{value.value}}</strong></p>-->
+            <!--</mat-expansion-panel>-->
 
 
-        </div>
+        <!--</div>-->
 
-    </div>
+    <!--</div>-->
 
 </div>
