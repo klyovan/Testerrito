@@ -101,8 +101,8 @@
 
     <repositories>
         <repository>
-            <id>datanucleus</id>
-            <url>http://www.datanucleus.org/downloads/maven2</url>
+            <id>springplugins</id>
+            <url>https://repo.spring.io/plugins-release</url>
         </repository>
     </repositories>
 
