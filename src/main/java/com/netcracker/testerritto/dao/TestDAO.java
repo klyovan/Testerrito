@@ -8,6 +8,7 @@ import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
+import com.netcracker.testerritto.properties.ListsAttr;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import java.math.BigInteger;
 import java.sql.ResultSet;
@@ -119,7 +120,10 @@ public class TestDAO {
 
     private List<Question> getQuestions(BigInteger testId) {
         List<Question> questions =   jdbcTemplate.query(GET_QUESTIONS, new Object[]{testId.toString()}, new QuestionRowMapper());
-        questions.forEach(question -> question.setAnswers(answerDAO.getAllAnswerInQuestion(question.getId())));
+        questions.forEach(question -> {
+            if (question.getTypeQuestion() == ListsAttr.ONE_ANSWER || question.getTypeQuestion() == ListsAttr.MULTIPLE_ANSWER){
+                question.setAnswers(answerDAO.getAllAnswerInQuestion(question.getId()));}
+        });
         return questions;
     }
 

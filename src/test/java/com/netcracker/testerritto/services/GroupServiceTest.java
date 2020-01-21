@@ -62,6 +62,7 @@ public class GroupServiceTest {
         groupService.getGroupById(new BigInteger("-666"));
     }
 
+    @Ignore
     @Test
     public void createAndGetGroupById() throws Exception {
         createTestValues();

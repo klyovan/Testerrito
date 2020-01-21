@@ -1,93 +1,129 @@
-<div  class="container">
-  <div class="row justify-content-end">
-
-    <div class="col col-md-4 offset-md-4">
-      <button (click)="showReport()"  class="btn btn-danger btn-md  btn-outline-primary">Report</button>
-    </div>
-  </div>
-  <h2 class="display-4">{{test.nameTest}}</h2>
-  <div *ngIf="isQuestions" class="row">
-    <div   class="card  border shadow p-3  bg-white rounded col" style="width: 180rem;">
-      <p><ngb-progressbar type="success" [value]="questionId" [max]="test.questions.length-1"></ngb-progressbar></p>
-
-      <!--<img class="card-img-top " href="" height="50px" width="100px"  alt="Card image cap">-->
-      <div *ngIf="test.questions[questionId].typeQuestion == 'ONE_ANSWER'" class="card-body">
-        <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
-        <div  class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers">
-          <input (click)="addReplyWithOneAnswer(answer)" #selectedAnswer type="radio" class="" id="One" name="OneAnswerRadios" required="required">
-          <label class="form-check-label ml-4" for="One">{{answer.textAnswer}}</label>
+<div *ngIf="test">
+    <div class="container">
+        <div *ngIf="remarkAnswer" [ngClass]="{fade: !remarkAnswer}" class="alert alert-success alert-dismissible">
+            <strong>Success!</strong> {{remarkAnswer}}
         </div>
-      </div>
 
-      <div *ngIf="test.questions[questionId].typeQuestion == 'MULTIPLE_ANSWER'" class="card-body">
-        <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
-        <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers">
-          <input (click)="addReply(answer)" #selectedAnswer type="checkbox" class="form-check-input"
-                 required="required" id="Multiple" name="MultipleAnswerRadios">
-          <label class="form-check-label ml-4" for="Multiple">{{answer.textAnswer}}</label>
+        <div *ngIf="!results" class="row">
+            <h3 class="col-sm-9">{{test.nameTest}}</h3>
+            <button  (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report
+            </button>
         </div>
-      </div>
+
+        <div *ngIf="isQuestions" class="row">
+            <div class="card  border shadow p-3  bg-white rounded col" style="width: 180rem;">
+                <p>
+                    <ngb-progressbar type="success" [value]="questionId" [max]="test.questions.length-1"></ngb-progressbar>
+                </p>
+                <span>{{questionId + 1}} of {{test.questions.length}}</span>
+
+                <!--<img class="card-img-top " href="" height="50px" width="100px"  alt="Card image cap">-->
+                <div *ngIf="test.questions[questionId].typeQuestion == 'ONE_ANSWER'" class="card-body">
+                    <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
+                    <mat-radio-group   name="radio" required [formControl]="radioForm"  [(ngModel)]="selectedAnswer">
+                            <!--<p>{{markedAnswers.get(test.questions[questionId].id) !== false}}</p>-->
+                            <!--<mat-radio-button [checked]=" answer ===this.markedAnswers.get(this.test.questions[this.questionId].id)[0]"  style="margin-bottom: 2px" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>-->
+                        <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers" >
+                        <mat-radio-button     [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>
+                        </div>
+                        <mat-error *ngIf="radioForm.invalid" > {{getRadioErrorMessage()}}</mat-error>
+
+                    </mat-radio-group>
+
+
+                    <!--<pre>{{requiredForm|json}}</pre>-->
+                </div>
+
+                <div *ngIf="test.questions[questionId].typeQuestion == 'MULTIPLE_ANSWER'" class="card-body">
+                    <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
+
+                    <!--markedAnswers.get(test.questions[questionId].id) ? markedAnswers.get(test.questions[questionId].id) : selectedAnswers-->
+                    <mat-selection-list name="select" [formControl]="selectionForm" required  [(ngModel)]="selectedAnswers">
+                        <mat-list-option    checkboxPosition="before" color="primary" *ngFor="let answer of test.questions[questionId].answers;
+                         let i = index" [value]="answer">
+                            {{answer.textAnswer}}
+                        </mat-list-option>
+                        <mat-error *ngIf="selectionForm.invalid" > {{getSelectionErrorMessage()}}</mat-error>
+                    </mat-selection-list>
+
+                </div>
+
+                <div *ngIf="test.questions[questionId].typeQuestion == 'OPEN'" class="card-body">
+                    <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
+                    <mat-form-field style="width: 250px" required="true" class="form-check mb-2" minlength="10" maxlength="200">
+                        <textarea [(ngModel)]="openAnswer"  [formControl]="openAnswerForm" matInput placeholder="Enter your answer"  minlength="10" maxlength="300"  required></textarea>
+                        <mat-error *ngIf="openAnswerForm.invalid" > {{getErrorMessage()}}</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div   style="margin-top: 8px" class="row">
+            <div *ngIf="!isFirst" class="col-sm-1">
+                <button (click)="decrementIndex()" class="btn btn-secondary btn-lg">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                </button>
+            </div>
+
+            <div *ngIf="buttonType == 1" class="col-sm-1">
+                <button type="submit" [disabled]="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid"  (click)="incrementIndex()" class="btn btn-primary btn-lg">
+                    <i *ngIf="selectedAnswer  != undefined || selectedAnswers.length != 0 || openAnswerForm.invalid != true " class="glyphicon glyphicon-arrow-right"></i>
+                    <i *ngIf="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid == true" matTooltip="Choose at least one answer!" class="glyphicon glyphicon-arrow-right"></i>
+                </button>
+            </div>
+
+            <div *ngIf="buttonType == 2" class="col">
+                <button (click)="testEnd()" class="btn btn-success btn-lg">Finish test</button>
+            </div>
+
+            <!--<div *ngIf="buttonType == 3" class="row">-->
+            <!--<button [routerLink]="['/group/' + test.groupId]" class="btn btn-info">Return to main page</button>-->
+            <!--</div>-->
+        </div>
     </div>
 
-    <div *ngIf="test.questions[questionId].typeQuestion == 'OPEN'" class="card-body">
-      <h5 class="card-title">{{test.questions[questionId].textQuestion}}</h5>
-      <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers">
-        <input type="text" value="Enter text...">
-      </div>
-    </div>
+    <!--<pre>{{markedAnswers.values() | json}}</pre>-->
 
-  </div>
-
-
-</div>
-
-
-<div *ngIf="results">
-
-  <h2>Your answers</h2>
-  <div >
-    <!--<span>{{getCategoryName(result.categoryId)}}</span>-->
-    <table class="table">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">Question</th>
-        <th scope="col">Your answer</th>
-      </tr>
-      </thead>
-      <tbody  *ngFor="let result of results; let i = index">
-      <!--<div *ngIf="results[i].replies" >-->
-      <tr *ngFor="let value of results[i].replies | keyvalue">
-        <th scope="row">{{value.key  }}</th>
-        <th>{{value.value}}</th>
-      </tr>
-      <!--</div>-->
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
-
-<div style="margin-top: 8px" class="row">
-  <div *ngIf="!isFirst" class="col-sm">
-    <button (click)="decrementIndex()" class="btn btn-secondary btn-lg">Previous Question</button>
-  </div>
-
-
-  <div *ngIf="buttonType == 1" class="col-sm">
-    <button (click)="incrementIndex()" class="btn btn-primary btn-lg">Next Question</button>
-  </div>
-
-  <div *ngIf="buttonType == 2" class="col">
-    <button (click)="testEnd()"   class="btn btn-success btn-lg">Finish test</button>
-  </div>
-
-  <div *ngIf="buttonType == 3" class="col">
-    <button  [routerLink]="['/group/' + test.groupId]" class="btn btn-info btn-lg">Return to group menu</button>
-  </div>
 
 
 
 </div>
 
+<div *ngIf="!test" #testLoading>
+    <mat-spinner class="mt-4 center-block"></mat-spinner>
+</div>
+
+
+<!--<div *ngIf="results && !isTestNeedExpert">-->
+
+    <!--&lt;!&ndash;<h2 class="row">Your answers</h2>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<div *ngFor="let result of results; let i = index">&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-expansion-panel class="row" (opened)="panelOpenState = true"&ndash;&gt;-->
+                                 <!--&lt;!&ndash;(closed)="panelOpenState = false"&ndash;&gt;-->
+                                 <!--&lt;!&ndash;*ngFor="let value of results[i].replies | keyvalue">&ndash;&gt;-->
+                <!--&lt;!&ndash;<mat-expansion-panel-header>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<mat-panel-title>&ndash;&gt;-->
+                        <!--&lt;!&ndash;{{value.key  }}&ndash;&gt;-->
+                    <!--&lt;!&ndash;</mat-panel-title>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<mat-panel-description style="flex: 0 0 auto;">&ndash;&gt;-->
+                        <!--&lt;!&ndash;{{value.value + '' | slice:0:10}}...&ndash;&gt;-->
+                    <!--&lt;!&ndash;</mat-panel-description>&ndash;&gt;-->
+                <!--&lt;!&ndash;</mat-expansion-panel-header>&ndash;&gt;-->
+                <!--&lt;!&ndash;<p><strong>{{value.value}}</strong></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;</mat-expansion-panel>&ndash;&gt;-->
+
+
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--</div>-->
+<div *ngIf="isTestNeedExpert && results">
+    Wait until expert check...
+    <button class="btn btn-info" [routerLink]="['/group']"> Return to main page</button>
+</div>

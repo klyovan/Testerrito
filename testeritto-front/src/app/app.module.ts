@@ -31,7 +31,19 @@ import { AuthGuard } from './guard/auth.guard';
 import { NoauthGuard } from './guard/noauth.guard';
 import { InterceptorService } from './core/api/interceptor.service';
 import { ErrorPageComponent } from './error-page/error-page.component';
-
+import {MatCheckboxModule} from '@angular/material';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ModalRemarkComponent} from './modal-remark/modal-remark.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatIconModule} from '@angular/material/icon';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
+import {ChartsModule} from 'ng2-charts';
+import {TestService} from './core/api/test.service';
+import { InvitationComponent } from './invitation/invitation.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +58,9 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     GrouplistComponent,
     ConfirmDeleteComponent,
     CreateGroupFormComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    ModalRemarkComponent,
+            InvitationComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +73,14 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatDialogModule,
+           MatRadioModule,
+           MatCheckboxModule,
+           MatTooltipModule,
+           MatIconModule,
+           MatExpansionModule,
+           MatListModule,
+           MatDividerModule,
+           ChartsModule,
     MatInputModule,
     MatTableModule,
     MatPaginatorModule,
@@ -80,12 +102,12 @@ import { ErrorPageComponent } from './error-page/error-page.component';
               AuthGuard,
               NoauthGuard,
               {
-                provide: HTTP_INTERCEPTORS,
-                useClass: InterceptorService,
-                multi: true
-                }
+                              provide: HTTP_INTERCEPTORS,
+                              useClass: InterceptorService,
+                              multi: true
+                              }
               ],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]
+  entryComponents: [ConfirmDeleteComponent,ModalRemarkComponent, CreateGroupFormComponent]
 })
 export class AppModule { }

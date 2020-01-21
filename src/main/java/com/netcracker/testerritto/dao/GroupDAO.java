@@ -10,6 +10,7 @@ import com.netcracker.testerritto.models.Test;
 import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -134,6 +135,26 @@ public class GroupDAO{
         "    and group_attributes.attr_id = 6 /* NAME_GROUP */\n"+
         "    and group_attributes.value = ? /* groupName */";
 
+    private final static String GET_GROUP_BY_LINK =
+              "select "
+            + "    groups.object_id as id, "
+            + "    group_name.value as name, "
+            + "    group_link.value as link, "
+            + "    creator.reference as creator_id "
+            + "from "
+            + "    objects groups, "
+            + "    attributes group_name, "
+            + "    attributes group_link, "
+            + "    objreference creator "
+            + "where "
+            + "    group_link.value = ? /* link */ "
+            + "    and groups.object_id = group_name.object_id "
+            + "    and group_name.attr_id = 6 /* NAME_GROUP */ "
+            + "    and groups.object_id = group_link.object_id "
+            + "    and group_link.attr_id = 7 /* LINK */ "
+            + "    and groups.object_id = creator.object_id "
+            + "    and creator.attr_id = 25 /* CREATE_GROUP_BY */";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -147,6 +168,10 @@ public class GroupDAO{
         return (i == 1);
     }
 
+    public Group getGroupByLink(String link){
+        return jdbcTemplate.queryForObject(GET_GROUP_BY_LINK, new Object[]{link}, new GroupRowMapper());
+    }
+
     public Group getGroupById(BigInteger groupId) {
         return jdbcTemplate.queryForObject(GET_GROUP_BY_ID, new Object[]{groupId.toString()}, new GroupRowMapper());
     }
@@ -156,7 +181,7 @@ public class GroupDAO{
             .setObjectTypeId(ObjtypeProperties.GROUP)
             .setName("Group")
             .setStringAttribute(AttrtypeProperties.NAME_GROUP, group.getName())
-            .setStringAttribute(AttrtypeProperties.LINK, group.getLink())
+            .setStringAttribute(AttrtypeProperties.LINK, UUID.randomUUID().toString())
             .setReference(AttrtypeProperties.CREATE_GROUP_BY, group.getCreatorUserId())
             .create();
         new ObjectEavBuilder.Builder(jdbcTemplate)

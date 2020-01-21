@@ -2,16 +2,31 @@ package com.netcracker.testerritto.controllers;
 
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
-import com.netcracker.testerritto.models.*;
+import com.netcracker.testerritto.models.Group;
+import com.netcracker.testerritto.models.Question;
+import com.netcracker.testerritto.models.Remark;
+import com.netcracker.testerritto.models.Reply;
+import com.netcracker.testerritto.models.Result;
+import com.netcracker.testerritto.models.Test;
+import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import com.netcracker.testerritto.services.ResultService;
 import com.netcracker.testerritto.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("group")
@@ -123,7 +138,39 @@ public class GroupController {
     @GetMapping("/result/user/{id}")
     public List<Result> getResultsPassedTestByUser(@PathVariable BigInteger id) {
         try {
-            return resultService.getResultsByUser(id);
+            Map<BigInteger, Integer> scores = new HashMap<>();
+
+            List<Result> results = resultService.getResultsByUser(id);
+
+            results.forEach(result -> {
+                scores.put(result.getCategoryId(), 0);
+            });
+
+            for (Result result : results) {
+
+                for (Entry<Question, Reply> entry : result.getReplies().entrySet()) {
+                    Question question = entry.getKey();
+                    Reply reply = entry.getValue();
+                    reply.getReplyList().forEach(answer -> {
+                        scores.forEach((categoryId, score) -> {
+                            if (categoryId.equals(result.getCategoryId())) {
+                                int newvalue = score + answer.getScore();
+                                scores.put(categoryId, newvalue);
+                            }
+                        });
+                    });
+                }
+            }
+
+            results.forEach(result -> {
+                scores.forEach((bigInteger, integer) -> {
+                    if (bigInteger.equals(result.getCategoryId())) {
+                        result.setScore(integer);
+                    }
+                });
+            });
+
+            return results;
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
@@ -138,6 +185,22 @@ public class GroupController {
             throw new ApiRequestException(e.getMessage(), e);
         }
     }
+
+
+    @GetMapping("/invite/{link}")
+    public Group inviteUser(@PathVariable String link){
+
+        try {
+            System.out.println(link);
+              Group group =  groupService.getGroupByLink(link);
+              return group;
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+
+    }
+
+
 
     @DeleteMapping("/{groupId}/exitfromgroup/{userId}")
     public void exitFromGroup(@PathVariable BigInteger groupId, @PathVariable BigInteger userId ){

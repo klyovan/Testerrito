@@ -47,6 +47,7 @@ public class PassTestController {
     private int isUpdate = 0;
     private BigInteger replyId;
     private List<Answer> oldReplyList = new ArrayList<>();
+    private List<Answer> newReplyList = new ArrayList<>();
 
     @GetMapping("{userId}/test/{id}")
     public Test getTest(@PathVariable BigInteger userId, @PathVariable BigInteger id) {
@@ -83,18 +84,21 @@ public class PassTestController {
     @PostMapping("/reply")
     public BigInteger createReply(@RequestBody Reply reply) {
         try {
-
+           int oldReplyIndex = 0;
             if (reply.getReplyList().size() > 0) {
                 oldReplyList = new ArrayList<>();
-
-                for (Reply item : createdReplies) {
-                    if (item.getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())) {
+                newReplyList = new ArrayList<>();
+                System.out.println(createdReplies.size()+"size");
+                for (int i = 0; i < createdReplies.size(); i++){
+                    if (createdReplies.get(i).getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())) {
                         isUpdate++;
-                        reply.setId(item.getId());
-                        reply.setResultId(item.getResultId());
-                        oldReplyList.add(item.getReplyList().get(0));
+                        reply.setId(createdReplies.get(i).getId());
+                        reply.setResultId(createdReplies.get(i).getResultId());
+                        oldReplyList.add(createdReplies.get(i).getReplyList().get(0));
+                        oldReplyIndex = i;
                     }
                 }
+
 
                 if (isUpdate == 0) {
                     BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
@@ -112,7 +116,7 @@ public class PassTestController {
                     createdReplies.add(reply);
 
                     isUpdate = 0;
-
+                    System.out.println("create");
                     return replyId;
                 } else if (isUpdate > 0) {
 
@@ -120,11 +124,18 @@ public class PassTestController {
                     ListsAttr answerType = questionService.getQuestionById(questionId).getTypeQuestion();
 
                     if (answerType == ListsAttr.ONE_ANSWER || answerType == ListsAttr.OPEN) {
-
+                        newReplyList = reply.getReplyList();
                         reply.setReplyList(oldReplyList);
 
-                        replyService.updateReply(reply, reply.getReplyList().get(0));
+
+
+                        replyService.updateReply(reply, newReplyList.get(0));
+
+                        reply.setReplyList(newReplyList);
+                         createdReplies.set(oldReplyIndex, reply);
+
                         isUpdate = 0;
+                        System.out.println("Update one answer ");
 
                     } else if (answerType == ListsAttr.MULTIPLE_ANSWER) {
 
@@ -137,6 +148,9 @@ public class PassTestController {
                         createdReplies.add(reply);
 
                         isUpdate = 0;
+
+                        System.out.println("Update ");
+
                         return replyId;
                     }
                 }
@@ -159,7 +173,7 @@ public class PassTestController {
         }
     }
 
-    @GetMapping("{userId}/test/result/{testId}")
+    @GetMapping("{userId}/test/finish/{testId}")
     public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {
 

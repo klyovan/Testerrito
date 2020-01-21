@@ -41,6 +41,16 @@ public class TestController {
     @Autowired
     private GroupService groupService;
 
+
+    @GetMapping("{id}")
+    public Test getTest(@PathVariable BigInteger id) {
+        try {
+            return testService.getTest(id);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
     @PostMapping("/test")
     public BigInteger createTest(@RequestBody Test test) {
         try {

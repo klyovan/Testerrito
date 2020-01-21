@@ -16,6 +16,7 @@ export class AuthService {
 
   private readonly tokenEndpoint = `${environment.apiUrl}/login`;
   private readonly tokenStorageKey = 'accessToken';
+  public url: string;
 
   get isLoggedIn(): boolean {
     return !!this.accessToken;
@@ -40,6 +41,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.tokenStorageKey);
     this.accessToken = null;
+    this.url = undefined;
     this.router.navigate(['/login']);
   }
 
