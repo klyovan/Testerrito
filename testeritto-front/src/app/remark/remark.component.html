@@ -23,7 +23,7 @@
             <ng-container matColumnDef="update">
               <th mat-header-cell *matHeaderCellDef></th>
               <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
-                <button style="width: 120px;" class="btn btn-warning btn-sm" (click)="checkedAsViewed(element.id)">Change question</button>  
+                <button style="width: 120px;" class="btn btn-warning btn-sm" (click)="changeQuestion(element.questionText, element.questionId, element.testName)">Change question</button>  
               </td>
             </ng-container>
 

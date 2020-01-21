@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/
 import { GroupService } from '../core/api/group.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TestService } from '../core/api/test.service';
-import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent, MatDialog } from '@angular/material';
 import { Remark } from '../core/models/remark.model';
+import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
 
 @Component({
   selector: 'app-remark',
@@ -22,6 +23,7 @@ export class RemarkComponent implements OnInit {
   constructor(private groupService: GroupService,
               private testService: TestService,
               private router: Router,
+              public dialog: MatDialog,
               private route: ActivatedRoute) {
     route.params.subscribe(params=>this.groupId=params['groupId']);  
   }
@@ -77,6 +79,22 @@ export class RemarkComponent implements OnInit {
         this.ViewedDataSource.paginator = this.paginator.toArray()[1];
         this.ViewedDataSource.sort = this.sort.toArray()[1];
       });      
+  }
+
+  changeQuestion(text: String, id: BigInteger, nameTest: String) {
+    const dialogRef = this.dialog.open(CreateGroupFormComponent, {
+      data: {action: "changeQuestion", 
+             questionText: text,
+             questionId: id,
+             questionType: this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(question => question.id == id).typeQuestion},
+      width: "450px"
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        console.log(result)
+      }
+    })
   }
 
   goBackToGroup() {

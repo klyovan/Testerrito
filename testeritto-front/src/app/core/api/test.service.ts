@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Question } from '../models/question.model';
+import { Answer } from '../models/answer.model';
 
 @Injectable()
 export class TestService {
@@ -27,6 +28,16 @@ export class TestService {
             map(questions => {
                 return questions.map(question => {
                     return new Question().deserialize(question);
+                })
+            })
+        )
+    }
+
+    getAllAnswerInQuestion(id: BigInteger): Observable<Answer[]> {
+        return this.httpClient.get<Answer[]>(`${environment.apiUrl}/test/answer/question/`+id).pipe(
+            map(answers => {
+                return answers.map(answer => {
+                    return new Answer().deserialize(answer);
                 })
             })
         )

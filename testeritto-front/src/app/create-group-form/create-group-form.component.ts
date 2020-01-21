@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { GroupService } from '../core/api/group.service';
 import { Group } from '../core/models/group.model';
+import { Answer } from '../core/models/answer.model';
+import { TestService } from '../core/api/test.service';
 
 @Component({
   selector: 'app-create-group-form',
@@ -11,20 +13,28 @@ import { Group } from '../core/models/group.model';
 })
 export class CreateGroupFormComponent implements OnInit {
   error: String;
+  answers: Array<Answer>
   name = new FormControl(this.data.groupName, [Validators.required, Validators.maxLength(30)]);
   link = new FormControl(this.data.link);
+  answersReady: Boolean = false;
   constructor(public dialogRef: MatDialogRef<CreateGroupFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data,
-              private groupService: GroupService) { }
+              private groupService: GroupService,
+              private testService: TestService) { }
 
   ngOnInit() {
     this.name.setErrors({ changeName: false})
+    if(this.data.action == "changeQuestion" && this.data.questionType != "OPEN") {
+      this.testService.getAllAnswerInQuestion(this.data.questionId).subscribe(answers => {this.answers = answers; this.answersReady = true;});
+    }
   }
 
   onYesCreate(): void {
+    this.name.setValue(this.name.value.trim());
+    this.name.setValue(this.name.value.replace('/\s+/', '_'));
     if(!this.name.invalid){
       this.groupService.group = new Group();
-      this.groupService.group.name = this.name.value.trim();
+      this.groupService.group.name = this.name.value;
       this.groupService.group.link = "someNewLink";
       this.groupService.group.creatorUserId = this.data.creatorUserId;
       this.groupService.createGroup(this.groupService.group).subscribe(
@@ -34,10 +44,12 @@ export class CreateGroupFormComponent implements OnInit {
   }
 
   onYesUpdate(): void {
+    this.name.setValue(this.name.value.trim());
+    this.name.setValue(this.name.value.replace('/\s+/', '_'));
     if(!this.name.invalid){
       this.groupService.group = new Group();
       this.groupService.group.id = this.data.groupId;
-      this.groupService.group.name = this.name.value.trim();
+      this.groupService.group.name = this.name.value;
       this.groupService.group.creatorUserId = this.data.creatorUserId;
       this.groupService.updateGroup(this.groupService.group).subscribe(
         group => this.dialogRef.close(group),
@@ -60,5 +72,9 @@ export class CreateGroupFormComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close(false);
+  }
+
+  questionUpdate() {
+    console.log(this.answers)
   }
 }

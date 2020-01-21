@@ -5,7 +5,8 @@
     <h4>Write name to the new group</h4>
     <mat-form-field style="width: 400px;"  appearance="outline">
       <mat-label>Group name</mat-label>
-      <input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <input #input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
@@ -21,10 +22,11 @@
   <h1 mat-dialog-title>UPDATE GROUP</h1>
   <hr>
   <div mat-dialog-content>
-    <h4>Write new name to the new group</h4>
+    <h4>Write new name to this group</h4>
     <mat-form-field style="width: 400px;"  appearance="outline">
       <mat-label>Group name</mat-label>
       <input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
@@ -41,18 +43,56 @@
   <hr>
   <div mat-dialog-content>
     <h4>Share this link with people you want to invite:</h4>   
-    <div class="row">
+    <div  class="row">
       <mat-form-field style="width: 350px;"  appearance="outline">
         <div class="col-10">
           <input style="width: 350px;" (blur)="resetLink()" matInput [formControl]="link">
         </div>
       </mat-form-field>
       <div class="col-2">
-        <button class="btn btn-success" cdkFocusInitial mat-button (click)="onCopy()">Copy</button>
+        <button style="margin-top: 12px;" class="btn btn-success" cdkFocusInitial mat-button (click)="onCopy()">Copy</button>
       </div>
-    </div>        
+    </div >        
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
     <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
   </div>
+</div>
+
+<div *ngIf="data.action == 'passTest'">
+  <h1 mat-dialog-title>PASS TEST</h1>
+  <hr>
+  <div mat-dialog-content>
+    <h4>You already passed test today. Come back tomorrow :)</h4>
+  </div>
+  <div class="row justify-content-end" mat-dialog-actions>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
+  </div>
+</div>
+
+<div *ngIf="data.action == 'changeQuestion'">
+  <h1 mat-dialog-title>CHANGE QUESION</h1>
+  <hr>
+  <div mat-dialog-content>
+    Question:
+    <mat-form-field style="width: 380px;"  appearance="outline">
+      <div class="col-12">
+        <textarea  style="width: 380px;"  matInput value="{{data.questionText}}"></textarea>
+      </div>
+    </mat-form-field>
+    <div *ngIf="answersReady">
+      Answers:
+      <div *ngFor="let answer of answers">
+        <mat-form-field style="width: 330px; margin-left: 50px;"  appearance="outline">
+          <div class="col-12" >
+            <textarea  style="width: 330px;" matInput [(ngModel)]="answer.textAnswer"></textarea>
+          </div>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row justify-content-end" mat-dialog-actions>
+      <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
+      <button class="btn btn-success" cdkFocusInitial mat-button (click)="questionUpdate()">Update</button>
+    </div>
+    </div>    
 </div>
