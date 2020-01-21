@@ -61,7 +61,6 @@ export class ResultComponent implements OnInit {
             });
         });
         this.results = this.resultService.results;
-        console.log(this.results[0]);
         this.date = this.results.find(element => element.id !== undefined).date;
         this.status = this.results.find(element => element.id !== undefined).status;
 

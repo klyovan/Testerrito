@@ -29,7 +29,6 @@ export class PassTestComponent implements OnInit {
     buttonType = 1;
     results: Array<Result>;
     isQuestions = true;
-    category: Category;
     isFirst = true;
     isTestNeedExpert = false;
     remarkText: string;
@@ -43,7 +42,7 @@ export class PassTestComponent implements OnInit {
     remarkAnswer: string;
     openAnswerForm = new FormControl('', [Validators.required]);
     selectionForm = new FormControl(Validators.required);
-    radioForm = new FormControl('',[Validators.required]);
+    radioForm = new FormControl('', [Validators.required]);
     markedAnswers: Map<BigInteger, Array<Answer>> = new Map();
 
     constructor(private route: ActivatedRoute, private router: Router,
@@ -62,7 +61,7 @@ export class PassTestComponent implements OnInit {
             this.test = test;
             this.test.questions.forEach((question: Question) => {
                 if (question.typeQuestion === 'OPEN') {
-                    this.isTestNeedExpert = false; //// true nado
+                    this.isTestNeedExpert = true; //// true nado
                 }
             });
             // this.selectedAnswer = test.questions[0].answers[0];
@@ -190,23 +189,22 @@ export class PassTestComponent implements OnInit {
 
     testEnd() {
         this.isFirst = true;
-        this.isQuestions = false;
-
 
         this.passTestService.getReplies().subscribe((results) => this.results = results);
-
-        // this.router.navigateByUrl('/');
-
-        this.buttonType = 3;
+        this.isQuestions = false;
+        this.buttonType = undefined;
+        if (!this.isTestNeedExpert) {
+            this.router.navigate(['/group']);
+        }
     }
 
 
-    getCategoryName(categoryId: BigInteger): string {
-        this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category);
-        console.log(this.category.nameCategory);
-        return this.category.nameCategory;
-
-    }
+    // getCategoryName(categoryId: BigInteger): string {
+    //     this.passTestService.getCategory(categoryId).subscribe((category: Category) => category = this.category);
+    //     console.log(this.category.nameCategory);
+    //     return this.category.nameCategory;
+    //
+    // }
 
     showReport(): void {
         this.remarkQuestion = this.test.questions[this.questionId].textQuestion;
@@ -225,6 +223,7 @@ export class PassTestComponent implements OnInit {
                 this.remark.userSenderId = this.userId;
                 this.remark.userRecipientId = this.test.creatorUserId;
                 this.remark.questionId = this.test.questions[this.questionId].id;
+                this.remark.viewed = false;
                 this.passTestService.addRemark(this.remark).subscribe();
                 this.remark = undefined;
                 this.remarkAnswer = dialogRef.componentInstance.closeMessage;
@@ -239,7 +238,7 @@ export class PassTestComponent implements OnInit {
     }
 
     getSelectionErrorMessage() {
-        return this.selectionForm.hasError('required') ? 'You must select a answer' :
+        return this.selectionForm.hasError('required') ? 'You must select  answer' :
             'Select answer';
     }
 

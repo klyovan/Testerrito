@@ -1,96 +1,118 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
-import { HeaderComponent } from './header/header.component';
-import { ProfileComponent } from './profile/profile.component';
-import { UserService } from './core/api/user.service';
-import { GroupComponent } from './group/group.component';
-import { GroupService } from './core/api/group.service';
-import { ResultComponent } from './result/result.component';
-import { ResultService } from './core/api/result.service';
-import { PassTestComponent } from './pass-test/pass-test.component';
-import { PassTestService } from './core/api/pass-test.service';
-import { DatePipe } from '@angular/common';
-import { GroupusersComponent } from './groupusers/groupusers.component';
-import { RemarkComponent } from './remark/remark.component';
-import { GrouplistComponent } from './grouplist/grouplist.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
-import { MatProgressSpinnerModule, MatTableModule, MatTabsModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableDataSource, MatSortModule  } from '@angular/material';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { CreateGroupFormComponent } from './create-group-form/create-group-form.component';
-import { TestService } from './core/api/test.service';
-import { AuthGuard } from './guard/auth.guard';
-import { NoauthGuard } from './guard/noauth.guard';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {LoginComponent} from './login/login.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {CoreModule} from './core/core.module';
+import {HeaderComponent} from './header/header.component';
+import {ProfileComponent} from './profile/profile.component';
+import {UserService} from './core/api/user.service';
+import {GroupComponent} from './group/group.component';
+import {GroupService} from './core/api/group.service';
+import {ResultComponent} from './result/result.component';
+import {ResultService} from './core/api/result.service';
+import {PassTestComponent} from './pass-test/pass-test.component';
+import {PassTestService} from './core/api/pass-test.service';
+import {DatePipe} from '@angular/common';
+import {GroupusersComponent} from './groupusers/groupusers.component';
+import {RemarkComponent} from './remark/remark.component';
+import {GrouplistComponent} from './grouplist/grouplist.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ConfirmDeleteComponent} from './confirm-delete/confirm-delete.component';
+import {
+    MatTableModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatTableDataSource,
+    MatSortModule
+} from '@angular/material';
+import {MatDialogModule, MatDialog} from '@angular/material/dialog';
+import {CreateGroupFormComponent} from './create-group-form/create-group-form.component';
+import {AuthGuard} from './guard/auth.guard';
+import {NoauthGuard} from './guard/noauth.guard';
+import {MatCheckboxModule} from '@angular/material';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ModalRemarkComponent} from './modal-remark/modal-remark.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatIconModule} from '@angular/material/icon';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
+import {ChartsModule} from 'ng2-charts';
+import {TestService} from './core/api/test.service';
+import { InvitationComponent } from './invitation/invitation.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    HeaderComponent,
-    ProfileComponent,
-    GroupComponent,
-    ResultComponent,
-    PassTestComponent,
-    GroupusersComponent,
-    RemarkComponent,
-    GrouplistComponent,
-    ConfirmDeleteComponent,
-    CreateGroupFormComponent,
-    ModalRemarkComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    CoreModule,
-    NgbModule,
-    BrowserAnimationsModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatDialogModule,
-    MatInputModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTabsModule,
-    MatProgressSpinnerModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatListModule,
-    MatDividerModule,
-    ChartsModule
-  ],
-  exports: [
-    MatFormFieldModule
-  ],
-  providers: [UserService, 
-              GroupService, 
-              ResultService, 
-              TestService, 
-              PassTestService, 
-              DatePipe, 
-              MatDialog, 
-              MatTableDataSource, 
-              AuthGuard,
-              NoauthGuard,
-              TestService
-              ],
-  bootstrap: [AppComponent],
-  entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent,ModalRemarkComponent]
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        HeaderComponent,
+        ProfileComponent,
+        GroupComponent,
+        ResultComponent,
+        PassTestComponent,
+        GroupusersComponent,
+        RemarkComponent,
+        GrouplistComponent,
+        ConfirmDeleteComponent,
+        CreateGroupFormComponent,
+        ModalRemarkComponent,
+        InvitationComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        CoreModule,
+        NgbModule,
+        BrowserAnimationsModule,
+        MatProgressSpinnerModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatInputModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTabsModule,
+        MatProgressSpinnerModule,
+        MatDialogModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatListModule,
+        MatDividerModule,
+        ChartsModule
+    ],
+    exports: [
+        MatFormFieldModule
+    ],
+    providers: [UserService,
+        GroupService,
+        ResultService,
+        TestService,
+        PassTestService,
+        DatePipe,
+        MatDialog,
+        MatTableDataSource,
+        AuthGuard,
+        NoauthGuard,
+        TestService
+    ],
+    bootstrap: [AppComponent],
+    entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent, ModalRemarkComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

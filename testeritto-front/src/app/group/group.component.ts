@@ -107,7 +107,7 @@ export class GroupComponent implements OnInit {
   inviteMembers() {
     const dialogRef = this.dialog.open(CreateGroupFormComponent, {
       data: {action: "invite", 
-             link: this.group.link },
+             link:  window.location.host + '/invite/' + this.group.link  },
       width: "450px"
     });    
   }

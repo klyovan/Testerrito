@@ -26,7 +26,6 @@ export class ModalRemarkComponent implements OnInit {
 
   onNoClick(): void {
 
-    // this.closeMessage = 'Pizza!';
     this.dialogRef.close();
 
   }

@@ -79,4 +79,9 @@ export class UserService {
                                           this.authService.getUserId(),
                                           { params: {password: password}});
   }
+
+  enterUserInGroup(userId: BigInteger, groupId: BigInteger): Observable<any> {
+      return this.httpClient.get(`${environment.apiUrl}/user/enter/${groupId}/${userId}`);
+  }
+
 }

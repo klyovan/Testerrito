@@ -14,7 +14,6 @@ export class TestService {
 
 
     public getTest(id: BigInteger): Observable<any> {
-        console.log('zahod');
         return this.httpClient.get(`${environment.apiUrl}/test/${id}`);
     }
 

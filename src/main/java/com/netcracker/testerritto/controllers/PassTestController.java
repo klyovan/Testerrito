@@ -173,7 +173,7 @@ public class PassTestController {
         }
     }
 
-    @GetMapping("{userId}/test/result/{testId}")
+    @GetMapping("{userId}/test/finish/{testId}")
     public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {
 

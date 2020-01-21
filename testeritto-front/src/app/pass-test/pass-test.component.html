@@ -6,7 +6,7 @@
 
         <div *ngIf="!results" class="row">
             <h3 class="col-sm-9">{{test.nameTest}}</h3>
-            <button mat-raised-button (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report
+            <button  (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report
             </button>
         </div>
 
@@ -20,11 +20,12 @@
                 <!--<img class="card-img-top " href="" height="50px" width="100px"  alt="Card image cap">-->
                 <div *ngIf="test.questions[questionId].typeQuestion == 'ONE_ANSWER'" class="card-body">
                     <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
-                    <mat-radio-group  name="radio" required [formControl]="radioForm"  [(ngModel)]="selectedAnswer">
+                    <mat-radio-group   name="radio" required [formControl]="radioForm"  [(ngModel)]="selectedAnswer">
                             <!--<p>{{markedAnswers.get(test.questions[questionId].id) !== false}}</p>-->
                             <!--<mat-radio-button [checked]=" answer ===this.markedAnswers.get(this.test.questions[this.questionId].id)[0]"  style="margin-bottom: 2px" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>-->
-                            <mat-radio-button   style="flex-flow: column;" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>
-
+                        <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers" >
+                        <mat-radio-button     [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>
+                        </div>
                         <mat-error *ngIf="radioForm.invalid" > {{getRadioErrorMessage()}}</mat-error>
 
                     </mat-radio-group>
@@ -60,42 +61,35 @@
 
         </div>
 
+        <div   style="margin-top: 8px" class="row">
+            <div *ngIf="!isFirst" class="col-sm-1">
+                <button (click)="decrementIndex()" class="btn btn-secondary btn-lg">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                </button>
+            </div>
 
+            <div *ngIf="buttonType == 1" class="col-sm-1">
+                <button type="submit" [disabled]="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid"  (click)="incrementIndex()" class="btn btn-primary btn-lg">
+                    <i *ngIf="selectedAnswer  != undefined || selectedAnswers.length != 0 || openAnswerForm.invalid != true " class="glyphicon glyphicon-arrow-right"></i>
+                    <i *ngIf="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid == true" matTooltip="Choose at least one answer!" class="glyphicon glyphicon-arrow-right"></i>
+                </button>
+            </div>
+
+            <div *ngIf="buttonType == 2" class="col">
+                <button (click)="testEnd()" class="btn btn-success btn-lg">Finish test</button>
+            </div>
+
+            <!--<div *ngIf="buttonType == 3" class="row">-->
+            <!--<button [routerLink]="['/group/' + test.groupId]" class="btn btn-info">Return to main page</button>-->
+            <!--</div>-->
+        </div>
     </div>
 
     <!--<pre>{{markedAnswers.values() | json}}</pre>-->
 
 
-    <div *ngIf="results && isTestNeedExpert">
-        Wait until expert check...
-    </div>
 
 
-    <div style="margin-top: 8px" class="row">
-        <div *ngIf="!isFirst" class="col-sm-1">
-            <button (click)="decrementIndex()" class="btn btn-secondary btn-lg">
-                <i class="glyphicon glyphicon-arrow-left"></i>
-            </button>
-        </div>
-
-        <div *ngIf="buttonType == 1" class="col-sm-1">
-            <button type="submit" [disabled]="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid"  (click)="incrementIndex()" class="btn btn-primary btn-lg">
-                <i *ngIf="selectedAnswer  != undefined || selectedAnswers.length != 0 || openAnswerForm.invalid != true " class="glyphicon glyphicon-arrow-right"></i>
-                <i *ngIf="selectedAnswer == undefined && selectedAnswers.length == 0 && openAnswerForm.invalid == true" matTooltip="Choose at least one answer!" class="glyphicon glyphicon-arrow-right"></i>
-            </button>
-        </div>
-
-        <div *ngIf="buttonType == 2" class="col">
-            <button (click)="testEnd()" class="btn btn-success btn-lg">Finish test</button>
-        </div>
-
-        <div *ngIf="buttonType == 3" class="row">
-            <button [routerLink]="['/group/' + test.groupId]" class="btn btn-info btn-lg">
-                <i class="glyphicon glyphicon-home"></i></button>
-        </div>
-
-
-    </div>
 </div>
 
 <div *ngIf="!test" #testLoading>
@@ -103,29 +97,33 @@
 </div>
 
 
-<div *ngIf="results && !isTestNeedExpert">
+<!--<div *ngIf="results && !isTestNeedExpert">-->
 
-    <!--<h2 class="row">Your answers</h2>-->
-    <!--<div>-->
+    <!--&lt;!&ndash;<h2 class="row">Your answers</h2>&ndash;&gt;-->
+    <!--&lt;!&ndash;<div>&ndash;&gt;-->
 
-        <!--<div *ngFor="let result of results; let i = index">-->
-            <!--<mat-expansion-panel class="row" (opened)="panelOpenState = true"-->
-                                 <!--(closed)="panelOpenState = false"-->
-                                 <!--*ngFor="let value of results[i].replies | keyvalue">-->
-                <!--<mat-expansion-panel-header>-->
-                    <!--<mat-panel-title>-->
-                        <!--{{value.key  }}-->
-                    <!--</mat-panel-title>-->
-                    <!--<mat-panel-description style="flex: 0 0 auto;">-->
-                        <!--{{value.value + '' | slice:0:10}}...-->
-                    <!--</mat-panel-description>-->
-                <!--</mat-expansion-panel-header>-->
-                <!--<p><strong>{{value.value}}</strong></p>-->
-            <!--</mat-expansion-panel>-->
+        <!--&lt;!&ndash;<div *ngFor="let result of results; let i = index">&ndash;&gt;-->
+            <!--&lt;!&ndash;<mat-expansion-panel class="row" (opened)="panelOpenState = true"&ndash;&gt;-->
+                                 <!--&lt;!&ndash;(closed)="panelOpenState = false"&ndash;&gt;-->
+                                 <!--&lt;!&ndash;*ngFor="let value of results[i].replies | keyvalue">&ndash;&gt;-->
+                <!--&lt;!&ndash;<mat-expansion-panel-header>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<mat-panel-title>&ndash;&gt;-->
+                        <!--&lt;!&ndash;{{value.key  }}&ndash;&gt;-->
+                    <!--&lt;!&ndash;</mat-panel-title>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<mat-panel-description style="flex: 0 0 auto;">&ndash;&gt;-->
+                        <!--&lt;!&ndash;{{value.value + '' | slice:0:10}}...&ndash;&gt;-->
+                    <!--&lt;!&ndash;</mat-panel-description>&ndash;&gt;-->
+                <!--&lt;!&ndash;</mat-expansion-panel-header>&ndash;&gt;-->
+                <!--&lt;!&ndash;<p><strong>{{value.value}}</strong></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;</mat-expansion-panel>&ndash;&gt;-->
 
 
-        <!--</div>-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-    <!--</div>-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
 
+<!--</div>-->
+<div *ngIf="isTestNeedExpert && results">
+    Wait until expert check...
+    <button class="btn btn-info" [routerLink]="['/group']"> Return to main page</button>
 </div>
