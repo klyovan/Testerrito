@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1" cellpadding="10">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Item Name</th>
+        <th>Item Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="group : ${groups}">
+        <td th:text="${group.group_id}">ID</td>
+        <td th:text="${group.name}">Item Surname</td>
+        <td th:text="${group.link}">Item FirstName</td>
+
+
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

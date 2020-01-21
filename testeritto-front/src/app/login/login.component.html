@@ -36,8 +36,17 @@
         Password is required
       </div>
     </div>
+    <!--
     <div class="mt-4">
       <button class="pl-3 pr-3 btn btn-dark" type="submit">Login</button>
+    </div> -->
+
+    <div class="form-group btn-toolbar">   <!--btn btn-primary-->
+      <button class="pl-3 pr-3 btn btn-dark" type="submit">Login</button>
+      <!--   <img *ngIf="loading"  /> -->  <!--btn btn-link-->
+
+      <!-- a-->
+      <button [routerLink]="['/registration']" class="btn btn-dark ">Registrarion</button>
     </div>
   </form>
 </div>

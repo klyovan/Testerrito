@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
@@ -8,10 +8,16 @@ import { map, tap } from 'rxjs/operators';
 import { Group } from '../models/group.model';
 import { Result } from '../models/result.model';
 
+
+const httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 @Injectable()
 export class UserService {
   constructor(private httpClient: HttpClient,
               private authService: AuthService) {}
+
+
 
   getUser(): Observable<User> {
     return this.httpClient.get<User>(`${environment.apiUrl}/user/` + this.authService.getUserId()).pipe(
@@ -80,7 +86,28 @@ export class UserService {
                                           { params: {password: password}});
   }
 
-    register(user: User) {
-        return this.httpClient.post(`${environment.apiUrl}/registration`, user);
+    private accessToken: string;
+    register(user: User): Observable<any> {
+        return this.httpClient.post(`${environment.apiUrl}/registration`,
+            {
+                lastName: user.lastName,
+                firstName: user.firstName,
+                email:user.email,
+                password:user.password,
+                phone: user.phone
+            }, {observe: 'response' }).pipe(
+            tap((response: any) => {
+                this.accessToken = response.headers.get('authorization');
+            }));
+     //       httpOptions));
+    }
+    getByEmail(email:String):Observable<any>{
+        return this.httpClient.get(
+            `${environment.apiUrl}/registration/email/`+email);
+    }
+
+    getByPhone(phone:String):Observable<any>{
+        return this.httpClient.get(
+            `${environment.apiUrl}/registration/phone/`+phone);
     }
 }

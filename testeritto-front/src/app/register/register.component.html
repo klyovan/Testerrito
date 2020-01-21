@@ -1,27 +1,43 @@
 <h2>Register</h2>
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-        <label for="firstName">FirstName</label>
+        <label for="firstName">First Name</label>
         <input type="text"
                placeholder="FirstName"
                formControlName="firstName"
                class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }"/>
         <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-            <div *ngIf="f.firstName.errors.required">FirstName is required</div>
-            <div *ngIf="f.firstName.errors.cannotContainNonAlphabetChar">First Name can contain only alphabets chars
+            <div *ngIf="f.firstName.errors.required">First Name is required</div>
+<!--
+            <div *ngIf="registerForm.get('password').hasError('cannotContainNonAlphabetChar')">
+                {{registerForm.get('password').errors['cannotContainNonAlphabet']}}
             </div>
+-->
+            <div *ngIf="f.lastName.errors.maxlength">can not be longer than 20 chars</div>
+
+            <div *ngIf="f.firstName.errors.cannotStartWithSpace">can not start with space</div>
+
+            <div *ngIf="f.firstName.errors.cannotFinishWithSpace">can not finish with space</div>
+
+            <div *ngIf="f.firstName.errors.cannotContainNonAlphabetChar">
+                First Name can contain only alphabets chars</div>
 
         </div>
     </div>
     <div class="form-group">
-        <label for="lastName">LastName</label>
+        <label for="lastName">Last Name</label>
         <input type="text"
                placeholder="LastName"
                formControlName="lastName"
                class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }"/>
         <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-            <div *ngIf="f.lastName.errors.required">LastName is required</div>
-            <div *ngIf="f.lastName.errors.pattern">lastName can contain only alphabets chars</div>
+            <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+            <div *ngIf="f.lastName.errors.maxlength"> Last Name can not be longer than 20 chars</div>
+            <div *ngIf="f.lastName.errors.cannotFinishWithSpace">can not finish with space</div>
+
+            <div *ngIf="f.lastName.errors.cannotStartWithSpace">can not start with space</div>
+                       <div *ngIf="f.lastName.errors.cannotContainNonAlphabetChar">
+                            Last Name can contain only alphabets chars</div>
 
         </div>
     </div>
@@ -33,8 +49,11 @@
                class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"/>
         <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
             <div *ngIf="f.email.errors.required">Email is required</div>
+            <div *ngIf="f.email.errors.existingEmail">This Email is already exist </div>
+            <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
         </div>
     </div>
+
     <div class="form-group">
         <label for="phone">Phone</label>
         <input type="text"
@@ -45,6 +64,10 @@
             <div *ngIf="f.phone.errors.required">Phone is required</div>
             <div *ngIf="f.phone.errors.minlength">Phone must be at least 9 characters</div>
             <div *ngIf="f.phone.errors.maxlength">Phone can not be longer then 9 characters</div>
+            <div *ngIf="f.phone.errors.existingPhone">This Phone is already exist </div>
+            <div *ngIf="f.phone.errors.canContainOnlyNumbers">Phone can contain only number chars</div>
+
+
 
             <!--   <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div> -->
         </div>

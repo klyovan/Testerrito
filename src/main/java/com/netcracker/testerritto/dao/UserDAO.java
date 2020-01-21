@@ -29,6 +29,9 @@ public class UserDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private UserRowMapper userRowMapper;
+
     final String QUERY_IS_USER_ATTRIBUTES_EXIST =
         "select count(*) " +
             "from attributes " +
@@ -135,6 +138,32 @@ public class UserDAO {
             "and user_password.object_id = users.object_id          \n" +
             "and user_phone.attr_id = 5             /*PHONE*/       \n" +
             "and user_phone.object_id = users.object_id";
+
+    final String QUERY_GET_USER_BY_PHONE =
+        "select  \n" +
+            "    user_last_name.object_id id, \n" +
+            "    user_last_name.value last_name,  \n" +
+            "    user_first_name.value first_name, \n" +
+            "    user_email.value email,  \n" +
+            "    user_password.value password, \n" +
+            "    user_phone.value phone \n" +
+            "from \n" +
+            "    attributes user_last_name,\n" +
+            "    attributes user_first_name,\n" +
+            "    attributes user_email,\n" +
+            "    attributes user_password,\n" +
+            "    attributes user_phone \n" +
+            "where    \n" +
+            "    user_phone.value =  ? \n" +
+            "and user_last_name.attr_id = 1    /*LAST_NAME*/ \n" +
+            "and user_last_name.object_id = user_phone.object_id \n" +
+            "and user_first_name.attr_id = 2   /*FIRST_NAME*/    \n" +
+            "and user_first_name.object_id = user_phone.object_id\n" +
+            "and user_password.attr_id = 4     /*PASSWORD*/ \n" +
+            "and user_password.object_id = user_phone.object_id \n" +
+            "and user_email.attr_id = 3        /*EMAIL*/ \n" +
+            "and user_email.object_id = user_phone.object_id \n";
+
 
     public User getUser(BigInteger id) {
 
@@ -287,6 +316,10 @@ public class UserDAO {
                 return null;
             }
         });
+    }
+
+    public User getUserByPhone(String phone) {
+        return jdbcTemplate.queryForObject(QUERY_GET_USER_BY_PHONE, new Object[]{phone}, userRowMapper);
     }
 
     public boolean isEmailExist(String email) {

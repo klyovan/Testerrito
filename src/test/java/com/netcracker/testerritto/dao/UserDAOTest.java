@@ -174,6 +174,12 @@ public class UserDAOTest {
     assertFalse(userDAO.isPhoneExist(deletedPhone));
   }
 
+  @Test
+  public void getUserByPhoneTest(){
+   User user2= userDAO.getUserByPhone(user1.getPhone());
+   assertTrue(user2.getFirstName().equals(user1.getFirstName()));
+  }
+
   @After
   public void tearDown() throws Exception {
     userDAO.deleteUser(user1.getId());
