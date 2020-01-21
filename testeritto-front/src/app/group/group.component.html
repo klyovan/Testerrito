@@ -29,7 +29,7 @@
             </div>
           </div>         
         </div>
-        <div [hidden] = "group.tests == undefined" class="mat-elevation-z8">
+        <div [hidden] = "group.tests.length == 0" class="mat-elevation-z8">
           <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="testsDataSource">
             <ng-container  matColumnDef="nameTest">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Names</th>

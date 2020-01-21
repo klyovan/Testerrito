@@ -59,6 +59,7 @@ export class GroupComponent implements OnInit {
       if(check != undefined) {         
         this.groupService.getGroup(this.group.id).subscribe((group: Group) => {
           this.group = group;   
+          this.groupService.group = group;
           this.loading = true;            
           this.changeTestsDataSourse();
           this.testsLoaded = true;
@@ -117,7 +118,12 @@ export class GroupComponent implements OnInit {
     var checkResult = this.user.results.find( element => element.date.toString() == nowDate && element.testId == id )
     if(checkResult == undefined)      
       this.router.navigateByUrl('/pass-test/' + this.user.id + '/test/' + id);
-    else alert("You already passed test today. Come back tomorrow :)");
+    else {
+      const dialogRef = this.dialog.open(CreateGroupFormComponent, {
+        data: {action: "passTest"},
+        width: "450px"
+      }); 
+    }
   }
 
   finishTest(testId: BigInteger) {

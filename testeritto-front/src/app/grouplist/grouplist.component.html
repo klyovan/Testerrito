@@ -5,9 +5,14 @@
             <div  class="mat-elevation-z8">
                 <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="createdGroupsDataSourse">
 
+                    <ng-container  matColumnDef="create">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <button style=" max-width: 290px;" class="btn btn-success btn-sm btn-block" (click)="createGroup()">Create new Group</button>                       
+                        </th>
+                    </ng-container>
+
                     <ng-container  matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                            <button style="margin-left: 20px;" class="btn btn-success btn-sm btn-block" (click)="createGroup()">Create new Group</button>
                             <div [hidden]="!isCreatedGroupsEmpty">You have not any created group yet</div>
                             <div [hidden]="isCreatedGroupsEmpty">Groups that I created </div>                           
                         </th>
@@ -34,8 +39,9 @@
                             <button style="width: 70px;" class="btn btn-danger btn-sm" (click)="deleteGroup(element.id)">Delete</button>
                         </td>
                     </ng-container> 
-                  
-                    <tr mat-header-row *matHeaderRowDef="displayedCreatedGroupsColumns"></tr>
+
+                    <tr mat-header-row *matHeaderRowDef="['create','show', 'update', 'delete']"></tr>
+                    <tr mat-header-row *matHeaderRowDef="displayedCreatedGroupsColumns"></tr>                    
                     <tr mat-row *matRowDef="let row; columns: displayedCreatedGroupsColumns;"></tr>
                   </table>
                   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
