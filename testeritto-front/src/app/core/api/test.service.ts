@@ -43,6 +43,22 @@ export class TestService {
         )
     }
 
+    updateAnswer(answer: Answer): Observable<Answer> {
+        return this.httpClient.put<Answer>(`${environment.apiUrl}/test/answer`,answer).pipe(
+            map(answer => {
+                return new Answer().deserialize(answer);
+            })
+        )
+    }
+
+    updateQuestion(question: Question): Observable<Question> {
+        return this.httpClient.put<Question>(`${environment.apiUrl}/test/question`,question).pipe(
+            map(question => {
+                return new Question().deserialize(question);
+            })
+        )
+    }
+
     deleteTest(id: BigInteger): Observable<{}> {
         return this.httpClient.delete(`${environment.apiUrl}/test/`+id);
     }

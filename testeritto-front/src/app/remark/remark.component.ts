@@ -84,15 +84,14 @@ export class RemarkComponent implements OnInit {
   changeQuestion(text: String, id: BigInteger, nameTest: String) {
     const dialogRef = this.dialog.open(CreateGroupFormComponent, {
       data: {action: "changeQuestion", 
-             questionText: text,
-             questionId: id,
-             questionType: this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(question => question.id == id).typeQuestion},
+             question: this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(question => question.id == id)},
       width: "450px"
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        console.log(result)
+        this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(
+          question => question.id == result.id).textQuestion = result.textQuestion
       }
     })
   }

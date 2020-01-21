@@ -77,7 +77,7 @@
     Question:
     <mat-form-field style="width: 380px;"  appearance="outline">
       <div class="col-12">
-        <textarea  style="width: 380px;"  matInput value="{{data.questionText}}"></textarea>
+        <textarea  style="width: 380px;"  matInput [(ngModel)]="data.question.textQuestion"></textarea>
       </div>
     </mat-form-field>
     <div *ngIf="answersReady">

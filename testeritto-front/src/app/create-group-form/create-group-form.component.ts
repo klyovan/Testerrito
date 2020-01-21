@@ -24,8 +24,8 @@ export class CreateGroupFormComponent implements OnInit {
 
   ngOnInit() {
     this.name.setErrors({ changeName: false})
-    if(this.data.action == "changeQuestion" && this.data.questionType != "OPEN") {
-      this.testService.getAllAnswerInQuestion(this.data.questionId).subscribe(answers => {this.answers = answers; this.answersReady = true;});
+    if(this.data.action == "changeQuestion" && this.data.question.typeQuestion != "OPEN") {
+      this.testService.getAllAnswerInQuestion(this.data.question.id).subscribe(answers => {this.answers = answers; this.answersReady = true;});
     }
   }
 
@@ -75,6 +75,10 @@ export class CreateGroupFormComponent implements OnInit {
   }
 
   questionUpdate() {
-    console.log(this.answers)
+    this.answers.forEach(answer => {
+      this.testService.updateAnswer(answer).subscribe()
+    })    
+    this.testService.updateQuestion(this.data.question).subscribe();
+    this.dialogRef.close(this.data.question);
   }
 }
