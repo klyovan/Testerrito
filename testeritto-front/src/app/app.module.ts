@@ -29,6 +29,8 @@ import { CreateGroupFormComponent } from './create-group-form/create-group-form.
 import { TestService } from './core/api/test.service';
 import { AuthGuard } from './guard/auth.guard';
 import { NoauthGuard } from './guard/noauth.guard';
+import { InterceptorService } from './core/api/interceptor.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,8 @@ import { NoauthGuard } from './guard/noauth.guard';
     RemarkComponent,
     GrouplistComponent,
     ConfirmDeleteComponent,
-    CreateGroupFormComponent
+    CreateGroupFormComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
@@ -76,6 +79,11 @@ import { NoauthGuard } from './guard/noauth.guard';
               MatTableDataSource, 
               AuthGuard,
               NoauthGuard,
+              {
+                provide: HTTP_INTERCEPTORS,
+                useClass: InterceptorService,
+                multi: true
+                }
               ],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]

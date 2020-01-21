@@ -10,6 +10,7 @@ import { RemarkComponent } from './remark/remark.component';
 import { GrouplistComponent } from './grouplist/grouplist.component';
 import { AuthGuard } from './guard/auth.guard';
 import { NoauthGuard } from './guard/noauth.guard';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 
 const routes: Routes = [
@@ -21,7 +22,8 @@ const routes: Routes = [
   { path: 'group/:groupId/users', component: GroupusersComponent, canActivate: [AuthGuard] },
   { path: 'group/:groupId/remarks', component: RemarkComponent, canActivate: [AuthGuard] },
   { path: 'pass-test/:userId/test/:id', component: PassTestComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '/login', pathMatch: 'full'}
+  { path: 'error-page/:status', component: ErrorPageComponent },
+  { path: '**', redirectTo: '/error-page/404', pathMatch: 'full'}
 ];
 
 @NgModule({
