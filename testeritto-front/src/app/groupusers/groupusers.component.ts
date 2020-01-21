@@ -19,10 +19,11 @@ export class GroupusersComponent implements OnInit {
   userResults: Array<Result> = new Array();
   selectedUser: BigInteger;
   selectedTest: BigInteger;
-  showPassedTests: Boolean = false;
+  showTabPassedTests: Boolean = false;
+  showTableTests: Boolean = false;
   showResults: Boolean = false;
-  selectedIndex: number = null;
-  loading: Boolean = false;
+  selectedIndex: number = 0;
+
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
@@ -32,9 +33,6 @@ export class GroupusersComponent implements OnInit {
   displayedUsersColumns: string[] = ['lastName','firstName','seeTests','kickOut']
   displayedTestsColumns: string[] = ['nameTest','seeResults']
   displayedResultsColumns: string[] = ['date', 'status', 'action'];
-  color = 'primary';
-  mode = 'indeterminate';
-  value = 50;
   constructor(private route: ActivatedRoute,
               private router: Router,
               private groupService: GroupService,
@@ -50,8 +48,6 @@ export class GroupusersComponent implements OnInit {
     this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
     this.usersDataSource.paginator = this.paginator.toArray()[0];
     this.usersDataSource.sort = this.sort.toArray()[0];
-    this.loading = true;
-    this.selectedIndex = 0;
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {
@@ -87,7 +83,12 @@ export class GroupusersComponent implements OnInit {
     this.groupService.users.find(user=>user.id == this.selectedUser).results.forEach(result => {
       this.tests.add(this.groupService.tests.find(test => test.id == result.testId))
     })
-    this.showPassedTests = true;
+    this.showTabPassedTests = true;
+    if(this.tests.size == 0) 
+      this.showTableTests = false;
+    else 
+      this.showTableTests = true;
+      console.log(this.showTableTests)
     var testsToDisplay = new Array();
     this.tests.forEach(test => testsToDisplay.push(test))
     this.testsDataSource = new MatTableDataSource<Test>(testsToDisplay);
