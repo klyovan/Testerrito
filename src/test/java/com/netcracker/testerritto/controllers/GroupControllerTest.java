@@ -12,6 +12,7 @@ import com.netcracker.testerritto.properties.ObjtypeProperties;
 import com.netcracker.testerritto.services.GroupService;
 import com.netcracker.testerritto.services.RemarkService;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,24 +52,29 @@ public class GroupControllerTest {
     private BigInteger remarkerId;
     private BigInteger sequenceId;
     private BigInteger creatorId;
+    private BigInteger recipientId;
     private Remark remarkExpected = new Remark();
     private Group groupExpected = new Group();
 
     @After
     public void setDown(){
         ArrayList<BigInteger> listForDelete = new ArrayList<>();
-        if (sequenceId != null)
+        if (creatorId != null)
+            listForDelete.add(creatorId);
+        if (authorId != null)
             listForDelete.add(authorId);
-        if (sequenceId != null)
+        if (groupId != null)
             listForDelete.add(groupId);
-        if (sequenceId != null)
+        if (testId != null)
             listForDelete.add(testId);
-        if (sequenceId != null)
+        if (questionId != null)
             listForDelete.add(questionId);
-        if (sequenceId != null)
+        if (remarkerId != null)
             listForDelete.add(remarkerId);
         if (sequenceId != null)
             listForDelete.add(sequenceId);
+        if (recipientId != null)
+            listForDelete.add(recipientId);
         for (BigInteger id : listForDelete) {
             new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setObjectId(id)
@@ -86,6 +92,7 @@ public class GroupControllerTest {
         assertEquals(remarkExpected.getText(), remark.getText());
         assertEquals(remarkExpected.getQuestionId(), remark.getQuestionId());
         assertEquals(remarkExpected.getUserSenderId(), remark.getUserSenderId());
+        assertEquals(remarkExpected.getUserRecipientId(), remark.getUserRecipientId());
     }
 
     @Test(expected = ApiRequestException.class)
@@ -118,6 +125,7 @@ public class GroupControllerTest {
         Group group = new Group();
         group.setId(sequenceId);
         group.setName("Very cool new group name");
+        group.setCreatorUserId(creatorId);
         Group checkGroup = groupController.updateGroup(group);
         assertEquals(group.getId(), checkGroup.getId());
         assertEquals(group.getName(), checkGroup.getName());
@@ -256,9 +264,15 @@ public class GroupControllerTest {
             .setObjectTypeId(ObjtypeProperties.USER)
             .setName("USER_REMARKER")
             .create();
+        recipientId = new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_REMARKER")
+            .create();
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
+        remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
+        remarkExpected.setUserRecipientId(recipientId);
     }
 
     private void createTestValuesGroup(){

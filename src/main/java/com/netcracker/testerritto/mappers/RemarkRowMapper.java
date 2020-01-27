@@ -16,6 +16,8 @@ public class RemarkRowMapper implements RowMapper<Remark> {
         remark.setText(resultSet.getString("text"));
         remark.setUserSenderId(new BigInteger(resultSet.getString("user_id")));
         remark.setQuestionId(new BigInteger(resultSet.getString("question_id")));
+        remark.setUserRecipientId(new BigInteger(resultSet.getString("recipient_id")));
+        remark.setViewed(resultSet.getBoolean("viewed"));
         return remark;
     }
 }

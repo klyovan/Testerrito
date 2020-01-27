@@ -1,64 +1,120 @@
-<div *ngIf = "this.loading == true">
- 
-  <h2>Welcome to the Group: {{group.name}}</h2>
- <div>Share link to invite people: {{group.link}}<button class="btn btn-info btn-lg" (click)="copyLinkToClipboard()">Copy link</button>
- </div> 
- 
-  <button class="btn btn-info btn-lg" [routerLink]="['users']"></button>
+<div [hidden]="!loading"> 
   <div class="container">
-    <table class="row justify-content-center">
-      <div class="row justify-content-start">
-        <tr>
-          <td class="col-6">
-            <div *ngIf="this.testsLoaded == true">    
-                <table class="table table-striped">
-                  <tr>
-                    <th class="col-6">Names</th>
-                    <th class="col-6">Actions</th>    
-                  </tr>
-                  <tbody>
-                    <tr *ngFor = "let test of group.tests">
-                      <td class="col-6">{{test.nameTest}}</td>
-                      <td class="col-3"><button class="btn btn-info btn-lg" (click)="passTest(test.id)">Pass test</button></td>
-                      <td class="col-3"><button class="btn btn-info btn-lg" (click)="seeResultsOnTest(test.id)">See results</button></td>
-                    </tr>
-                  </tbody>
-                </table>    
-                <div *ngIf = "this.group.creatorUserId == this.user.id">
-                  <button class="btn btn-info btn-lg btn-block" [routerLink]="['/test']">Create new Test</button>
-                </div>    
+    <div class="row" >
+      <div  class="col-6">
+        <h2>{{group.name}}</h2> 
+      </div >
+      <div class="col-6" [hidden]="user == undefined">
+        <div  [hidden] = "group.creatorUserId != user.id">
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
+          <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showAllRemarks()">Remarks</button>
+          <button style="width: 100px;" class="btn btn-info btn-sm" [routerLink]="['/test']">Create Test</button>
+        </div> 
+      </div>           
+     </div>
+  </div>  
+  <div class="container">
+    <div class="row">
+      <div class="col-7" [hidden]="!testsLoaded">  
+        <div [hidden] = "group.tests != undefined && group.tests.length != 0">
+          <div [hidden]="user == undefined">
+            <div [hidden] = "group.creatorUserId == user.id">
+              <h5>There is no tests yet. Please wait until admin creates one</h5>
             </div>
-          </td>
-      
-          <td class="col-6" *ngIf = "this.showResult == true">
-            <table class="table table-striped">
-              <tr>
-                <th class="col-3">Status</th>
-                <th class="col-3">Date</th> 
-                <th class="col-3">Score</th>   
-                <th class="col-3">Action</th>       
-              </tr>
-              <tbody>
-                <tr *ngFor = "let result of this.user.results">
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.status}}</td>  
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.date}}</td>  
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId">{{result.score}}</td>  
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId"><button class="btn btn-info btn-lg" [routerLink]="['/group/result/',result.id]">Details</button></td>   
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId && result.status == 'Passed'"><button class="btn btn-info btn-lg" [routerLink]="['/group/result/',result.id]">Details</button></td>   
-                  <td class="col-3" *ngIf="this.selectedTest == result.testId && result.status == 'Not passed'"><button class="btn btn-info btn-lg">Finish it!</button></td>          
-                </tr>
-              </tbody>
-            </table>    
-          </td>
-      
-        </tr>
-      </div>
-      
-    </table>
+          </div>
+          <div [hidden]="user == undefined">
+            <div [hidden] = "group.creatorUserId != user.id">
+              <h5>There is no tests yet. Create a new one!</h5>
+            </div>
+          </div>         
+        </div>
+        <div [hidden] = "group.tests == undefined" class="mat-elevation-z8">
+          <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="testsDataSource">
+            <ng-container  matColumnDef="nameTest">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Names</th>
+                <td style="padding-right: 10px; max-width: 290px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
+            </ng-container>
+          
+            <ng-container  matColumnDef="passTest">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                    <button style="width: 100px;" class="btn btn-info btn-sm" (click)="passTest(element.id)">Pass test</button>                            
+                </td>
+            </ng-container>   
+            
+            <ng-container  matColumnDef="seeResults">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">                            
+                    <button style="width: 100px;" class="btn btn-info btn-sm" (click)="showResultsOnTest(element.id)">See Results</button>
+                </td>
+            </ng-container> 
+
+            <ng-container  matColumnDef="update">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td [hidden]="group.creatorUserId != user.id" style="padding-right: 10px;" mat-cell *matCellDef="let element">                            
+                  <button style="width: 70px;" class="btn btn-warning btn-sm" (click)="updateTest(element.id)">Update</button>
+              </td>
+            </ng-container> 
+
+            <ng-container  matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td [hidden]="group.creatorUserId != user.id" mat-cell *matCellDef="let element">
+                    <button style="width: 70px;" class="btn btn-danger btn-sm" (click)="deleteTest(element.id)">Delete</button>
+                </td>
+            </ng-container> 
+          
+            <tr mat-header-row *matHeaderRowDef="displayedTestsColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedTestsColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>  
+      </div>      
+      <div class="col-4">
+        <div [hidden]="selectedTest == null">
+          <div [hidden] = "showResult"><h5>You have no results on this test yet. Please pass test =)</h5></div>
+        </div>         
+        <div [hidden] = "!showResult" class="mat-elevation-z8">
+          <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="resultsDataSource">
+            
+            <ng-container  matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.date}} </td>
+            </ng-container>
+          
+            <ng-container  matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">{{element.status}}</td>
+            </ng-container>   
+            
+            <ng-container  matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td  mat-cell *matCellDef="let element">                            
+                  <button [hidden] = "element.status != 'PASSED'" style="width: 100px;" class="btn btn-info btn-sm" (click)="showDetailsOnResult(element.date)">Details</button>                         
+                  <button [hidden] = "element.status == 'PASSED'" style="width: 100px;" class="btn btn-warning btn-sm" (click)="finishTest(element.testId)">Finish it!</button>
+                </td>
+            </ng-container> 
+          
+            <tr mat-header-row *matHeaderRowDef="displayedResultsColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedResultsColumns;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>        
+      </div> 
+    </div>
   </div>
-
-  
-
+</div>
+<div [hidden]="loading" class="container">
+  <div class="row">
+      <div class="col-4 center-block">
+          <mat-progress-spinner
+          class="example-margin"
+          [color]="color"
+          [mode]="mode"
+          [value]="value">
+      </mat-progress-spinner>
+      </div>
+  </div>    
 </div>
   
 

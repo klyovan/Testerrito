@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
   }
 
   private onSuccess() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/group']);
   }
 
   private onFailed() {

@@ -1,0 +1,88 @@
+
+<div [hidden]="!loading"  class="container">
+    <div class="row">
+        <div class="col-6">
+            <div  class="mat-elevation-z8">
+                <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="createdGroupsDataSourse">
+
+                    <ng-container  matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                            <button style="margin-left: 20px;" class="btn btn-success btn-sm btn-block" (click)="createGroup()">Create new Group</button>
+                            <div [hidden]="!isCreatedGroupsEmpty">You have not any created group yet</div>
+                            <div [hidden]="isCreatedGroupsEmpty">Groups that I created </div>                           
+                        </th>
+                        <td style="padding-right: 10px; max-width: 290px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+                  
+                    <ng-container  matColumnDef="show">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                            <button style="width: 70px;" class="btn btn-info btn-sm" (click)="goToGroup(element.id)">Show</button>                            
+                        </td>
+                    </ng-container>   
+                    
+                    <ng-container  matColumnDef="update">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td style="padding-right: 10px;" mat-cell *matCellDef="let element">                            
+                            <button style="width: 70px;" class="btn btn-warning btn-sm" (click)="updateGroup(element.id)">Update</button>
+                        </td>
+                    </ng-container> 
+
+                    <ng-container  matColumnDef="delete">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                            <button style="width: 70px;" class="btn btn-danger btn-sm" (click)="deleteGroup(element.id)">Delete</button>
+                        </td>
+                    </ng-container> 
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedCreatedGroupsColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedCreatedGroupsColumns;"></tr>
+                  </table>
+                  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>                            
+        </div>
+        <div class="col-5">
+            <div [hidden]="!isConstistEmpty"><h4>You don't consist in any group yet</h4></div>
+            <div [hidden]="isConstistEmpty" class="mat-elevation-z8">
+                <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="consistGroupsDataSourse">
+
+                    <ng-container  matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Groups where I consist</th>
+                        <td style="padding-right: 10px; max-width: 290px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+                  
+                    <ng-container  matColumnDef="show">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                            <button style="width: 70px;" class="btn btn-info btn-sm" (click)="goToGroup(element.id)">Show</button>                            
+                        </td>
+                    </ng-container>   
+
+                    <ng-container  matColumnDef="delete">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                            <button style="width: 100px;" class="btn btn-danger btn-sm" (click)="exitFromGroup(element.id)">Exit from group</button>
+                        </td>
+                    </ng-container> 
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedConsistGroupsColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedConsistGroupsColumns;"></tr>
+                  </table>
+                  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div> 
+        </div>
+    </div>    
+</div>
+
+<div [hidden]="loading" class="container">
+    <div class="row">
+        <div class="col-4 center-block">
+            <mat-progress-spinner
+            class="example-margin"
+            [color]="color"
+            [mode]="mode"
+            [value]="value">
+        </mat-progress-spinner>
+        </div>
+    </div>    
+</div>

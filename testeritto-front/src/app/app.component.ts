@@ -10,6 +10,7 @@ import { AuthService } from './core/api/auth.service';
 })
 export class AppComponent {
   title = 'testeritto-front';
+  showModal: boolean;
   get isLoggedIn() {
     return this.authService.isLoggedIn;
   }

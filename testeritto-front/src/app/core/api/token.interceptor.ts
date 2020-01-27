@@ -15,6 +15,13 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler)
     : Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
+  //  console.log(request);
+    let pattern =new RegExp("^https://localhost:8443/registration+.*");
+    //'https://localhost:8443/registration'
+    if(request.url.match(pattern)){
+
+      return next.handle(request);
+    }
     return next.handle(request
       .clone({
       headers: request.headers.append('Authorization', 'Bearer ' + this.authService.getAccessToken())

@@ -46,8 +46,10 @@ public class UserService {
 
     public User getUser(BigInteger id) throws ServiceException {
         checkUserId(id);
-
-        return userDAO.getUser(id);
+        User user = userDAO.getUser(id);
+        user.setGroups(userDAO.getGroups(user.getId()));
+        user.setCreatedGroups(userDAO.getCreatedGroups(user.getId()));
+        return user;
     }
 
     @Deprecated
@@ -213,7 +215,10 @@ public class UserService {
     public User getUserByEmail(String email) {
         checkParameter(email, "email");
         if (userDAO.isEmailExist(email)) {
-            return userDAO.getUserByEmail(email);
+           User user = userDAO.getUserByEmail(email);
+            user.setGroups(userDAO.getGroups(user.getId()));
+            user.setCreatedGroups(userDAO.getCreatedGroups(user.getId()));
+            return user;
         }
         serviceExceptionHandler.logAndThrowIllegalException("This email: " + email + "don't exist");
         return null;
@@ -263,7 +268,7 @@ public class UserService {
     public User getUserByPhone(String phone){
         checkParameter(phone, "phone");
         if (userDAO.isPhoneExist(phone)) {
-            return userDAO.getUserByEmail(phone);
+            return userDAO.getUserByPhone(phone);
         }
         serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
         return null;

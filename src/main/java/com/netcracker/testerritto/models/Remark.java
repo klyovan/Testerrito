@@ -7,7 +7,9 @@ public class Remark extends ObjectEav{
 
     private String text;
     private BigInteger userSenderId;
+    private BigInteger userRecipientId;
     private BigInteger questionId;
+    private Boolean viewed;
 
     public void setText(String text) {
         this.text = text;
@@ -33,6 +35,22 @@ public class Remark extends ObjectEav{
         this.questionId = questionId;
     }
 
+    public BigInteger getUserRecipientId() {
+        return userRecipientId;
+    }
+
+    public void setUserRecipientId(BigInteger userRecipientId) {
+        this.userRecipientId = userRecipientId;
+    }
+
+    public Boolean getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(Boolean viewed) {
+        this.viewed = viewed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,22 +59,26 @@ public class Remark extends ObjectEav{
         return id.equals(remark.id) &&
                 text.equals(remark.text) &&
                 userSenderId.equals(remark.userSenderId) &&
-                questionId.equals(remark.questionId);
+                userRecipientId.equals(remark.userRecipientId) &&
+                questionId.equals(remark.questionId) &&
+                viewed.equals(remark.viewed);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, userSenderId, questionId);
+        return Objects.hash(text, userSenderId, userRecipientId, questionId, viewed);
     }
 
     @Override
     public String toString() {
         return "Remark{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", userId=" + userSenderId +
-                ", questionId=" + questionId +
-                '}';
+        "id=" + id +
+        ", text='" + text + '\'' +
+        ", userSenderId=" + userSenderId +
+        ", userRecipientId=" + userRecipientId +
+        ", questionId=" + questionId +
+        ", viewed=" + viewed +
+        '}';
     }
 }
 

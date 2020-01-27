@@ -95,11 +95,7 @@ export class UserService {
                 email:user.email,
                 password:user.password,
                 phone: user.phone
-            }, {observe: 'response' }).pipe(
-            tap((response: any) => {
-                this.accessToken = response.headers.get('authorization');
-            }));
-     //       httpOptions));
+             });
     }
     getByEmail(email:String):Observable<any>{
         return this.httpClient.get(

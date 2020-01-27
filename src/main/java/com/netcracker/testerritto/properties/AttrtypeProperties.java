@@ -40,4 +40,6 @@ public interface AttrtypeProperties {
   BigInteger QUESTION_IMAGE = BigInteger.valueOf(35);
   BigInteger ANSWER_IMAGE = BigInteger.valueOf(36);
   BigInteger NEXT_QUESTION = BigInteger.valueOf(37);
+  BigInteger RESULT_CATEGORY = BigInteger.valueOf(38);
+  BigInteger REMARK_VIEWED = BigInteger.valueOf(39);
 }

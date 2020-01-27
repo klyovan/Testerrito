@@ -3,7 +3,6 @@ package com.netcracker.testerritto.dao;
 import com.netcracker.testerritto.mappers.QuestionRowMapper;
 import com.netcracker.testerritto.mappers.TestRowMapper;
 import com.netcracker.testerritto.mappers.UserRowMapper;
-import com.netcracker.testerritto.models.Answer;
 import com.netcracker.testerritto.models.GradeCategory;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Test;
@@ -11,9 +10,13 @@ import com.netcracker.testerritto.models.User;
 import com.netcracker.testerritto.properties.AttrtypeProperties;
 import com.netcracker.testerritto.properties.ObjtypeProperties;
 import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -62,17 +65,33 @@ public class TestDAO {
             "    and phone.object_id = expert.object_id";
 
     private final static String GET_QUESTIONS =
-            "select questions.object_id id, questions.parent_id test_Id, " +
-            "    questions_text.value text,questions_type.list_value_id question_type " +
+            "select questions.object_id id, questions.parent_id test_id, " +
+            "    questions_text.value text,questions_type.list_value_id question_type, " +
+            "    question2category.reference as category_id " +
             "from objects questions,  " +
             "    attributes questions_text, " +
-            "    attributes questions_type  " +
+            "    attributes questions_type,  " +
+            "    objreference question2category " +
             "where questions.parent_id = ? /* testId*/ " +
             "    and questions.object_type_id = 10 /*questions*/  " +
             "    and questions_text.attr_id = 18 /*text_question*/ " +
             "    and questions_text.object_id = questions.object_id  " +
             "    and questions_type.attr_id = 19 /*type_question*/ " +
-            "    and questions_type.object_id = questions.object_id ";
+            "    and questions_type.object_id = questions.object_id "+
+            "    and question2category.attr_id = 34 /*question_belongs*/ "+
+            "    and question2category.object_id = questions.object_id";
+
+    private final static String GET_CATEGORIES_BY_TEST =
+             "select distinct categories.object_id "+
+             "from objects gradecategory, "+
+             "    objects categories, "+
+             "    objects tests, "+
+             "    objreference gradecategory2category "+
+             "where tests.object_id = ? "+
+             "    and tests.object_id = gradecategory.parent_id    "+
+             "    and gradecategory2category.attr_id = 33 /*grade_belongs*/ "+
+             "    and gradecategory2category.object_id = gradecategory.object_id "+
+             "    and gradecategory2category.reference = categories.object_id";
 
 
     @Autowired
@@ -109,6 +128,15 @@ public class TestDAO {
         return gradeCategoryDAO.getGradeCategoryByTestId(testId);
     }
 
+    public List<BigInteger> getCategoriesIdByTest (BigInteger testId){
+        return jdbcTemplate.query(GET_CATEGORIES_BY_TEST, new Object[]{testId.toString()}, new RowMapper<BigInteger>() {
+            @Override
+            public BigInteger mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return BigInteger.valueOf(rs.getInt(1));
+            }
+        });
+    }
+
 
     public void deleteTest(BigInteger testId) {
         new ObjectEavBuilder.Builder(jdbcTemplate)
@@ -128,14 +156,14 @@ public class TestDAO {
     }
 
 
-    public BigInteger updateTest(Test test) {
+    public Test updateTest(Test test) {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(test.getId())
             .setStringAttribute(AttrtypeProperties.NAME_TEST, test.getNameTest())
             .update();
 
-        return test.getId();
+        return getTest(test.getId());
 
     }
 }

@@ -23,4 +23,12 @@ export class HeaderComponent implements OnInit {
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn;
   }
+
+  profile() {
+    this.router.navigateByUrl('/profile');
+  }
+
+  groups() {
+    this.router.navigateByUrl('/group');
+  }
 }

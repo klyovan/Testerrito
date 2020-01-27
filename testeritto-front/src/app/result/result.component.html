@@ -1,15 +1,18 @@
 
-<h4>You passed this test: {{result.date}}</h4>
+<!-- <th class="alert-success" scope="col">{{this.status}}</th>
+<th class="alert-success" scope="col">Date: {{this.date}}</th> -->
+<table *ngFor="let results of this.results" class="table ">
+    <thead>
+        <tr>
+            <td class="table-primary" scope="col"><strong>Catergory name</strong></td>
+            <td class="table-primary" scope="col"><strong>Score: {{results.score}}</strong></td>
+        </tr>
+    </thead>
+    <tbody *ngFor="let replies of results.replies | keyvalue">
+        <th colspan="2" class="table-dark">{{replies.key}}</th>      
+        <tr *ngFor="let reply of replies.value">
+            <td colspan="2" class="table-secondary" scope="col" style="padding-left: 20px;">{{reply}}</td>  
+        </tr>           
+    </tbody>                  
+</table>        
 
-<h4>Your score: {{result.score}}</h4>
-
-<h4>Your answers</h4>
-<h3>Тут категория вначале (кинь камень ее не достать)</h3>
-<ol>
-    <li *ngFor="let reply of result.replies | keyvalue">
-      
-        <h4>{{reply.key}}</h4>
-        <h4>вот тут как бы должен быть Ансвер - но тут пусто потому что запрсо считывает value а не ListValue {{reply.value}}</h4>
-    </li>
-</ol>
-<h3>Вконце оценка данной категории GradeCategory - чему соответсвуют набраные балы</h3>

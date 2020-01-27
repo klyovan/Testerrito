@@ -33,12 +33,22 @@ public class RemarkService {
     public BigInteger createRemark(Remark remark) throws ServiceException {
         checkIdNotNull(remark.getUserSenderId());
         checkIdNotNull(remark.getQuestionId());
+        checkIdNotNull(remark.getUserRecipientId());
         checkStringNotNull(remark.getText());
         try {
             return remarkDAO.createRemark(remark);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed CreateRemark().", exception);
             return null;
+        }
+    }
+
+    public void updateRemarkViewStatus(BigInteger remarkId) {
+        checkIdNotNull(remarkId);
+        try {
+            remarkDAO.updateRemarkViewStatus(remarkId);
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed UpdateViewStatus().", exception);
         }
     }
 
@@ -60,4 +70,6 @@ public class RemarkService {
         if ("".equals(string) || string == null)
             serviceExceptionHandler.logAndThrowIllegalException("String parameter can not be NULL OR EMPTY.");
     }
+
+
 }

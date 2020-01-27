@@ -22,37 +22,43 @@ import org.springframework.stereotype.Repository;
 public class ResultDAO {
 
     private static final String GET_RESULT =
-        "select  results.object_id id, result2test.reference test_id, " +
-            "    result_date.date_value result_date, result_score.value result_score , " +
-            "    result_status.list_value_id result_status, result2user.reference user_id " +
-            "from  objects results, " +
-            "    attributes result_date, " +
-            "    attributes result_score, " +
-            "    attributes result_status, " +
-            "    objreference result2test, " +
-            "    objreference result2user                         " +
-            "where results.object_id = ? " +
-            "    and result2test.attr_id = 30 /*results_belongs*/ " +
-            "    and result2test.object_id = results.object_id " +
-            "    and result_date.attr_id = 10 /*date*/ " +
-            "    and result_date.object_id = results.object_id " +
-            "    and result_score.attr_id = 11 /*score*/ " +
-            "    and result_score.object_id = results.object_id " +
-            "    and result_status.attr_id = 12 /*status*/ " +
-            "    and result_status.object_id = results.object_id " +
-            "    and result2user.attr_id = 29 /*look by*/ " +
-            "    and result2user.object_id = results.object_id";
+              "select  results.object_id id, result2test.reference test_id,  "+
+              "    result_date.date_value result_date, result_score.value result_score ,  "+
+              "    result_status.list_value_id result_status, result2user.reference user_id, "+
+              "    result2category.reference category_id "+
+              "from  objects results,  "+
+              "    attributes result_date,  "+
+              "    attributes result_score,  "+
+              "    attributes result_status,  "+
+              "    objreference result2test,  "+
+              "    objreference result2user, "+
+              "    objreference result2category "+
+              "where results.object_id = ?  "+
+              "    and result2test.attr_id = 30 /*results_belongs*/  "+
+              "    and result2test.object_id = results.object_id  "+
+              "    and result_date.attr_id = 10 /*date*/  "+
+              "    and result_date.object_id = results.object_id  "+
+              "    and result_score.attr_id = 11 /*score*/  "+
+              "    and result_score.object_id = results.object_id  "+
+              "    and result_status.attr_id = 12 /*status*/  "+
+              "    and result_status.object_id = results.object_id  "+
+              "    and result2user.attr_id = 29 /*look by*/  "+
+              "    and result2user.object_id = results.object_id "+
+              "    and result2category.attr_id = 38 /*result_category*/ "+
+              "    and result2category.object_id = results.object_id";
 
     private static final String GET_RESULTS_BY_USER =
         "select  results.object_id id, result2test.reference test_id,  " +
             "    result_date.date_value result_date, result_score.value result_score ,  " +
-            "    result_status.list_value_id result_status, result2user.reference user_id  " +
+            "    result_status.list_value_id result_status, result2user.reference user_id,"+
+            "result2category.reference category_id  " +
             "from  objects results,  " +
             "    attributes result_date,  " +
             "    attributes result_score,  " +
             "    attributes result_status,  " +
             "    objreference result2test,  " +
-            "    objreference result2user    " +
+            "    objreference result2user,"+
+            "    objreference result2category  " +
             "where result2user.reference = ? " +
             "    and result2test.attr_id = 30 /*results_belongs*/  " +
             "    and result2test.object_id = results.object_id  " +
@@ -63,18 +69,22 @@ public class ResultDAO {
             "    and result_status.attr_id = 12 /*status*/  " +
             "    and result_status.object_id = results.object_id  " +
             "    and result2user.attr_id = 29 /*look by*/  " +
-            "    and result2user.object_id = results.object_id";
+            "    and result2user.object_id = results.object_id"+
+            "    and result2category.attr_id = 38 /*result_category*/ "+
+            "    and result2category.object_id = results.object_id";
 
     private static final String GET_RESULTS_BY_TEST =
             "select  results.object_id id, result2test.reference test_id,   "+
              "   result_date.date_value result_date, result_score.value result_score ,   "+
-             "   result_status.list_value_id result_status, result2user.reference user_id   "+
+             "   result_status.list_value_id result_status, result2user.reference user_id,   "+
+             "   result2category.reference category_id  " +
              "from  objects results,   "+
              "   attributes result_date, "+
              "   attributes result_score, "+
              "   attributes result_status, "+
              "   objreference result2test, "+
-             "   objreference result2user  "+
+             "   objreference result2user,  "+
+             "   objreference result2category " +
              "where result2test.reference = ? "+
              "   and result2test.attr_id = 30 /*results_belongs*/   "+
              "   and result2test.object_id = results.object_id   "+
@@ -85,7 +95,9 @@ public class ResultDAO {
              "   and result_status.attr_id = 12 /*status*/   "+
              "   and result_status.object_id = results.object_id   "+
              "   and result2user.attr_id = 29 /*look by*/   "+
-             "   and result2user.object_id = results.object_id";
+             "   and result2user.object_id = results.object_id"+
+             "   and result2category.attr_id = 38 /*result_category*/ "+
+             "   and result2category.object_id = results.object_id";
 
     private static final String GET_REPLIES =
         "select  results.object_id res_id, reply.object_id rep_id, questions.object_id ques_id  " +
@@ -180,10 +192,11 @@ public class ResultDAO {
             .setListAttribute(AttrtypeProperties.STATUS, result.getStatus().getId())
             .setReference(AttrtypeProperties.LOOK_BY, result.getUserId())
             .setReference(AttrtypeProperties.RESULT_BELONGS, result.getTestId())
+            .setReference(AttrtypeProperties.RESULT_CATEGORY,result.getCategoryId())
             .create();
     }
 
-    public BigInteger updateResult(Result result) {
+    public Result updateResult(Result result) {
 
         new ObjectEavBuilder.Builder(jdbcTemplate)
             .setObjectId(result.getId())
@@ -193,9 +206,10 @@ public class ResultDAO {
             .setListAttribute(AttrtypeProperties.STATUS, result.getStatus().getId())
             .setReference(AttrtypeProperties.LOOK_BY, result.getUserId())
             .setReference(AttrtypeProperties.RESULT_BELONGS, result.getTestId())
+            .setReference(AttrtypeProperties.RESULT_CATEGORY, result.getCategoryId())
             .update();
 
-        return result.getId();
+        return getResult(result.getId());
 
     }
 

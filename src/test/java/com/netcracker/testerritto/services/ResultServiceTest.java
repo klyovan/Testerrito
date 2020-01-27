@@ -3,6 +3,7 @@ package com.netcracker.testerritto.services;
 import com.netcracker.testerritto.ApplicationConfiguration;
 import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.exceptions.ServiceException;
+import com.netcracker.testerritto.models.Category;
 import com.netcracker.testerritto.models.Group;
 import com.netcracker.testerritto.models.Question;
 import com.netcracker.testerritto.models.Reply;
@@ -37,6 +38,8 @@ public class ResultServiceTest {
     GroupService groupService;
     @Autowired
     TestService testService;
+    @Autowired
+    CategoryService categoryService;
 
     private BigInteger isCreated;
     private Result createdResult;
@@ -44,6 +47,7 @@ public class ResultServiceTest {
     private BigInteger testUserId;
     private BigInteger testTestId;
     private BigInteger testGroupId;
+    private BigInteger testCategoryId;
 
 
     @Before
@@ -68,6 +72,10 @@ public class ResultServiceTest {
         test.setCreatorUserId(testUserId);
         testTestId = testService.createTest(test);
 
+        Category category = new Category();
+        category.setNameCategory("NameCategory...");
+        testCategoryId = categoryService.createCategory(category);
+
         createdResult = getNewResult();
         isCreated = resultService.createResult(createdResult);
         createdResult.setId(isCreated);
@@ -80,6 +88,7 @@ public class ResultServiceTest {
         userDAO.deleteUser(testUserId);
         groupService.deleteGroup(testGroupId);
         testService.deleteTest(testTestId);
+        categoryService.deleteCategoryById(testCategoryId);
     }
 
     @Test
@@ -203,6 +212,12 @@ public class ResultServiceTest {
         resultService.createResult(validResult);
     }
 
+    @Test
+    public void createResultsByCategories(){
+        System.out.println(resultService.createResultsByCategories(BigInteger.valueOf(26),BigInteger.valueOf(2)));
+
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void updateResultNull() throws ServiceException {
@@ -284,6 +299,7 @@ public class ResultServiceTest {
         result.setStatus(Status.PASSED);
         result.setTestId(testTestId);
         result.setUserId(testUserId);
+        result.setCategoryId(testCategoryId);
         result.setReplies(replies);
 
         return result;

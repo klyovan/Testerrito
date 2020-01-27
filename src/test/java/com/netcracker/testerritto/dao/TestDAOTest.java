@@ -87,6 +87,12 @@ public class TestDAOTest {
         testDAO.getTest(deletedId);
     }
 
+    @Test
+    public void  getCategoriesIdByTest(){
+
+
+    }
+
 
     @Test
     public void createTest() {
@@ -107,6 +113,8 @@ public class TestDAOTest {
         List<GradeCategory> grades = new ArrayList<>();
         List<User> experts = new ArrayList<>();
         List<Question> questions = new ArrayList<>();
+        GradeCategory gradeCategory = new GradeCategory();
+
 
         return new com.netcracker.testerritto.models.Test(null, testGroupId, "JustTest", testUserId,
             grades, experts, questions);

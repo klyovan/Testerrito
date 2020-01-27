@@ -40,23 +40,26 @@ public class RemarkServiceTest {
     private BigInteger questionId;
     private BigInteger remarkerId;
     private BigInteger sequenceId;
+    private BigInteger recipientId;
     private Remark remarkExpected = new Remark();
 
     @After
     public void setDown(){
         ArrayList<BigInteger> listForDelete = new ArrayList<>();
-        if (sequenceId != null)
+        if (authorId != null)
             listForDelete.add(authorId);
-        if (sequenceId != null)
+        if (groupId != null)
             listForDelete.add(groupId);
-        if (sequenceId != null)
+        if (testId != null)
             listForDelete.add(testId);
-        if (sequenceId != null)
+        if (questionId != null)
             listForDelete.add(questionId);
-        if (sequenceId != null)
+        if (remarkerId != null)
             listForDelete.add(remarkerId);
         if (sequenceId != null)
             listForDelete.add(sequenceId);
+        if (recipientId != null)
+            listForDelete.add(recipientId);
         for (BigInteger id : listForDelete) {
             new ObjectEavBuilder.Builder(jdbcTemplate)
                 .setObjectId(id)
@@ -84,6 +87,7 @@ public class RemarkServiceTest {
         assertEquals(remarkExpected.getText(), remark.getText());
         assertEquals(remarkExpected.getQuestionId(), remark.getQuestionId());
         assertEquals(remarkExpected.getUserSenderId(), remark.getUserSenderId());
+        assertEquals(remarkExpected.getUserRecipientId(), remark.getUserRecipientId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -133,7 +137,9 @@ public class RemarkServiceTest {
         Remark remark = new Remark();
         remark.setQuestionId(new BigInteger("1"));
         remark.setUserSenderId(new BigInteger("-666"));
+        remark.setUserRecipientId(new BigInteger("1"));
         remark.setText("New Next");
+        remark.setUserRecipientId(new BigInteger("2"));
         remarkService.createRemark(remark);
     }
 
@@ -142,6 +148,7 @@ public class RemarkServiceTest {
         Remark remark = new Remark();
         remark.setQuestionId(new BigInteger("-666"));
         remark.setUserSenderId(new BigInteger("2"));
+        remark.setUserRecipientId(new BigInteger("2"));
         remark.setText("New Text");
         remarkService.createRemark(remark);
     }
@@ -185,8 +192,16 @@ public class RemarkServiceTest {
             .setObjectTypeId(ObjtypeProperties.USER)
             .setName("USER_REMARKER")
             .create();
+        recipientId = new ObjectEavBuilder.Builder(jdbcTemplate)
+            .setObjectTypeId(ObjtypeProperties.USER)
+            .setName("USER_RECIPIENT")
+            .create();
+
+
         remarkExpected.setText("New Remark Text");
         remarkExpected.setUserSenderId(remarkerId);
+        remarkExpected.setUserRecipientId(authorId);
         remarkExpected.setQuestionId(questionId);
+        remarkExpected.setUserRecipientId(recipientId);
     }
 }

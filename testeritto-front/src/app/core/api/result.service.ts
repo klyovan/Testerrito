@@ -7,15 +7,8 @@ import { map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class ResultService {
+    results: Array<Result>;
     constructor(private httpClient: HttpClient) {
         
-    }
-
-    getResult(id: BigInteger): Observable<Result> {
-        return this.httpClient.get<Result>(`${environment.apiUrl}/group/result/` + id).pipe(
-            map((result: Result) => {               
-                return new Result().deserialize(result);
-            })
-        );
-    }
+    }   
 }
