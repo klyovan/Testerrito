@@ -7,6 +7,7 @@ export class Remark implements Deserializable {
     userRecipientId: BigInteger;
     questionId: BigInteger;
     questionText: String;
+    limit: Number = 20;
     testName: String;
     viewed: Boolean;
 

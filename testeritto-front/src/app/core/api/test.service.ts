@@ -29,7 +29,7 @@ export class TestService {
     }
 
     getTestQuestions(id: BigInteger): Observable<Question[]> {
-        return this.httpClient.get<Question[]>(`${environment.apiUrl}/test/category/grade/test/` + id).pipe(
+        return this.httpClient.get<Question[]>(`${environment.apiUrl}/test/question/test/` + id).pipe(
             map(questions => {
                 return questions.map(question => {
                     return new Question().deserialize(question);
