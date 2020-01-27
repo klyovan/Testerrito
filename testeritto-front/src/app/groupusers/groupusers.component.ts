@@ -45,9 +45,12 @@ export class GroupusersComponent implements OnInit {
    }
 
   ngOnInit() {
+    console.log(this.usersDataSource)
     this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
+    console.log(this.usersDataSource)
     this.usersDataSource.paginator = this.paginator.toArray()[0];
     this.usersDataSource.sort = this.sort.toArray()[0];
+    console.log(this.usersDataSource)
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {
@@ -61,8 +64,8 @@ export class GroupusersComponent implements OnInit {
       this.testsDataSource.sort = this.sort.toArray()[1];
     }
     else {
-      this.testsDataSource.paginator = this.paginator.toArray()[2];
-      this.testsDataSource.sort = this.sort.toArray()[2];
+      this.resultsDataSource.paginator = this.paginator.toArray()[2];
+      this.resultsDataSource.sort = this.sort.toArray()[2];
     }
   }
 
@@ -88,10 +91,11 @@ export class GroupusersComponent implements OnInit {
       this.showTableTests = false;
     else 
       this.showTableTests = true;
-      console.log(this.showTableTests)
     var testsToDisplay = new Array();
     this.tests.forEach(test => testsToDisplay.push(test))
     this.testsDataSource = new MatTableDataSource<Test>(testsToDisplay);
+    this.testsDataSource.paginator = this.paginator.toArray()[1];
+      this.testsDataSource.sort = this.sort.toArray()[1];
     this.selectedIndex = 1;
     this.showResults = false;
   }
@@ -106,6 +110,8 @@ export class GroupusersComponent implements OnInit {
     });
     this.showResults = true;
     this.resultsDataSource = new MatTableDataSource<Result>(this.userResults);
+    this.resultsDataSource.paginator = this.paginator.toArray()[2];
+    this.resultsDataSource.sort = this.sort.toArray()[2];
     this.selectedIndex = 2;
   }
 

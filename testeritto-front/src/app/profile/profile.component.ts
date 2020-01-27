@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/api/auth.service';
+import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +27,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private userService: UserService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -153,7 +156,15 @@ export class ProfileComponent implements OnInit {
       return;
     }
     const formValue = this.deleteForm.value;
-    this.userService.deleteUser(formValue.password).subscribe(() => this.onSuccessDel(), () => this.onFailedDel());
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: {title: "DELETE ACCOUNT", text: "Are You sure that you want to delete your account?" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.userService.deleteUser(formValue.password).subscribe(() => this.onSuccessDel(), () => this.onFailedDel());
+      }
+    });    
   }
 
   onFailedDel() {

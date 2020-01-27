@@ -13,8 +13,8 @@
     </mat-form-field>
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
-    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Cancel</button>
-    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesCreate()">Create</button>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
+    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesCreate()"><i class="glyphicon glyphicon-ok"></i></button>
   </div>
 </div>
 
@@ -25,7 +25,7 @@
     <h4>Write new name to this group</h4>
     <mat-form-field style="width: 400px;"  appearance="outline">
       <mat-label>Group name</mat-label>
-      <input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
+      <input #input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter group name">
       <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
@@ -33,8 +33,8 @@
     </mat-form-field>
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
-    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Cancel</button>
-    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesUpdate()">Update</button>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
+    <button class="btn btn-success" style="margin-left: 20px;" mat-button (click)="onYesUpdate()"><i class="glyphicon glyphicon-ok"></i></button>
   </div>
 </div>
 
@@ -55,7 +55,7 @@
     </div >        
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
-    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
   </div>
 </div>
 
@@ -66,7 +66,7 @@
     <h4>You already passed test today. Come back tomorrow :)</h4>
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
-    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
+    <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
   </div>
 </div>
 
@@ -74,25 +74,21 @@
   <h1 mat-dialog-title>CHANGE QUESION</h1>
   <hr>
   <div mat-dialog-content>
-    Question:
     <mat-form-field style="width: 380px;"  appearance="outline">
-      <div class="col-12">
-        <textarea  style="width: 380px;"  matInput [(ngModel)]="data.question.textQuestion"></textarea>
-      </div>
+      <mat-label>Question</mat-label>
+      <textarea  style="width: 380px;" required  matInput [(ngModel)]="data.question.textQuestion"></textarea>
     </mat-form-field>
     <div *ngIf="answersReady">
-      Answers:
-      <div *ngFor="let answer of answers">
+      <div *ngFor="let answer of answers; let i = index">
         <mat-form-field style="width: 330px; margin-left: 50px;"  appearance="outline">
-          <div class="col-12" >
-            <textarea  style="width: 330px;" matInput [(ngModel)]="answer.textAnswer"></textarea>
-          </div>
+          <mat-label>Answer {{i+1}}</mat-label>
+          <textarea style="width: 330px;" matInput [(ngModel)]="answer.textAnswer"></textarea>
         </mat-form-field>
       </div>
     </div>
     <div class="row justify-content-end" mat-dialog-actions>
-      <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()">Close</button>
-      <button class="btn btn-success" cdkFocusInitial mat-button (click)="questionUpdate()">Update</button>
+      <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
+      <button class="btn btn-success" cdkFocusInitial mat-button (click)="questionUpdate()"><i class="glyphicon glyphicon-ok"></i></button>
     </div>
     </div>    
 </div>

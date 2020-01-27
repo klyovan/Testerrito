@@ -142,7 +142,7 @@ export class GroupComponent implements OnInit {
 
   showUsersInGroup() { 
     this.groupService.getUsersInGroup(this.group.id).subscribe(data => {
-      this.groupService.users = data//.filter(user => user.id != this.group.creatorUserId); 
+      this.groupService.users = data;
       this.router.navigateByUrl('/group/'+this.group.id+'/users');
     });   
   }

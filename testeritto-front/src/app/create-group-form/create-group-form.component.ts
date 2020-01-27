@@ -74,7 +74,7 @@ export class CreateGroupFormComponent implements OnInit {
     this.dialogRef.close(false);
   }
 
-  questionUpdate() {
+  questionUpdate() {    
     this.answers.forEach(answer => {
       this.testService.updateAnswer(answer).subscribe()
     })    

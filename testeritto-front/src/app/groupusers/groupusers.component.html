@@ -1,18 +1,18 @@
-<button class="btn btn-info btn-sm" (click)="goBackToGroup()">Back to group</button>
+<button class="btn btn-info btn-sm" (click)="goBackToGroup()"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
 
-<mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="tabChanged($event)"  animationDuration="1000ms">
+<mat-tab-group dynamicHeight [selectedIndex]="selectedIndex" (selectedTabChange)="tabChanged($event)"  animationDuration="1000ms">
     <mat-tab label="Users">
       <ng-template matTabContent>
         <div class="mat-elevation-z8">
           <table mat-table matSort  [dataSource]="usersDataSource">
   
               <ng-container matColumnDef="lastName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Last name </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Last name</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.lastName}} </td>
               </ng-container>
           
               <ng-container matColumnDef="firstName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> First name </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>First name</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.firstName}} </td>
               </ng-container>
             
@@ -47,7 +47,7 @@
                 <table  mat-table matSort  [dataSource]="testsDataSource">
       
                   <ng-container matColumnDef="nameTest">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Test name</th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Test name</h4></th>
                     <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
                   </ng-container>
 
@@ -70,12 +70,12 @@
         <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="resultsDataSource">
             
             <ng-container  matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Date</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.date}} </td>
             </ng-container>
           
             <ng-container  matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Status</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">{{element.status}}</td>
             </ng-container>   
             
