@@ -38,6 +38,15 @@ public class UserDAO {
             "where attr_id = ? " +
             "and value = ?";
 
+    private final static String IS_USER_CONSIST_IN_GROUP =
+        "select count(*)  "
+        +"from "
+        +"   objreference user2group "
+        +"where "
+        +"   user2group.attr_id = 22 /* consist */ "
+        +"   and user2group.object_id = ? /* user_id */ "
+        +"   and user2group.reference = ? /*group_id*/          ";
+
     final String QUERY_GET_USER_BY_EMAIL =
         "select " +
             "    user_last_name.value, " +
@@ -331,6 +340,11 @@ public class UserDAO {
     public boolean isPhoneExist(String phone) {
         Integer i = jdbcTemplate.queryForObject(QUERY_IS_USER_ATTRIBUTES_EXIST,
             new Object[]{5, phone}, Integer.class);
+        return (i == 1);
+    }
+
+    public boolean isUserConsistInGroup(BigInteger userId, BigInteger groupId) {
+        Integer i = jdbcTemplate.queryForObject(IS_USER_CONSIST_IN_GROUP, new Object[]{userId.toString(), groupId.toString()}, Integer.class);
         return (i == 1);
     }
 

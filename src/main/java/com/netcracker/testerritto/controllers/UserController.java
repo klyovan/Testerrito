@@ -56,5 +56,25 @@ public class UserController {
         }
     }
 
+    @GetMapping("/enter/{groupId}/{userId}")
+    public void enterInGroup(@PathVariable BigInteger userId, @PathVariable BigInteger groupId ){
+        try {
+             userService.enterInGroup(userId,groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+
+    }
+
+    @GetMapping("/check/consist/{groupId}/{userId}")
+    public Boolean checkUserConsistInGroup(@PathVariable BigInteger userId, @PathVariable BigInteger groupId ){
+        try {
+            return userService.checkUserConsistInGroup(userId,groupId);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+
+    }
+
 
 }

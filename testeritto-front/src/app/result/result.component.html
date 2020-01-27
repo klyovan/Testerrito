@@ -1,18 +1,62 @@
+<!--<div *ngIf="results && !isTestNeedExpert">-->
+<!--<div *ngIf="!categories" #testLoading>-->
+<!--<mat-spinner class="mt-4 center-block"></mat-spinner>-->
+<!--</div>-->
+<!--<div *ngIf="categories">-->
 
-<!-- <th class="alert-success" scope="col">{{this.status}}</th>
-<th class="alert-success" scope="col">Date: {{this.date}}</th> -->
-<table *ngFor="let results of this.results" class="table ">
-    <thead>
-        <tr>
-            <td class="table-primary" scope="col"><strong>Catergory name</strong></td>
-            <td class="table-primary" scope="col"><strong>Score: {{results.score}}</strong></td>
-        </tr>
-    </thead>
-    <tbody *ngFor="let replies of results.replies | keyvalue">
-        <th colspan="2" class="table-dark">{{replies.key}}</th>      
-        <tr *ngFor="let reply of replies.value">
-            <td colspan="2" class="table-secondary" scope="col" style="padding-left: 20px;">{{reply}}</td>  
-        </tr>           
-    </tbody>                  
-</table>        
+<div *ngIf="test">
+<h2 class="row">This is your result {{user.firstName}}</h2>
+<div class="container row" *ngFor="let category of categories;">
+    <p class="col"><strong>{{category.nameCategory}}</strong></p> - <div *ngFor="let gradeCategory of test.gradesCategory">
+        <div *ngFor="let result of results">
+            <p class="col" *ngIf="result.categoryId == gradeCategory.categoryId && category.id == gradeCategory.categoryId
+        && result.score >= gradeCategory.minScore && result.score <= gradeCategory.maxScore">{{gradeCategory.meaning}}</p>
+        </div>
+    </div>
+</div>
 
+<div style="display: block;">
+    <canvas baseChart
+            [datasets]="radarChartData"
+            [options]="radarChartOptions"
+            [labels]="radarChartLabels"
+            [chartType]="radarChartType">
+    </canvas>
+</div>
+
+<button class="btn btn-success" *ngIf="!openResult" (click)="openResult = !openResult">Show Results</button>
+<button class="btn btn-danger" *ngIf="openResult" (click)="openResult = !openResult">Close Results</button>
+
+<div *ngIf="openResult">
+
+    <div style="margin-bottom: 10px" *ngFor="let result of results; let i = index;">
+        <div *ngFor="let category of categories">
+            <div class="container" *ngIf="category.id == result.categoryId">
+                <p class="center-block"><strong>{{category.nameCategory}}</strong></p>
+            </div>
+        </div>
+        <mat-expansion-panel *ngFor="let replyMap of result.replies | keyvalue" class="row" (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+
+            <!--*ngFor="let value of results[i].replies | keyvalue"-->
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{replyMap.key  }}
+                </mat-panel-title>
+                <mat-panel-description style="flex: 0 0 auto;">
+                    {{replyMap.value + '' | slice:0:10}}...
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div *ngFor="let reply of replyMap.value">
+                - <strong>{{reply}}</strong>
+            </div>
+        </mat-expansion-panel>
+
+
+    </div>
+
+</div>
+</div>
+<div *ngIf="!test" #testLoading>
+    <mat-spinner class="mt-4 center-block"></mat-spinner>
+</div>

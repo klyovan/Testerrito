@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/
 import { GroupService } from '../core/api/group.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TestService } from '../core/api/test.service';
-import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent, MatDialog } from '@angular/material';
 import { Remark } from '../core/models/remark.model';
+import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
+import { Question } from '../core/models/question.model';
 
 @Component({
   selector: 'app-remark',
@@ -19,9 +21,14 @@ export class RemarkComponent implements OnInit {
   NotViewedDataSource = new MatTableDataSource<Remark>();
   ViewedDataSource = new MatTableDataSource<Remark>();
   selectedIndex: Number = 0;
+  loading: Boolean = false;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
   constructor(private groupService: GroupService,
               private testService: TestService,
               private router: Router,
+              public dialog: MatDialog,
               private route: ActivatedRoute) {
     route.params.subscribe(params=>this.groupId=params['groupId']);  
   }
@@ -45,41 +52,74 @@ export class RemarkComponent implements OnInit {
       })     
       counter++;
       if(counter == this.groupService.tests.length) {
-        this.NotViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == false));
-        this.NotViewedDataSource.paginator = this.paginator.toArray()[0];
-        this.NotViewedDataSource.sort = this.sort.toArray()[0];
-        this.ViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == true));
-        this.ViewedDataSource.paginator = this.paginator.toArray()[1];
-        this.ViewedDataSource.sort = this.sort.toArray()[1];
+        this.changeNotViewedDataSource();
+        this.changeViewedDataSource();
+        this.loading = true;
       }
     }));   
+  }
+
+  changeNotViewedDataSource(){
+    this.NotViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == false));
+    this.updateSortAndPaginator(0, this.NotViewedDataSource);
+  }
+
+  changeViewedDataSource(){
+    this.ViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == true));
+    this.updateSortAndPaginator(1, this.ViewedDataSource);
+  }
+
+  updateSortAndPaginator(index: number, dataSource: MatTableDataSource<Remark>) {
+    dataSource.paginator = this.paginator.toArray()[index];
+    dataSource.sort = this.sort.toArray()[index];
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {
     this.selectedIndex = tabChangeEvent.index;
     if(this.selectedIndex == 0) {
-      this.NotViewedDataSource.paginator = this.paginator.toArray()[0];
-      this.NotViewedDataSource.sort = this.sort.toArray()[0];
+      this.updateSortAndPaginator(0, this.NotViewedDataSource);
     }
     else {
-      this.ViewedDataSource.paginator = this.paginator.toArray()[1];
-      this.ViewedDataSource.sort = this.sort.toArray()[1];
+      this.updateSortAndPaginator(1, this.ViewedDataSource);
     }
-}
+  }
 
   checkedAsViewed(id: BigInteger) {
       this.groupService.setViewedStatus(id).subscribe(() => {
         this.groupService.remarks.find(remark => remark.id == id).viewed = true;
-        this.NotViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == false));
-        this.NotViewedDataSource.paginator = this.paginator.toArray()[0];
-        this.NotViewedDataSource.sort = this.sort.toArray()[0];
-        this.ViewedDataSource = new MatTableDataSource<Remark>(this.groupService.remarks.filter(remark => remark.viewed == true));
-        this.ViewedDataSource.paginator = this.paginator.toArray()[1];
-        this.ViewedDataSource.sort = this.sort.toArray()[1];
+        this.changeNotViewedDataSource();
+        this.changeViewedDataSource();
       });      
+  }
+
+  changeQuestion(questionId: BigInteger, nameTest: String) {
+    const dialogRef = this.dialog.open(CreateGroupFormComponent, {
+      data: {action: "changeQuestion", 
+             question: this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(question => question.id == questionId)},
+      width: "450px"
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.groupService.tests.find(test => test.nameTest == nameTest).questions.find(
+          question => question.id == result.id).textQuestion = result.textQuestion
+        this.NotViewedDataSource.data.filter(remarks => remarks.questionId == questionId).forEach(
+          remark => {
+            remark.questionText = result.textQuestion;
+          }
+        )
+      }
+    })
   }
 
   goBackToGroup() {
     this.router.navigateByUrl('/group/'+this.groupId);
+  }
+
+  openQuestionText(remark: Remark) {
+      if(remark.limit == 20) 
+        remark.limit = 200;      
+      else 
+        remark.limit = 20;
   }
 }

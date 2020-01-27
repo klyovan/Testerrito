@@ -2,14 +2,14 @@
   <div class="container">
     <div class="row" >
       <div  class="col-6">
-        <h2>{{group.name}}</h2> 
+        <h1 style="word-wrap: break-word;">{{group.name}}</h1> 
       </div >
       <div class="col-6" [hidden]="user == undefined">
         <div  [hidden] = "group.creatorUserId != user.id">
           <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
           <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
           <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showAllRemarks()">Remarks</button>
-          <button style="width: 100px;" class="btn btn-info btn-sm" [routerLink]="['/test']">Create Test</button>
+          <button style="width: 100px;" class="btn btn-success btn-sm" [routerLink]="['/test']">Create Test</button>
         </div> 
       </div>           
      </div>
@@ -29,11 +29,11 @@
             </div>
           </div>         
         </div>
-        <div [hidden] = "group.tests == undefined" class="mat-elevation-z8">
+        <div [hidden] = "group.tests == undefined || group.tests.length == 0" class="mat-elevation-z8">
           <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="testsDataSource">
             <ng-container  matColumnDef="nameTest">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Names</th>
-                <td style="padding-right: 10px; max-width: 290px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Test name</h4></th>
+                <td style="padding-right: 10px; width: 200px; max-width: 290px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
             </ng-container>
           
             <ng-container  matColumnDef="passTest">
@@ -53,14 +53,14 @@
             <ng-container  matColumnDef="update">
               <th mat-header-cell *matHeaderCellDef></th>
               <td [hidden]="group.creatorUserId != user.id" style="padding-right: 10px;" mat-cell *matCellDef="let element">                            
-                  <button style="width: 70px;" class="btn btn-warning btn-sm" (click)="updateTest(element.id)">Update</button>
+                  <button  class="btn btn-warning btn-sm" (click)="updateTest(element.id)"><i class="glyphicon glyphicon-pencil"></i></button>
               </td>
             </ng-container> 
 
             <ng-container  matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td [hidden]="group.creatorUserId != user.id" mat-cell *matCellDef="let element">
-                    <button style="width: 70px;" class="btn btn-danger btn-sm" (click)="deleteTest(element.id)">Delete</button>
+                    <button  class="btn btn-danger btn-sm" (click)="deleteTest(element.id)"><i class="glyphicon glyphicon-trash"></i></button>
                 </td>
             </ng-container> 
           
@@ -78,12 +78,12 @@
           <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="resultsDataSource">
             
             <ng-container  matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Date</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.date}} </td>
             </ng-container>
           
             <ng-container  matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Status</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">{{element.status}}</td>
             </ng-container>   
             

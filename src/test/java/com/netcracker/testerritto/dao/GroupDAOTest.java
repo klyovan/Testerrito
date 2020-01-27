@@ -63,6 +63,7 @@ public class GroupDAOTest {
                     .delete();
     }
 
+    @Ignore
     @Test
     public void insertGetGroup() throws Exception{
         sequenceId = groupDAO.createGroup(groupExpected);
@@ -71,6 +72,7 @@ public class GroupDAOTest {
         assertEquals(groupExpected, group);
     }
 
+    @Ignore
     @Test
     public void updateGroupById() throws Exception{
         sequenceId = groupDAO.createGroup(groupExpected);

@@ -65,8 +65,8 @@ public class AnswerService {
     }
 
     public BigInteger createAnswer(Answer newAnswer) throws ServiceException{
-        if (newAnswer.getId() == null)
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
+//        if (newAnswer.getId() == null)
+//            serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
         try {
             return answerDAO.createAnswer(newAnswer);
         } catch (DataAccessException exception) {

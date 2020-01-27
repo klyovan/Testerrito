@@ -28,6 +28,19 @@ public class GroupService {
     @Autowired
     private ServiceExceptionHandler serviceExceptionHandler;
 
+
+    public Group getGroupByLink(String link) throws ServiceException {
+        checkStringNotNull(link);
+        try {
+            Group group = groupDAO.getGroupByLink(link);
+//            group.setTests(groupDAO.getAllTestsInGroup(groupId));
+//            group.setUsers(new ArrayList<>());
+            return group;
+        } catch (DataAccessException exception) {
+            serviceExceptionHandler.logAndThrowServiceException("Failed GetGroupByLink().", exception);
+            return null;
+        }
+    }
     public Group getGroupById(BigInteger groupId) throws ServiceException {
         checkIdNotNull(groupId);
         try {

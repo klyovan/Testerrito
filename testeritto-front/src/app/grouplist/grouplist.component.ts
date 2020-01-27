@@ -6,7 +6,7 @@ import { GroupService } from '../core/api/group.service';
 import {MatDialog } from '@angular/material/dialog';
 import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
-import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { MatTableDataSource, MatSort, MatPaginator, MatTabChangeEvent } from '@angular/material';
 import { Group } from '../core/models/group.model';
 
 @Component({
@@ -25,6 +25,7 @@ export class GrouplistComponent implements OnInit {
   loading: Boolean = false;
   isConstistEmpty: Boolean = false;
   isCreatedGroupsEmpty: Boolean = false;
+  selectedIndex: Number = 0;
   color = 'primary';
   mode = 'indeterminate';
   value = 50;
@@ -46,21 +47,34 @@ export class GrouplistComponent implements OnInit {
       this.changeConsistGroupsDataSourse();
     });    
   }
+  
+  tabChanged(tabChangeEvent: MatTabChangeEvent) {
+    this.selectedIndex = tabChangeEvent.index;
+    if(this.selectedIndex == 0) {
+      this.updateSortAndPaginator(0, this.createdGroupsDataSourse);
+    }
+    else {
+      this.updateSortAndPaginator(1, this.consistGroupsDataSourse);
+    }
+  }
+
+  updateSortAndPaginator(index: number, dataSource: MatTableDataSource<Group>) {
+    dataSource.paginator = this.paginator.toArray()[index];
+    dataSource.sort = this.sort.toArray()[index];
+  }
 
   changeCreatedGroupsDataSourse() {
     this.createdGroupsDataSourse = new MatTableDataSource<Group>(this.user.createdGroups);
     if(this.createdGroupsDataSourse.data.length == 0)
       this.isCreatedGroupsEmpty = true;   
-    this.createdGroupsDataSourse.paginator = this.paginator.toArray()[0];     
-    this.createdGroupsDataSourse.sort = this.sort.toArray()[0];   
+    this.updateSortAndPaginator(0, this.createdGroupsDataSourse); 
   }
 
   changeConsistGroupsDataSourse() {
     this.consistGroupsDataSourse = new MatTableDataSource<Group>(this.user.groups);   
     if(this.consistGroupsDataSourse.data.length == 0)
       this.isConstistEmpty = true;   
-    this.consistGroupsDataSourse.paginator = this.paginator.toArray()[1];     
-    this.consistGroupsDataSourse.sort = this.sort.toArray()[1];  
+    this.updateSortAndPaginator(1, this.consistGroupsDataSourse); 
   }
 
   goToGroup(id: BigInteger) {

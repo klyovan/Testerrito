@@ -29,9 +29,21 @@ import { CreateGroupFormComponent } from './create-group-form/create-group-form.
 import { TestService } from './core/api/test.service';
 import { AuthGuard } from './guard/auth.guard';
 import { NoauthGuard } from './guard/noauth.guard';
+import { InterceptorService } from './core/api/interceptor.service';
+import { ErrorPageComponent } from './error-page/error-page.component';
+import {MatCheckboxModule} from '@angular/material';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatButtonModule} from '@angular/material/button';
+import {ModalRemarkComponent} from './modal-remark/modal-remark.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatIconModule} from '@angular/material/icon';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
+import {ChartsModule} from 'ng2-charts';
+import { InvitationComponent } from './invitation/invitation.component';
+import { TruncateModule } from '@yellowspot/ng-truncate';
 import {RegisterComponent} from "./register/register.component";
-
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -46,6 +58,9 @@ import {RegisterComponent} from "./register/register.component";
         GrouplistComponent,
         ConfirmDeleteComponent,
         CreateGroupFormComponent,
+        ErrorPageComponent,
+        ModalRemarkComponent,
+        InvitationComponent,
         RegisterComponent
     ],
     imports: [
@@ -59,12 +74,21 @@ import {RegisterComponent} from "./register/register.component";
         BrowserAnimationsModule,
         MatFormFieldModule,
         MatDialogModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatListModule,
+        MatDividerModule,
+        ChartsModule,
         MatInputModule,
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
         MatTabsModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TruncateModule
     ],
     exports: [
         MatFormFieldModule
@@ -79,8 +103,13 @@ import {RegisterComponent} from "./register/register.component";
         MatTableDataSource,
         AuthGuard,
         NoauthGuard,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: InterceptorService,
+            multi: true
+        }
     ],
     bootstrap: [AppComponent],
-    entryComponents: [ConfirmDeleteComponent, CreateGroupFormComponent]
+    entryComponents: [ConfirmDeleteComponent,ModalRemarkComponent, CreateGroupFormComponent]
 })
 export class AppModule { }

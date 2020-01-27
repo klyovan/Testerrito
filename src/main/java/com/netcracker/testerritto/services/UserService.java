@@ -360,6 +360,15 @@ public class UserService {
 
     }
 
+    public Boolean checkUserConsistInGroup(BigInteger userId, BigInteger groupId) {
+        if(userDAO.isUserConsistInGroup(userId, groupId)){
+            serviceExceptionHandler.logAndThrowIllegalException("You already consist in that group!");
+        } else{
+            return false;
+        }
+                return false;
+    }
+
 
 }
 
