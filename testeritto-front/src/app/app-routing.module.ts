@@ -12,22 +12,25 @@ import { AuthGuard } from './guard/auth.guard';
 import { NoauthGuard } from './guard/noauth.guard';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import {InvitationComponent} from './invitation/invitation.component';
+import {RegisterComponent} from "./register/register.component";
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [NoauthGuard] },
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'group', component: GrouplistComponent, canActivate: [AuthGuard] },
-  { path: 'group/:groupId', component: GroupComponent, canActivate: [AuthGuard] },
-  { path: 'group/:groupId/results', component: ResultComponent, canActivate: [AuthGuard] },
-  { path: 'group/:groupId/users', component: GroupusersComponent, canActivate: [AuthGuard] },
-  { path: 'group/:groupId/remarks', component: RemarkComponent, canActivate: [AuthGuard] },
-  { path: 'pass-test/:userId/test/:id', component: PassTestComponent, canActivate: [AuthGuard] },
-   { path: 'error-page/:status', component: ErrorPageComponent },
-     {path: 'invite/:link', component: InvitationComponent,  canActivate: [AuthGuard]},
+    { path: 'login', component: LoginComponent, canActivate: [NoauthGuard] },
+    { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+    { path: 'group', component: GrouplistComponent, canActivate: [AuthGuard] },
+    { path: 'group/:groupId', component: GroupComponent, canActivate: [AuthGuard] },
+    { path: 'group/:groupId/results', component: ResultComponent, canActivate: [AuthGuard] },
+    { path: 'group/:groupId/users', component: GroupusersComponent, canActivate: [AuthGuard] },
+    { path: 'group/:groupId/remarks', component: RemarkComponent, canActivate: [AuthGuard] },
+    { path: 'pass-test/:userId/test/:id', component: PassTestComponent, canActivate: [AuthGuard] },
+    { path: 'error-page/:status', component: ErrorPageComponent },
+    {path: 'invite/:link', component: InvitationComponent,  canActivate: [AuthGuard]},
+    { path: 'registration', component: RegisterComponent, canActivate: [NoauthGuard] },
+    { path: 'registration/**', component: RegisterComponent, canActivate: [NoauthGuard] },
     { path: '**', redirectTo: '/error-page/404', pathMatch: 'full'}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
 })
 export class AppRoutingModule { }

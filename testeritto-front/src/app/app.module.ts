@@ -43,71 +43,73 @@ import {MatDividerModule} from '@angular/material/divider';
 import {ChartsModule} from 'ng2-charts';
 import { InvitationComponent } from './invitation/invitation.component';
 import { TruncateModule } from '@yellowspot/ng-truncate';
+import {RegisterComponent} from "./register/register.component";
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    HeaderComponent,
-    ProfileComponent,
-    GroupComponent,
-    ResultComponent,
-    PassTestComponent,
-    GroupusersComponent,
-    RemarkComponent,
-    GrouplistComponent,
-    ConfirmDeleteComponent,
-    CreateGroupFormComponent,
-    ErrorPageComponent,
-    ModalRemarkComponent,
-            InvitationComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    CoreModule,
-    NgbModule,
-    BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatDialogModule,
-           MatRadioModule,
-           MatCheckboxModule,
-           MatTooltipModule,
-           MatIconModule,
-           MatExpansionModule,
-           MatListModule,
-           MatDividerModule,
-           ChartsModule,
-    MatInputModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTabsModule,
-    MatProgressSpinnerModule,
-    TruncateModule 
-  ],
-  exports: [
-    MatFormFieldModule
-  ],
-  providers: [UserService, 
-              GroupService, 
-              ResultService, 
-              TestService, 
-              PassTestService, 
-              DatePipe, 
-              MatDialog, 
-              MatTableDataSource, 
-              AuthGuard,
-              NoauthGuard,
-              {
-                              provide: HTTP_INTERCEPTORS,
-                              useClass: InterceptorService,
-                              multi: true
-                              }
-              ],
-  bootstrap: [AppComponent],
-  entryComponents: [ConfirmDeleteComponent,ModalRemarkComponent, CreateGroupFormComponent]
+    declarations: [
+        AppComponent,
+        LoginComponent,
+        HeaderComponent,
+        ProfileComponent,
+        GroupComponent,
+        ResultComponent,
+        PassTestComponent,
+        GroupusersComponent,
+        RemarkComponent,
+        GrouplistComponent,
+        ConfirmDeleteComponent,
+        CreateGroupFormComponent,
+        ErrorPageComponent,
+        ModalRemarkComponent,
+        InvitationComponent,
+        RegisterComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        CoreModule,
+        NgbModule,
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatExpansionModule,
+        MatListModule,
+        MatDividerModule,
+        ChartsModule,
+        MatInputModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTabsModule,
+        MatProgressSpinnerModule,
+        TruncateModule
+    ],
+    exports: [
+        MatFormFieldModule
+    ],
+    providers: [UserService,
+        GroupService,
+        ResultService,
+        TestService,
+        PassTestService,
+        DatePipe,
+        MatDialog,
+        MatTableDataSource,
+        AuthGuard,
+        NoauthGuard,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: InterceptorService,
+            multi: true
+        }
+    ],
+    bootstrap: [AppComponent],
+    entryComponents: [ConfirmDeleteComponent,ModalRemarkComponent, CreateGroupFormComponent]
 })
 export class AppModule { }

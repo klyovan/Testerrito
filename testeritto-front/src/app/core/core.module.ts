@@ -10,11 +10,11 @@ import { TokenInterceptor } from './api/token.interceptor';
     HttpClientModule
   ],
   providers: [
-    {
+   {
       provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    },
+     useClass: TokenInterceptor,
+     multi: true
+   },
     AuthService
   ]
 })

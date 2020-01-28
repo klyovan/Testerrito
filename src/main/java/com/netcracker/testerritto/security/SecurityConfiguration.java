@@ -45,11 +45,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .addFilter(new JwtAuthenticationFilter(authenticationManager()))
             .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.userDAO))
             .authorizeRequests()
+            .antMatchers( "/registration/**").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
-            .antMatchers(HttpMethod.POST, "/registration").permitAll()
             .antMatchers("test/*").hasRole("USER")
             .anyRequest().authenticated();
     }
+
+
 
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -69,12 +71,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Access-Control-Expose-Headers", "Authorization", "Cache-Control", "Content-Type"));
+
+        configuration.setAllowedHeaders(Arrays.asList("Access-Control-Expose-Headers","Authorization",  "Cache-Control", "Content-Type"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }

@@ -2,11 +2,7 @@ package com.netcracker.testerritto.controllers;
 
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
-import com.netcracker.testerritto.models.Answer;
-import com.netcracker.testerritto.models.Category;
-import com.netcracker.testerritto.models.GradeCategory;
-import com.netcracker.testerritto.models.Question;
-import com.netcracker.testerritto.models.Test;
+import com.netcracker.testerritto.models.*;
 import com.netcracker.testerritto.services.AnswerService;
 import com.netcracker.testerritto.services.CategoryService;
 import com.netcracker.testerritto.services.GradeCategoryService;
@@ -179,7 +175,7 @@ public class TestController {
     }
 
     @PostMapping("/question")
-    public BigInteger createQuestion(@RequestBody Question newQuestion){
+    public BigInteger createQuestion(@RequestBody Question newQuestion) {
         try {
             return questionService.createQuestion(newQuestion);
         } catch (IllegalArgumentException | ServiceException e) {
@@ -197,7 +193,7 @@ public class TestController {
     }
 
     @DeleteMapping("/question/{id}")
-    public void deleteQuestionById(@PathVariable BigInteger id){
+    public void deleteQuestionById(@PathVariable BigInteger id) {
         try {
             questionService.deleteQuestionById(id);
         } catch (IllegalArgumentException | ServiceException e) {
@@ -224,7 +220,7 @@ public class TestController {
     }
 
     @PostMapping("/answer")
-    public BigInteger createAnswer(@RequestBody Answer newAnswer){
+    public BigInteger createAnswer(@RequestBody Answer newAnswer) {
         try {
             return answerService.createAnswer(newAnswer);
         } catch (IllegalArgumentException | ServiceException e) {
@@ -242,7 +238,7 @@ public class TestController {
     }
 
     @DeleteMapping("/answer/{id}")
-    public void deleteAnswerById(@PathVariable BigInteger id){
+    public void deleteAnswerById(@PathVariable BigInteger id) {
         try {
             answerService.deleteAnswer(id);
         } catch (IllegalArgumentException | ServiceException e) {

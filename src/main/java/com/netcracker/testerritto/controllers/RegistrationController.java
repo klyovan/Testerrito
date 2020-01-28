@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("registration")
+//@CrossOrigin(origins = "*")//(origins = "http://localhost:4200/registration")
 public class RegistrationController {
 
     @Autowired
@@ -25,6 +26,24 @@ public class RegistrationController {
 
         try {
             return userService.createUser(user);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/email/{email}")
+    public User getUserByEmail(@PathVariable String email) {
+        try {
+            return userService.getUserByEmail(email);
+        } catch (IllegalArgumentException | ServiceException e) {
+            throw new ApiRequestException(e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/phone/{phone}")
+    public User getUserByPhone(@PathVariable String phone){
+        try {
+            return userService.getUserByPhone(phone);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

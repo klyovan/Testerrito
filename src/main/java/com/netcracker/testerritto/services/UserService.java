@@ -265,6 +265,15 @@ public class UserService {
 
     }
 
+    public User getUserByPhone(String phone){
+        checkParameter(phone, "phone");
+        if (userDAO.isPhoneExist(phone)) {
+            return userDAO.getUserByPhone(phone);
+        }
+        serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
+        return null;
+    }
+
     private List<Group> fillGroupFields(List<Group> groups) {
         List<Test> tests;
         List<User> users;
