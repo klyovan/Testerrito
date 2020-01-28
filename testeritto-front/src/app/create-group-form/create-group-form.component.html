@@ -9,6 +9,8 @@
       <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.minlength">Minimum 3 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 2spaces between words)</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
     </mat-form-field>
   </div>
@@ -29,6 +31,8 @@
       <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.minlength">Minimum 3 characters</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 2spaces between words)</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
     </mat-form-field>
   </div>
