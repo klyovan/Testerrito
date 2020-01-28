@@ -9,12 +9,12 @@
   
               <ng-container matColumnDef="testName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Test name</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.testName}} </td>
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.testName}} </td>
               </ng-container>
           
               <ng-container matColumnDef="questionText">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Question</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element">
                   <div [hidden]="element.questionText.length >= element.questLimit">
                       {{element.questionText}}
                       <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
@@ -28,7 +28,7 @@
             
               <ng-container matColumnDef="text">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Remark</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element">
                   <div [hidden]="element.text.length >= element.remarkLimit">
                     {{element.text}} 
                     <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
@@ -68,12 +68,12 @@
   
               <ng-container matColumnDef="testName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Test name</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.testName}} </td>
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.testName}} </td>
               </ng-container>
           
               <ng-container matColumnDef="questionText">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Question</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element">
                   <div [hidden]="element.questionText.length >= element.questLimit">
                       {{element.questionText}}
                       <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
@@ -87,7 +87,7 @@
             
               <ng-container matColumnDef="text">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Remark</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                <td style="word-wrap: break-word; min-width: 150px; width: 220px; padding-right: 10px;" mat-cell *matCellDef="let element">
                   <div [hidden]="element.text.length >= element.remarkLimit">
                     {{element.text}} 
                     <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>

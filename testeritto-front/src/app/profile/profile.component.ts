@@ -74,9 +74,9 @@ export class ProfileComponent implements OnInit {
 
   private buildFormProfile() {
     this.profileForm = this.formBuilder.group({
-      lastName: [ null, [Validators.required, Validators.pattern('^([a-zA-Z -.]{2,40})$')]],
-      firstName: [ null, [Validators.required, Validators.pattern('^([a-zA-Z -.]{2,40})$')]],
-      phone: [ null, [Validators.required, Validators.pattern('[\+0-9\(\) -]{7,18}')]]
+      lastName: [ null, [Validators.required,  Validators.maxLength(20), Validators.pattern('^([A-Za-z]+((\\s){0,1}[A-Za-z]*(\\s){0,1})*)([A-Za-z]+)$')]],
+      firstName: [ null, [Validators.required, Validators.maxLength(20), Validators.pattern('^([A-Za-z]+((\\s){0,1}[A-Za-z]*(\\s){0,1})*)([A-Za-z]+)$')]],
+      phone: [ null, [Validators.required,  Validators.minLength(9), Validators.maxLength(9), Validators.pattern('[0-9]*')]]
     });
   }
 
@@ -97,16 +97,16 @@ export class ProfileComponent implements OnInit {
 
   private buildFormAccount() {
     this.accountForm = this.formBuilder.group({
-      email: [ null, [Validators.required, Validators.email, Validators.maxLength(40)]],
-      passwordNew: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ],
-      passwordConfirm: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ],
-      passwordOld: [ null, [Validators.pattern('^[^а-яА-Я]{8,}$')] ]
+      email: [ null, [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
+      passwordNew: [ null, [Validators.minLength(6)] ],
+      passwordConfirm: [ null, [Validators.minLength(6)] ],
+      passwordOld: [ null, [Validators.minLength(6)] ]
     });
   }
 
   private buildFormDelete() {
     this.deleteForm = this.formBuilder.group({
-      password: [null, [Validators.required, Validators.pattern('^[^а-яА-Я]{8,}$')] ]
+      password: [null, [Validators.required, Validators.minLength(6)] ]
     });
   }
 

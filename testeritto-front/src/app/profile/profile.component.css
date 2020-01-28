@@ -1,13 +1,15 @@
-.profileForm form {
+.profileForm {
     margin-top: 10px;
+}
+
+.profileForm form {
     padding-bottom: 15px;
 }
 
 .accountForm {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .accountForm form {
-    margin-top: 10px;
     padding-bottom: 15px;
 }
