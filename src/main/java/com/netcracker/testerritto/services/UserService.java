@@ -270,7 +270,7 @@ public class UserService {
         if (userDAO.isPhoneExist(phone)) {
             return userDAO.getUserByPhone(phone);
         }
-        serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
+       /// serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
         return null;
     }
 
