@@ -15,21 +15,29 @@
               <ng-container matColumnDef="questionText">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Question</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
-                  <div [hidden]="element.questionText.length >= element.limit">
+                  <div [hidden]="element.questionText.length >= element.questLimit">
                       {{element.questionText}}
                       <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
                   </div>
-                  <div [hidden]="element.limit > element.questionText.length">
-                    {{element.questionText | truncate  : element.limit}}
+                  <div [hidden]="element.questLimit > element.questionText.length">
+                    {{element.questionText | truncate  : element.questLimit}}
                     <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
-                </div>
-                  
+                </div>                  
                 </td>
               </ng-container>
             
               <ng-container matColumnDef="text">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Remark</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.text}} </td>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                  <div [hidden]="element.text.length >= element.remarkLimit">
+                    {{element.text}} 
+                    <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                </div>
+                <div [hidden]="element.remarkLimit > element.text.length">
+                  {{element.text | truncate  : element.remarkLimit}}
+                  <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                </div>                  
+                </td>
               </ng-container>
   
               <ng-container matColumnDef="update">
@@ -65,12 +73,30 @@
           
               <ng-container matColumnDef="questionText">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Question</h4></th>
-                <td style="padding-right: 10px;"  mat-cell *matCellDef="let element"> {{element.questionText}} </td>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                  <div [hidden]="element.questionText.length >= element.questLimit">
+                      {{element.questionText}}
+                      <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                  </div>
+                  <div [hidden]="element.questLimit > element.questionText.length">
+                    {{element.questionText | truncate  : element.questLimit}}
+                    <button class="btn btn-sm" (click)="openQuestionText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                </div>                  
+                </td>
               </ng-container>
             
               <ng-container matColumnDef="text">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Remark</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.text}} </td>
+                <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
+                  <div [hidden]="element.text.length >= element.remarkLimit">
+                    {{element.text}} 
+                    <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                </div>
+                <div [hidden]="element.remarkLimit > element.text.length">
+                  {{element.text | truncate  : element.remarkLimit}}
+                  <button class="btn btn-sm" (click)="openRemarkText(element)"><i class="glyphicon glyphicon-option-horizontal"></i></button>
+                </div>                  
+                </td>
               </ng-container>
             
               <ng-container matColumnDef="delete">
@@ -92,7 +118,7 @@
 
 <div [hidden]="loading" class="container">
   <div class="row">
-      <div class="col-4 center-block">
+      <div class="center-block">
           <mat-progress-spinner
           class="example-margin"
           [color]="color"

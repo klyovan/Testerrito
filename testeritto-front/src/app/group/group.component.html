@@ -4,7 +4,7 @@
       <div  class="col-6">
         <h1 style="word-wrap: break-word;">{{group.name}}</h1> 
       </div >
-      <div class="col-6" [hidden]="user == undefined">
+      <div class="col-5" [hidden]="user == undefined">
         <div  [hidden] = "group.creatorUserId != user.id">
           <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
           <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
@@ -16,7 +16,7 @@
   </div>  
   <div class="container">
     <div class="row">
-      <div class="col-7" [hidden]="!testsLoaded">  
+      <div class="col-6" [hidden]="!testsLoaded">  
         <div [hidden] = "group.tests != undefined && group.tests.length != 0">
           <div [hidden]="user == undefined">
             <div [hidden] = "group.creatorUserId == user.id">
@@ -106,7 +106,7 @@
 </div>
 <div [hidden]="loading" class="container">
   <div class="row">
-      <div class="col-4 center-block">
+      <div class="center-block">
           <mat-progress-spinner
           class="example-margin"
           [color]="color"
