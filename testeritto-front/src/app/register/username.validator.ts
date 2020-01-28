@@ -3,7 +3,7 @@ import {AbstractControl, ValidationErrors} from "@angular/forms";
 export class UsernameValidator {
     static cannotContainNonAlphabetChar(control: AbstractControl) : ValidationErrors | null {
        // let str :String = control;
-        let pattern =new RegExp("[A-Za-z\\s]");
+        let pattern = new RegExp("[A-Za-z\\s]");
 
         // if((control.value as string)[0].match( new RegExp("\\s"))){
         //     return {cannotContainNonAlphabet: "can not start with space"}

@@ -62,23 +62,7 @@ export class RegisterComponent implements OnInit {
                 data => {
                     //this.alertService.success('Registration successful', true);
                     this.router.navigate(['/login']);
-                    //},
-                    // error => {
-                    //     let errorMessage = '';
-                    //     errorMessage = `Error: ${error.error.message}`;
-                    // let emailPattern = new RegExp("Email:.*");
-                    //
-                    // window.alert(errorMessage);
-                    // console.log(error.error.message);
-                    // errorMessage = error.error.message;
-                    // if (errorMessage.match(emailPattern)) {
-                    //     catchError(error.error);
-                    //     EmailValidator.isEmailExist(true);
-                    // }
-                    //
-                    //    return throwError(errorMessage);
-                    //
-                    //  console.log(error.prototype.message);
+
                 });
 
     }

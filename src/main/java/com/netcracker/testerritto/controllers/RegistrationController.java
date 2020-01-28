@@ -1,6 +1,5 @@
 package com.netcracker.testerritto.controllers;
 
-
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Group;
@@ -36,17 +35,18 @@ public class RegistrationController {
         try {
             return userService.getUserByEmail(email);
         } catch (IllegalArgumentException | ServiceException e) {
-            throw new ApiRequestException(e.getMessage(), e);
+           // throw new ApiRequestException(e.getMessage(), e);
+            return null;
         }
     }
 
     @GetMapping("/phone/{phone}")
     public User getUserByPhone(@PathVariable String phone){
-        try {
+//        try {
             return userService.getUserByPhone(phone);
-        } catch (IllegalArgumentException | ServiceException e) {
-            throw new ApiRequestException(e.getMessage(), e);
-        }
+//        } catch (IllegalArgumentException | ServiceException e) {
+//            throw new ApiRequestException(e.getMessage(), e);
+//        }
     }
 
 }
