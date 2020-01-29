@@ -6,5 +6,5 @@ export class Answer {
     questionId: BigInteger;
     nextQuestionId: BigInteger;
     replyId: BigInteger;
+    checked: boolean;
   }
-  

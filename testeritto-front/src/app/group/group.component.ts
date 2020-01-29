@@ -29,11 +29,11 @@ export class GroupComponent implements OnInit {
   showResult: Boolean = false;
   infoIfNoResult: String;
   selectedTest: BigInteger = null;
-  test: Test;  
+  test: Test;
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
-  testsDataSource = new MatTableDataSource<Test>();  
-  resultsDataSource = new MatTableDataSource<Result>();  
+  testsDataSource = new MatTableDataSource<Test>();
+  resultsDataSource = new MatTableDataSource<Result>();
   displayedTestsColumns: string[] = ['nameTest', 'passTest', 'seeResults', 'update', 'delete'];
   displayedResultsColumns: string[] = ['date', 'status', 'action'];
   color = 'primary';
@@ -48,35 +48,35 @@ export class GroupComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog,
               private datePipe: DatePipe) {
-    route.params.subscribe(params=>this.group.id=params['groupId']);  
+    route.params.subscribe(params=>this.group.id=params['groupId']);
    }
 
-  ngOnInit() { 
+  ngOnInit() {
     var check;
     this.userService.getUser().subscribe((user: User) => {
-      this.user = user; 
-      check = user.groups.find(element => element.id == this.group.id);   
-      if(check != undefined) {         
+      this.user = user;
+      check = user.groups.find(element => element.id == this.group.id);
+      if(check != undefined) {
         this.groupService.getGroup(this.group.id).subscribe((group: Group) => {
-          this.group = group;   
-          this.loading = true;            
+          this.group = group;
+          this.loading = true;
           this.changeTestsDataSourse();
           this.testsLoaded = true;
           this.groupService.tests = this.group.tests;
-        }); 
-        this.groupService.getUserResultsForTest(this.user.id).subscribe(data => {
-          this.user.results = data;   
         });
-      }         
-      else 
-        this.router.navigate(['/group']);     
-    });   
+        this.groupService.getUserResultsForTest(this.user.id).subscribe(data => {
+          this.user.results = data;
+        });
+      }
+      else
+        this.router.navigate(['/group']);
+    });
   }
 
   changeTestsDataSourse() {
     this.testsDataSource = new MatTableDataSource<Test>(this.group.tests);
     this.testsDataSource.paginator = this.paginator.toArray()[0];
-    this.testsDataSource.sort = this.sort.toArray()[0];   
+    this.testsDataSource.sort = this.sort.toArray()[0];
   }
 
   changeResultsDataSourse() {
@@ -93,59 +93,63 @@ export class GroupComponent implements OnInit {
     var i = 0;
     result.forEach(element => {
       if(this.results != undefined && this.results.find(elem => elem.status == element.status && elem.date == element.date) == undefined) {
-        this.results.push(element);        
+        this.results.push(element);
       }
       i++;
     })
     if(result.length == i && result.length!=0) {
       this.changeResultsDataSourse();
       this.showResult = true;
-    }      
+    }
     else this.showResult = false;
   }
 
   inviteMembers() {
     const dialogRef = this.dialog.open(CreateGroupFormComponent, {
-      data: {action: "invite", 
+      data: {action: "invite",
              link:  window.location.host + '/invite/' + this.group.link  },
       width: "450px"
-    });    
+    });
   }
 
   passTest(id: BigInteger) {
     var nowDate = this.datePipe.transform(new Date(),'yyyy-MM-dd');
     var checkResult = this.user.results.find( element => element.date.toString() == nowDate && element.testId == id )
-    if(checkResult == undefined)      
+    if(checkResult == undefined)
       this.router.navigateByUrl('/pass-test/' + this.user.id + '/test/' + id);
     else alert("You already passed test today. Come back tomorrow :)");
   }
 
   finishTest(testId: BigInteger) {
-    this.passTestService.getFinishTest(this.user.id, testId).subscribe((test: Test) => {this.test = test; console.log(test.questions); });
-
-    this.router.navigate(['/pass-test', this.user.id, 'test', testId]);
+    this.passTestService.getFinishTest(this.user.id, testId).subscribe((test: Test) => {
+        this.test = test;
+        this.passTestService.notPassedTest = test;
+        console.log('em');
+        console.log(test);
+        this.router.navigate(['/pass-test', this.user.id, 'test', this.test.id]);
+    });
 
   }
 
   showDetailsOnResult(date: Date) {
-    this.results = this.user.results.filter(element => element.testId == this.selectedTest 
+    this.results = this.user.results.filter(element => element.testId == this.selectedTest
       && element.date == date && element.status == "PASSED")
     this.resultService.results = this.results;
     this.router.navigateByUrl('/group/'+this.group.id+'/results');
   }
 
-  showUsersInGroup() { 
+  showUsersInGroup() {
     this.groupService.getUsersInGroup(this.group.id).subscribe(data => {
-      this.groupService.users = data//.filter(user => user.id != this.group.creatorUserId); 
+      this.groupService.users = data//.filter(user => user.id != this.group.creatorUserId);
       this.router.navigateByUrl('/group/'+this.group.id+'/users');
-    });   
+    });
   }
 
   showAllRemarks() {
     this.groupService.getAllRemarks(this.group.id).subscribe(data => {
       this.groupService.remarks = data;
       this.router.navigateByUrl('/group/'+this.group.id+'/remarks');
-    })    
+    })
   }
 
   deleteTest(id: BigInteger) {
@@ -160,8 +164,8 @@ export class GroupComponent implements OnInit {
         if(index != -1) {
           this.group.tests.splice(index, 1);
           this.changeTestsDataSourse();
-        }          
+        }
       }
-    });    
+    });
   }
 }

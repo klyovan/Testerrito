@@ -22,6 +22,7 @@ const routes: Routes = [
     {path: 'group/:groupId/users', component: GroupusersComponent, canActivate: [AuthGuard]},
     {path: 'group/:groupId/remarks', component: RemarkComponent, canActivate: [AuthGuard]},
     {path: 'pass-test/:userId/test/:id', component: PassTestComponent, canActivate: [AuthGuard]},
+    {path: 'pass-test/:userId/test/finish/:id', component: PassTestComponent, canActivate: [AuthGuard]},
     {path: 'invite/:link', component: InvitationComponent,  canActivate: [AuthGuard]},
     {path: '**', redirectTo: '/login', pathMatch: 'full'}
 

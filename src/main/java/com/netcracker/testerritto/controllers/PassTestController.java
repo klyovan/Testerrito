@@ -47,6 +47,7 @@ public class PassTestController {
     private int isUpdate = 0;
     private BigInteger replyId;
     private List<Answer> oldReplyList = new ArrayList<>();
+
     private List<Answer> newReplyList = new ArrayList<>();
 
     @GetMapping("{userId}/test/{id}")
@@ -84,12 +85,12 @@ public class PassTestController {
     @PostMapping("/reply")
     public BigInteger createReply(@RequestBody Reply reply) {
         try {
-           int oldReplyIndex = 0;
+            int oldReplyIndex = 0;
             if (reply.getReplyList().size() > 0) {
                 oldReplyList = new ArrayList<>();
                 newReplyList = new ArrayList<>();
-                System.out.println(createdReplies.size()+"size");
-                for (int i = 0; i < createdReplies.size(); i++){
+                System.out.println(createdReplies.size() + "size");
+                for (int i = 0; i < createdReplies.size(); i++) {
                     if (createdReplies.get(i).getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())) {
                         isUpdate++;
                         reply.setId(createdReplies.get(i).getId());
@@ -98,7 +99,6 @@ public class PassTestController {
                         oldReplyIndex = i;
                     }
                 }
-
 
                 if (isUpdate == 0) {
                     BigInteger questionId = reply.getReplyList().get(0).getQuestionId();
@@ -127,12 +127,10 @@ public class PassTestController {
                         newReplyList = reply.getReplyList();
                         reply.setReplyList(oldReplyList);
 
-
-
                         replyService.updateReply(reply, newReplyList.get(0));
 
                         reply.setReplyList(newReplyList);
-                         createdReplies.set(oldReplyIndex, reply);
+                        createdReplies.set(oldReplyIndex, reply);
 
                         isUpdate = 0;
                         System.out.println("Update one answer ");
@@ -140,7 +138,7 @@ public class PassTestController {
                     } else if (answerType == ListsAttr.MULTIPLE_ANSWER) {
 
                         replyService.deleteReply(reply.getId());
-                        createdReplies.remove(reply); // very nedd
+                        createdReplies.remove(reply);
 
                         replyId = replyService.createReply(reply);
                         reply.setId(replyId);
@@ -176,23 +174,29 @@ public class PassTestController {
     @GetMapping("{userId}/test/finish/{testId}")
     public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {
-
+            System.out.println("ZAHALO");
             List<Result> results = resultService.getResultsByTest(testId);
-            List<Result> createdResults = new ArrayList<>();
+            createdResults = new ArrayList<>();
 
             for (Result result : results) {
                 if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED) {
-                    createdResults.add(result);
+                    createdResults.add(result.getId());
                 }
             }
+
+            Test test = testService.getTest(testId);
+            List<Question> newQuestions = test.getQuestions();
 
             for (Result result : results) {
                 if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED) {
-                    resultService.deleteResult(result.getId());
+                    result.getReplies().keySet().iterator().forEachRemaining(question -> {
+
+                    });
                 }
             }
 
-            return testService.getTest(testId);
+            test.setQuestions(newQuestions);
+            return test;
         } catch (IllegalArgumentException | IndexOutOfBoundsException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
