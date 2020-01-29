@@ -66,12 +66,7 @@ public class Question extends ObjectEav {
             return false;
         }
         Question question = (Question) o;
-        return id.equals(question.id) &&
-            textQuestion.equals(question.textQuestion) &&
-            typeQuestion.equals(question.typeQuestion) &&
-            testId.equals(question.testId) &&
-            Objects.equals(answers, question.answers) &&
-            categoryId.equals(question.categoryId);
+        return id.equals(question.id);
     }
 
     @Override

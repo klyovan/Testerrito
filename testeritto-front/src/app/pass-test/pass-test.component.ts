@@ -6,12 +6,10 @@ import {Result} from '../core/models/result.model';
 import {User} from '../core/models/user.model';
 import {Test} from '../core/models/test.model';
 import {Answer} from '../core/models/answer.model';
-import {Category} from '../core/models/category.model';
 import {Remark} from '../core/models/remark.model';
 import {Reply} from '../core/models/reply.model';
 import {MatDialog} from '@angular/material';
 import {ModalRemarkComponent} from '../modal-remark/modal-remark.component';
-import {Question} from '../core/models/question.model';
 import {FormControl, Validators} from '@angular/forms';
 
 
@@ -30,20 +28,21 @@ export class PassTestComponent implements OnInit {
     results: Array<Result>;
     isQuestions = true;
     isFirst = true;
-    isTestNeedExpert = false;
+    // isTestNeedExpert = false;
     remarkText: string;
     remarkQuestion: string;
     reply: Reply;
-    openAnswer: string;
+    // openAnswer: string;
     answer: Answer;
     remark: Remark;
     selectedAnswer: Answer;
     selectedAnswers: Array<Answer> = [];
     remarkAnswer: string;
-    openAnswerForm = new FormControl('', [Validators.required]);
-    selectionForm = new FormControl(Validators.required);
-    radioForm = new FormControl('', [Validators.required]);
+    selectionForm = new FormControl(null, Validators.required);
+    radioForm = new FormControl(null, [Validators.required]);
     markedAnswers: Map<BigInteger, Array<Answer>> = new Map();
+
+    // openAnswerForm = new FormControl('', [Validators.required]);
 
     constructor(private route: ActivatedRoute, private router: Router,
                 private passTestService: PassTestService,
@@ -56,17 +55,20 @@ export class PassTestComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => {
-
-            this.test = test;
-            this.test.questions.forEach((question: Question) => {
-                if (question.typeQuestion === 'OPEN') {
-                    this.isTestNeedExpert = true; //// true nado
-                }
+        if (this.passTestService.notPassedTest === undefined) {
+            this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => {
+                this.test = test;
+                // this.test.questions.forEach((question: Question) => {
+                //     // if (question.typeQuestion === 'OPEN') {
+                //     //     this.isTestNeedExpert = true;
+                //     // }
+                // });
             });
-            // this.selectedAnswer = test.questions[0].answers[0];
-        });
-
+        } else {
+            this.test = this.passTestService.notPassedTest;
+            console.log(this.test);
+            this.passTestService.notPassedTest = undefined;
+        }
 
         window.addEventListener('beforeunload', function(e) {
             const confirmationMessage = '\o/';
@@ -78,11 +80,6 @@ export class PassTestComponent implements OnInit {
 
     }
 
-    markAnswer(markedAnswers: Array<Answer>): void {
-        this.markedAnswers.set(markedAnswers[0].questionId, markedAnswers);
-        console.log(this.markedAnswers);
-    }
-
 
     incrementIndex() {
         this.isFirst = false;
@@ -90,100 +87,138 @@ export class PassTestComponent implements OnInit {
 
         if (this.questionId < this.test.questions.length - 1) {
 
-            if (this.selectedAnswers.length !== 0 || this.selectedAnswer !== undefined) {
-                if (this.selectedAnswer !== undefined) {
-                    this.selectedAnswers.push(this.selectedAnswer);
-                    this.selectedAnswer = undefined;
-                }
-                console.log(this.selectedAnswers + 'Aha');
-                this.reply.replyList = this.selectedAnswers.slice();
-                this.passTestService.addReply(this.reply).subscribe();
-
-                this.markAnswer(this.selectedAnswers);
-
-                this.selectedAnswers = [];
-
-                return this.questionId++;
-
-            } else if (this.openAnswer !== null) {
-                this.answer = new Answer();
-                this.answer.score = 0;
-                this.answer.questionId = this.test.questions[this.questionId].id;
-                this.answer.textAnswer = this.openAnswer;
-
-
-                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
-                    this.answer.id = createdAnswerId;
-                    this.selectedAnswers.push(this.answer);
-                    this.reply.replyList = this.selectedAnswers.slice();
-                    this.passTestService.addReply(this.reply).subscribe();
-
-                    this.markAnswer(this.selectedAnswers);
-
-                    this.selectedAnswers = [];
-                });
-                return this.questionId++;
+            // if (this.selectedAnswers.length !== 0 || this.selectedAnswer !== undefined) {
+            if (this.selectedAnswer !== undefined) {
+                this.selectedAnswers.push(this.selectedAnswer);
             }
+
+            this.reply.replyList = this.selectedAnswers.slice();
+            this.passTestService.addReply(this.reply).subscribe();
+
+            this.markedAnswers.set(this.selectedAnswers[0].questionId, this.selectedAnswers);
+
+
+            this.questionId++;
+
+
+            // } else if (this.openAnswer !== null) {
+            //     this.answer = new Answer();
+            //     this.answer.score = 0;
+            //     this.answer.questionId = this.test.questions[this.questionId].id;
+            //     this.answer.textAnswer = this.openAnswer;
+            //
+            //
+            //     this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+            //         this.answer.id = createdAnswerId;
+            //         this.selectedAnswers.push(this.answer);
+            //         this.reply.replyList = this.selectedAnswers.slice();
+            //         this.passTestService.addReply(this.reply).subscribe();
+            //
+            //         this.markAnswer(this.selectedAnswers);
+            //
+            //         this.selectedAnswers = [];
+            //     });
+            //     return this.questionId++;
+            // }
 
 
         } else {
 
-            if (this.selectedAnswer !== undefined || this.selectedAnswers !== undefined) {
-                if (this.selectedAnswer !== undefined) {
-                    this.selectedAnswers.push(this.selectedAnswer);
-                    this.selectedAnswer = undefined;
-                }
-
-                this.reply.replyList = this.selectedAnswers.slice();
-                this.passTestService.addReply(this.reply).subscribe(() => {
-
-                    this.markAnswer(this.selectedAnswers);
-
-                    this.selectedAnswers = [];
-                });
-
-                this.buttonType = 2;
-
-                return this.questionId++;
-            } else if (this.openAnswer !== null && this.selectedAnswers === undefined) {
-                this.answer = new Answer();
-                this.answer.score = 0;
-                this.answer.questionId = this.test.questions[this.questionId].id;
-                this.answer.textAnswer = this.openAnswer;
-
-
-                this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
-                    this.answer.id = createdAnswerId;
-                    this.selectedAnswers.push(this.answer);
-                    this.reply.replyList = this.selectedAnswers.slice();
-                    this.passTestService.addReply(this.reply).subscribe(() => {
-
-                        this.markAnswer(this.selectedAnswers);
-
-                        this.selectedAnswers = [];
-                    });
-                    this.buttonType = 2;
-
-                    return this.questionId++;
-                });
+            // if (this.selectedAnswer !== undefined || this.selectedAnswers !== undefined) {
+            if (this.selectedAnswer !== undefined) {
+                this.selectedAnswers.push(this.selectedAnswer);
             }
+
+            this.reply.replyList = this.selectedAnswers.slice();
+            this.passTestService.addReply(this.reply).subscribe(() => {
+
+                this.markedAnswers.set(this.selectedAnswers[0].questionId, this.selectedAnswers);
+
+
+            });
+
+            this.buttonType = 2;
+
+            // this.questionId++;
+
+            // } else if (this.openAnswer !== null && this.selectedAnswers === undefined) {
+            //     this.answer = new Answer();
+            //     this.answer.score = 0;
+            //     this.answer.questionId = this.test.questions[this.questionId].id;
+            //     this.answer.textAnswer = this.openAnswer;
+            //
+            //
+            //     this.passTestService.addAnswer(this.answer).subscribe((createdAnswerId: BigInteger) => {
+            //         this.answer.id = createdAnswerId;
+            //         this.selectedAnswers.push(this.answer);
+            //         this.reply.replyList = this.selectedAnswers.slice();
+            //         this.passTestService.addReply(this.reply).subscribe(() => {
+            //
+            //             this.markAnswer(this.selectedAnswers);
+            //
+            //             this.selectedAnswers = [];
+            //         });
+            //         this.buttonType = 2;
+            //
+            //         return this.questionId++;
+            //     });
+            // }
 
         }
         this.remarkAnswer = null;
+
+        this.checkIfAnswerExist();
+
+    }
+
+    checkIfAnswerExist() {
         this.selectedAnswers = [];
-        this.openAnswer = null;
+        this.selectedAnswer = undefined;
+        this.radioForm = new FormControl(null, [Validators.required]);
+        this.selectionForm = new FormControl(null, [Validators.required]);
+        if (this.markedAnswers.get(this.test.questions[this.questionId].id) &&
+            this.test.questions[this.questionId].typeQuestion === 'ONE_ANSWER') {
+            this.radioForm.setValue(this.markedAnswers.get(this.test.questions[this.questionId].id)[0]);
+            this.selectedAnswer = this.markedAnswers.get(this.test.questions[this.questionId].id)[0];
+
+        } else if (this.markedAnswers.get(this.test.questions[this.questionId].id) &&
+            this.test.questions[this.questionId].typeQuestion === 'MULTIPLE_ANSWER') {
+            this.selectionForm.setValue(this.markedAnswers.get(this.test.questions[this.questionId].id));
+            this.selectedAnswers = this.markedAnswers.get(this.test.questions[this.questionId].id);
+        }
 
     }
 
 
     decrementIndex() {
         if (this.questionId > 0) {
+            if (this.selectedAnswer !== undefined) {
+                this.selectedAnswers.push(this.selectedAnswer);
+            }
 
-            this.selectedAnswers = [];
-            this.questionId--;
-            this.buttonType = 1;
-            this.remarkAnswer = null;
+            this.reply.replyList = this.selectedAnswers.slice();
+            this.passTestService.addReply(this.reply).subscribe(() => {
+                this.markedAnswers.set(this.selectedAnswers[0].questionId, this.selectedAnswers);
+                this.questionId--;
+                this.checkIfAnswerExist();
+
+            });
+
+            console.log('decrement');
+            console.log(this.markedAnswers);
+
+
         }
+
+
+        this.remarkAnswer = null;
+
+        if (this.buttonType === 2) {
+            this.buttonType = 1;
+        } else if (this.questionId === 0) {
+            this.isFirst = true;
+        }
+
     }
 
 
@@ -193,9 +228,8 @@ export class PassTestComponent implements OnInit {
         this.passTestService.getReplies().subscribe((results) => this.results = results);
         this.isQuestions = false;
         this.buttonType = undefined;
-        if (!this.isTestNeedExpert) {
-            this.router.navigate(['/group']);
-        }
+        this.router.navigate(['result', this.test.groupId, 'results']);
+
     }
 
 
@@ -232,19 +266,19 @@ export class PassTestComponent implements OnInit {
         });
     }
 
-    getErrorMessage() {
-        return this.openAnswerForm.hasError('required') ? 'You must enter answer' :
-            'Enter more than 10 characters!';
-    }
+    // getErrorMessage() {
+    //     return this.openAnswerForm.hasError('required') ? 'You must enter answer' :
+    //         'Enter more than 10 characters!';
+    // }
 
-    getSelectionErrorMessage() {
-        return this.selectionForm.hasError('required') ? 'You must select  answer' :
-            'Select answer';
-    }
-
-    getRadioErrorMessage() {
-        return this.radioForm.hasError('required') ? 'You must select answer' :
-            'Select answer';
-    }
+    // getSelectionErrorMessage() {
+    //     return this.selectionForm.hasError('required') ? 'You must select  answer' :
+    //         'Select answer';
+    // }
+    //
+    // getRadioErrorMessage() {
+    //     return this.radioForm.hasError('required') ? 'You must select answer' :
+    //         'Select answer';
+    // }
 
 }
