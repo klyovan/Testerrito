@@ -117,9 +117,16 @@ export class RemarkComponent implements OnInit {
   }
 
   openQuestionText(remark: Remark) {
-      if(remark.limit == 20) 
-        remark.limit = 200;      
+      if(remark.questLimit == 20) 
+        remark.questLimit = remark.questionText.length;      
       else 
-        remark.limit = 20;
+        remark.questLimit = 20;
   }
+
+  openRemarkText(remark: Remark) {
+    if(remark.remarkLimit == 20) 
+      remark.remarkLimit = remark.text.length;      
+    else 
+      remark.remarkLimit = 20;
+}
 }

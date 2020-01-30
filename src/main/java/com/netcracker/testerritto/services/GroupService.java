@@ -32,10 +32,7 @@ public class GroupService {
     public Group getGroupByLink(String link) throws ServiceException {
         checkStringNotNull(link);
         try {
-            Group group = groupDAO.getGroupByLink(link);
-//            group.setTests(groupDAO.getAllTestsInGroup(groupId));
-//            group.setUsers(new ArrayList<>());
-            return group;
+            return groupDAO.getGroupByLink(link);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed GetGroupByLink().", exception);
             return null;
@@ -58,6 +55,9 @@ public class GroupService {
         checkIdNotNull(group.getCreatorUserId());
         checkStringNotNull(group.getLink());
         checkStringNotNull(group.getName());
+        group.setName(group.getName().trim());
+        checkLength(group.getName());
+        checkPattern(group.getName());
         checkUniqueName(group.getCreatorUserId(), group.getName());
        try {
             return groupDAO.createGroup(group);
@@ -70,6 +70,9 @@ public class GroupService {
     public Group updateGroup(Group group) throws ServiceException {
         checkIdNotNull(group.getId());
         checkStringNotNull(group.getName());
+        group.setName(group.getName().trim());
+        checkLength(group.getName());
+        checkPattern(group.getName());
         checkUniqueName(group.getCreatorUserId(), group.getName());
         try {
             return groupDAO.updateGroup(group);
@@ -131,5 +134,15 @@ public class GroupService {
     private void checkUniqueName(BigInteger userId, String groupName) {
         if(groupDAO.isGroupNameExist(userId, groupName))
             serviceExceptionHandler.logAndThrowIllegalException("Group with name " + groupName + " already exist");
+    }
+
+    private void checkLength(String string) {
+        if(string.length() < 3 || string.length() > 30)
+            serviceExceptionHandler.logAndThrowIllegalException("Wrong size of name. It can be from 3 to 30 symbols");
+    }
+
+    private void checkPattern(String string) {
+        if(!string.matches("^([A-Za-z0-9]+((\\s)?[A-Za-z0-9]*(\\s)?)*)([A-Za-z0-9]+)$"))
+            serviceExceptionHandler.logAndThrowIllegalException("Not correct pattern");
     }
 }

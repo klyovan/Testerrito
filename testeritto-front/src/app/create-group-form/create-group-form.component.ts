@@ -14,7 +14,7 @@ import { TestService } from '../core/api/test.service';
 export class CreateGroupFormComponent implements OnInit {
   error: String;
   answers: Array<Answer>
-  name = new FormControl(this.data.groupName, [Validators.required, Validators.maxLength(30)]);
+  name = new FormControl(this.data.groupName, [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.pattern('^([A-Za-z0-9]+((\\s){0,1}[A-Za-z0-9]*(\\s){0,1})*)([A-Za-z0-9]+)$')]);
   link = new FormControl(this.data.link);
   answersReady: Boolean = false;
   constructor(public dialogRef: MatDialogRef<CreateGroupFormComponent>,

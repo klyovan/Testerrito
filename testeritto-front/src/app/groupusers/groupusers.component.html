@@ -1,6 +1,7 @@
 <button class="btn btn-info btn-sm" (click)="goBackToGroup()"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
 
-<mat-tab-group dynamicHeight [selectedIndex]="selectedIndex" (selectedTabChange)="tabChanged($event)"  animationDuration="1000ms">
+<div [hidden]="!loading">
+  <mat-tab-group dynamicHeight [selectedIndex]="selectedIndex" (selectedTabChange)="tabChanged($event)"  animationDuration="1000ms">
     <mat-tab label="Users">
       <ng-template matTabContent>
         <div class="mat-elevation-z8">
@@ -8,25 +9,25 @@
   
               <ng-container matColumnDef="lastName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Last name</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+                <td style="padding-right: 10px; width: 200px;" mat-cell *matCellDef="let element"> {{element.lastName}} </td>
               </ng-container>
           
               <ng-container matColumnDef="firstName">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>First name</h4></th>
-                <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+                <td style="padding-right: 10px; width: 200px;" mat-cell *matCellDef="let element"> {{element.firstName}} </td>
               </ng-container>
             
               <ng-container matColumnDef="seeTests">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
-                    <button style="width: 120px;" class="btn btn-info btn-sm" (click)="seeAllPassedTestsByUser(element.id)">See tests</button>
+                    <button style="width: 100px;" class="btn btn-info btn-sm" (click)="seeAllPassedTestsByUser(element.id)">See tests</button>
                 </td>
               </ng-container>
   
               <ng-container matColumnDef="kickOut">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
-                    <button [hidden]="groupService.group.creatorUserId == element.id" style="width: 120px;" class="btn btn-danger btn-sm" (click)="kickOutUser(element.id)">Kick out</button>
+                    <button [hidden]="groupService.group.creatorUserId == element.id" style="width: 100px;" class="btn btn-danger btn-sm" (click)="kickOutUser(element.id)">Kick out</button>
                 </td>
               </ng-container>
   
@@ -39,22 +40,22 @@
     </mat-tab>
     <mat-tab [disabled]="!showTabPassedTests" label="User passed tests">     
         <ng-template matTabContent>
-            <div class="mat-elevation-z8">
-              <div [hidden]="this.tests.size != 0">
-                <h5>You have no passed tests yet</h5>
-              </div>
+          <div [hidden]="this.tests.size != 0">
+            <h4>You have no passed tests yet</h4>
+          </div>
+            <div class="mat-elevation-z8" style="text-align: -webkit-center;">              
               <div [hidden]="this.tests.size == 0">
                 <table  mat-table matSort  [dataSource]="testsDataSource">
       
                   <ng-container matColumnDef="nameTest">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Test name</h4></th>
-                    <td style="padding-right: 10px;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
+                    <td style="padding-right: 10px; width: 300px;" mat-cell *matCellDef="let element"> {{element.nameTest}} </td>
                   </ng-container>
 
                   <ng-container matColumnDef="seeResults">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td style="padding-right: 10px;" mat-cell *matCellDef="let element">
-                        <button style="width: 120px;" class="btn btn-info btn-sm" (click)="seeResultsForTest(element.id)" >See results</button>
+                        <button style="width: 100px;" class="btn btn-info btn-sm" (click)="seeResultsForTest(element.id)" >See results</button>
                     </td>
                   </ng-container>
 
@@ -67,7 +68,9 @@
           </ng-template>
     </mat-tab>
     <mat-tab [disabled]="!showResults" label="Test results">
-        <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="resultsDataSource">
+      <ng-template matTabContent>
+        <div class="mat-elevation-z8" style="text-align: -webkit-center;">
+          <table style="border-spacing: 20px;" mat-table matSort  [dataSource]="resultsDataSource">
             
             <ng-container  matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Date</h4></th>
@@ -82,7 +85,7 @@
             <ng-container  matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td  mat-cell *matCellDef="let element">                            
-                  <button style="width: 100px;" class="btn btn-info btn-sm" (click)="showDetailsOnResult(element.date)">Details</button>                         
+                  <button [hidden] = "element.status != 'PASSED'" style="width: 100px;" class="btn btn-info btn-sm" (click)="showDetailsOnResult(element.date)">Details</button>                         
                 </td>
             </ng-container> 
           
@@ -90,5 +93,22 @@
             <tr mat-row *matRowDef="let row; columns: displayedResultsColumns;"></tr>
           </table>
           <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </ng-template>       
     </mat-tab>
   </mat-tab-group>
+</div>
+
+
+<div [hidden]="loading" class="container">
+  <div class="row">
+      <div class="center-block">
+          <mat-progress-spinner
+          class="example-margin"
+          [color]="color"
+          [mode]="mode"
+          [value]="value">
+      </mat-progress-spinner>
+      </div>
+  </div>    
+</div>

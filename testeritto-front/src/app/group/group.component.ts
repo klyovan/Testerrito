@@ -60,7 +60,7 @@ export class GroupComponent implements OnInit {
         this.groupService.getGroup(this.group.id).subscribe((group: Group) => {
           this.group = group;   
           this.groupService.group = group;
-          this.loading = true;            
+          this.loading = true;
           this.changeTestsDataSourse();
           this.testsLoaded = true;
           this.groupService.tests = this.group.tests;
@@ -122,14 +122,16 @@ export class GroupComponent implements OnInit {
       const dialogRef = this.dialog.open(CreateGroupFormComponent, {
         data: {action: "passTest"},
         width: "450px"
-      }); 
+      });
     }
   }
 
   finishTest(testId: BigInteger) {
-    this.passTestService.getFinishTest(this.user.id, testId).subscribe((test: Test) => {this.test = test; console.log(test.questions); });
-
-    this.router.navigate(['/pass-test', this.user.id, 'test', testId]);
+    this.passTestService.getFinishTest(this.user.id, testId).subscribe((test: Test) => {
+        this.test = test;
+        this.passTestService.notPassedTest = test;
+        this.router.navigate(['/pass-test', this.user.id, 'test', this.test.id]);
+    });
 
   }
 

@@ -52,7 +52,7 @@ public class TestServiceTest {
 
         Group group = new Group();
         group.setLink("Link...");
-        group.setName("Group...");
+        group.setName("Group111");
         group.setCreatorUserId(testUserId);
         testGroupId = groupService.createGroup(group);
 

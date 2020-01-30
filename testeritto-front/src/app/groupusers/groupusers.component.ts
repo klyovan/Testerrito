@@ -22,8 +22,11 @@ export class GroupusersComponent implements OnInit {
   showTabPassedTests: Boolean = false;
   showTableTests: Boolean = false;
   showResults: Boolean = false;
-  selectedIndex: number = 0;
-
+  selectedIndex: number;
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  loading: Boolean = false;
 
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
   @ViewChildren(MatSort) sort = new QueryList<MatSort>();
@@ -45,12 +48,13 @@ export class GroupusersComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.usersDataSource)
-    this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
-    console.log(this.usersDataSource)
-    this.usersDataSource.paginator = this.paginator.toArray()[0];
-    this.usersDataSource.sort = this.sort.toArray()[0];
-    console.log(this.usersDataSource)
+    this.groupService.getUsersInGroup(this.groupId).subscribe(data => {
+      this.groupService.users = data;
+      this.usersDataSource = new MatTableDataSource<User>(data);
+      this.usersDataSource.paginator = this.paginator.toArray()[0];
+      this.usersDataSource.sort = this.sort.toArray()[0];
+      this.loading = true;
+    });    
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {

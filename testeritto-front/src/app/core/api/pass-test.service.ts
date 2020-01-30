@@ -5,11 +5,13 @@ import {environment} from '../../../environments/environment';
 import {Answer} from '../models/answer.model';
 import {Remark} from '../models/remark.model';
 import {Reply} from '../models/reply.model';
+import {Test} from '../models/test.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PassTestService {
+    notPassedTest: Test;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -40,7 +42,7 @@ export class PassTestService {
  }
 
   public getFinishTest(userId: BigInteger, testId: BigInteger ): Observable<any> {
-    return this.httpClient.get(`${environment.apiUrl}/pass-test/${userId}/test/result/${testId}`);
+    return this.httpClient.get(`${environment.apiUrl}/pass-test/${userId}/test/finish/${testId}`);
   }
 
   public addAnswer(answer: Answer): Observable<any> {
