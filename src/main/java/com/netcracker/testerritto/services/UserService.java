@@ -220,7 +220,7 @@ public class UserService {
             user.setCreatedGroups(userDAO.getCreatedGroups(user.getId()));
             return user;
         }
-        serviceExceptionHandler.logAndThrowIllegalException("This email: " + email + "don't exist");
+        serviceExceptionHandler.logAndThrowIllegalException("This email: " + email + " don't exist");
         return null;
     }
 

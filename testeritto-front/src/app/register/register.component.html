@@ -13,7 +13,7 @@
                 {{registerForm.get('password').errors['cannotContainNonAlphabet']}}
             </div>
 -->
-            <div *ngIf="f.lastName.errors.maxlength">can not be longer than 20 chars</div>
+            <div *ngIf="f.firstName.errors.maxlength">can not be longer than 20 chars</div>
 
             <div *ngIf="f.firstName.errors.cannotStartWithSpace">can not start with space</div>
 

@@ -1,5 +1,6 @@
 package com.netcracker.testerritto.controllers;
 
+import com.netcracker.testerritto.dao.UserDAO;
 import com.netcracker.testerritto.exceptions.ApiRequestException;
 import com.netcracker.testerritto.exceptions.ServiceException;
 import com.netcracker.testerritto.models.Group;
@@ -20,6 +21,9 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserDAO userDAO;
+
     @PostMapping()
     public BigInteger creteUser(@RequestBody User user) {
 
@@ -32,18 +36,22 @@ public class RegistrationController {
 
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable String email) {
-        try {
-            return userService.getUserByEmail(email);
-        } catch (IllegalArgumentException | ServiceException e) {
-           // throw new ApiRequestException(e.getMessage(), e);
-            return null;
+//        try {
+//            return userService.getUserByEmail(email);
+//        } catch (IllegalArgumentException | ServiceException e) {
+        // throw new ApiRequestException(e.getMessage(), e);
+//            return null;
+
+        if (userDAO.isEmailExist(email)) {
+            return userDAO.getUserByEmail(email);
         }
+        return null;
     }
 
     @GetMapping("/phone/{phone}")
-    public User getUserByPhone(@PathVariable String phone){
+    public User getUserByPhone(@PathVariable String phone) {
 //        try {
-            return userService.getUserByPhone(phone);
+        return userService.getUserByPhone(phone);
 //        } catch (IllegalArgumentException | ServiceException e) {
 //            throw new ApiRequestException(e.getMessage(), e);
 //        }
