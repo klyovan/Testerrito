@@ -1,10 +1,10 @@
 <div>
   <div class="container">
     <div class="row">
-      <div class="col-6 justify-content-center border profileForm">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 justify-content-center border profileForm">
         <h3 class="  text-center">Profile setting</h3>
      
-        <form class="col-8 offset-2" [formGroup]="profileForm" (ngSubmit)="onSubmitProfile($event)">
+        <form class="col" [formGroup]="profileForm" (ngSubmit)="onSubmitProfile($event)">
           <mat-form-field  class="col-12" appearance="outline">
             <mat-label>Last name</mat-label>
             <input matInput required  formControlName="lastName" placeholder="Last name">
@@ -42,9 +42,9 @@
         </form>
       </div>
       
-      <div class="col-6 justify-content-center border accountForm">
-        <h3 class="mb-4 text-center">Account setting</h3>
-        <form class="col-8 offset-2" [formGroup]="accountForm" (ngSubmit)="onSubmitAccount($event)">
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 justify-content-center border accountForm">
+        <h3 class="text-center">Account setting</h3>
+        <form class="col" [formGroup]="accountForm" (ngSubmit)="onSubmitAccount($event)">
           <mat-form-field class="col-12" appearance="outline">
             <mat-label>Email</mat-label>
             <input matInput required formControlName="email">
@@ -80,23 +80,20 @@
           </div>
         </form>
       </div>
-
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 center-block row justify-content-center border accountForm">
+        <h3 class="text-center">Delete account</h3>
+        <form class="col" [formGroup]="deleteForm" (ngSubmit)="onDeleteAccount($event)">
+          <mat-form-field class="col-12" appearance="outline">
+            <mat-label>Provide current password to confirm  delete account</mat-label>
+            <input matInput type="password" formControlName="password">
+            <mat-error *ngIf="deleteForm.controls.password.hasError('minlength')">Min 6 symbols</mat-error>
+            <mat-error *ngIf="deleteForm.controls.password.hasError('required')">Password is required</mat-error>
+          </mat-form-field>
+          <button style="align-self: center;" class="pl-3 pr-3 btn btn-danger center-block"  (click)=(onDeleteAccount())>Delete</button>
+        </form>      
+      </div>  
     </div>
-  </div>
-  <div class="col-8 offset-2">
-    <div class="row justify-content-center border accountForm">
-      <h3 class="text-center">Delete account</h3>
-      <form class="col-12 " [formGroup]="deleteForm" (ngSubmit)="onDeleteAccount($event)">
-        <mat-form-field class="col-12" appearance="outline">
-          <mat-label>Provide current password to confirm  delete account</mat-label>
-          <input matInput type="password" formControlName="password">
-          <mat-error *ngIf="deleteForm.controls.password.hasError('minlength')">Min 6 symbols</mat-error>
-          <mat-error *ngIf="deleteForm.controls.password.hasError('required')">Password is required</mat-error>
-        </mat-form-field>
-        <button style="align-self: center;" class="pl-3 pr-3 btn btn-danger"  (click)=(onDeleteAccount())>Delete</button>
-      </form>
-    </div >
-  </div>  
+  </div> 
 </div>
 
 

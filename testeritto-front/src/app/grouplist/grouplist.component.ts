@@ -65,8 +65,10 @@ export class GrouplistComponent implements OnInit {
 
   changeCreatedGroupsDataSourse() {
     this.createdGroupsDataSourse = new MatTableDataSource<Group>(this.user.createdGroups);
-    if(this.createdGroupsDataSourse.data.length == 0)
+    if(this.user.createdGroups.length == 0)
       this.isCreatedGroupsEmpty = true;   
+    else
+    this.isCreatedGroupsEmpty = false; 
     this.updateSortAndPaginator(0, this.createdGroupsDataSourse); 
   }
 

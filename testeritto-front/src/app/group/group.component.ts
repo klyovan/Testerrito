@@ -22,6 +22,7 @@ import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.compone
 export class GroupComponent implements OnInit {
   group: Group = new Group();
   user: User;
+  isUserCreator: Boolean = false;
   results: Array<Result> = new Array();
   finalResult: Map<Date,String>;
   loading: Boolean = false;
@@ -59,6 +60,8 @@ export class GroupComponent implements OnInit {
       if(check != undefined) {         
         this.groupService.getGroup(this.group.id).subscribe((group: Group) => {
           this.group = group;   
+          if(group.creatorUserId == this.user.id)
+            this.isUserCreator = true;
           this.groupService.group = group;
           this.loading = true;
           this.changeTestsDataSourse();

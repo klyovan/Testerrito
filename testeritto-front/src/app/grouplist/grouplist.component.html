@@ -17,7 +17,7 @@
                                 <div [hidden]="!isCreatedGroupsEmpty"><h4>You have not any created group yet</h4></div>
                                 <div [hidden]="isCreatedGroupsEmpty"><h4>Sort</h4></div>                           
                             </th>
-                            <td style="padding-right: 15px; width: 415px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.name}} </td>
+                            <td style="padding-right: 15px; max-width: 415px; word-wrap: break-word;" mat-cell *matCellDef="let element"> {{element.name}} </td>
                         </ng-container>
                       
                         <ng-container  matColumnDef="show">
