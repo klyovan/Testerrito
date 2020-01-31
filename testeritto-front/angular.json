@@ -12,6 +12,7 @@
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "showCircularDependencies": false,
           "options": {
             "outputPath": "dist/testeritto-front",
             "index": "src/index.html",
