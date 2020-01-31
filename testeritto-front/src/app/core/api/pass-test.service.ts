@@ -13,7 +13,8 @@ import {Test} from '../models/test.model';
 export class PassTestService {
     notPassedTest: Test;
 
-  constructor(private httpClient: HttpClient) {}
+
+    constructor(private httpClient: HttpClient) {}
 
 
  public getTest(userId: BigInteger, id: BigInteger): Observable<any> {

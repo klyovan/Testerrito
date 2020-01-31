@@ -54,6 +54,7 @@ public class PassTestController {
     public Test getTest(@PathVariable BigInteger userId, @PathVariable BigInteger id) {
 
         try {
+
             createdResults = resultService.createResultsByCategories(id, userId);
             return testService.getTest(id);
         } catch (IllegalArgumentException | ServiceException e) {
@@ -89,7 +90,6 @@ public class PassTestController {
             if (reply.getReplyList().size() > 0) {
                 oldReplyList = new ArrayList<>();
                 newReplyList = new ArrayList<>();
-                System.out.println(createdReplies.size() + "size");
                 for (int i = 0; i < createdReplies.size(); i++) {
                     if (createdReplies.get(i).getReplyList().get(0).getQuestionId().equals(reply.getReplyList().get(0).getQuestionId())) {
                         isUpdate++;
@@ -116,7 +116,6 @@ public class PassTestController {
                     createdReplies.add(reply);
 
                     isUpdate = 0;
-                    System.out.println("create");
                     return replyId;
                 } else if (isUpdate > 0) {
 
@@ -133,7 +132,6 @@ public class PassTestController {
                         createdReplies.set(oldReplyIndex, reply);
 
                         isUpdate = 0;
-                        System.out.println("Update one answer ");
 
                     } else if (answerType == ListsAttr.MULTIPLE_ANSWER) {
 
@@ -147,13 +145,11 @@ public class PassTestController {
 
                         isUpdate = 0;
 
-                        System.out.println("Update ");
 
                         return replyId;
                     }
                 }
             } else {
-                System.out.println("OK");
                 return null;
             }
             return null;
@@ -185,17 +181,13 @@ public class PassTestController {
             }
 
             Test test = testService.getTest(testId);
-            List<Question> newQuestions = test.getQuestions();
 
             for (Result result : results) {
                 if (result.getUserId().equals(userId) && result.getStatus() == Status.NOT_PASSED) {
-                    result.getReplies().keySet().iterator().forEachRemaining(question -> {
-
-                    });
+                    result.getReplies().keySet().iterator().forEachRemaining(test.getQuestions()::remove);
                 }
             }
 
-            test.setQuestions(newQuestions);
             return test;
         } catch (IllegalArgumentException | IndexOutOfBoundsException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);

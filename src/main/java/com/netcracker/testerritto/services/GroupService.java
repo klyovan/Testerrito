@@ -53,7 +53,7 @@ public class GroupService {
 
     public BigInteger createGroup(Group group) throws ServiceException {
         checkIdNotNull(group.getCreatorUserId());
-        checkStringNotNull(group.getLink());
+//        checkStringNotNull(group.getLink());
         checkStringNotNull(group.getName());
         group.setName(group.getName().trim());
         checkLength(group.getName());
