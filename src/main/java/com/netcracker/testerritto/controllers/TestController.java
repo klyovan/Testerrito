@@ -38,7 +38,6 @@ public class TestController {
     private GroupService groupService;
 
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("{id}")
     public Test getTest(@PathVariable BigInteger id) {
         try {
@@ -48,7 +47,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/test")
     public BigInteger createTest(@RequestBody Test test) {
         try {
@@ -58,7 +56,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/test")
     public Test updateTest(@RequestBody Test test) {
         try {
@@ -68,7 +65,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/{id}")
     public void deleteTest(@PathVariable BigInteger id) {
         try {
@@ -79,7 +75,6 @@ public class TestController {
     }
 
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/category/{id}")
     public Category getCategoryById(@PathVariable BigInteger id) {
         try {
@@ -89,7 +84,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/category/{id}")
     public void deleteCategory(@PathVariable BigInteger id) {
         try {
@@ -99,7 +93,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/category")
     public Category updateCategory(@RequestBody Category updateCategory) {
         try {
@@ -109,7 +102,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/category")
     public BigInteger createCategory(@RequestBody Category newCategory) {
         try {
@@ -119,7 +111,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/category/grade/{id}")
     public GradeCategory getGradeCategoryById(@PathVariable BigInteger id) {
         try {
@@ -129,7 +120,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/category/grade/test/{id}")
     public List<GradeCategory> getGradeCategoryByTestId(@PathVariable BigInteger id) {
         try {
@@ -139,7 +129,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/category/grade/category/{id}")
     public List<GradeCategory> getGradeCategoryByCategoryId(@PathVariable BigInteger id) {
         try {
@@ -149,7 +138,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/category/grade")
     public BigInteger createGradeCategory(@RequestBody GradeCategory newGradeCategory) {
         try {
@@ -159,7 +147,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/category/grade")
     public void updateGradeCategory(@RequestBody GradeCategory updateGradeCategory) {
         try {
@@ -169,7 +156,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/category/grade/{id}")
     public void deleteGradeCategoryById(@PathVariable BigInteger id) {
         try {
@@ -179,7 +165,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/category/grade/test/{id}")
     public void deleteGradeCategoryByTestId(@PathVariable BigInteger id) {
         try {
@@ -189,7 +174,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/question")
     public BigInteger createQuestion(@RequestBody Question newQuestion) {
         try {
@@ -199,7 +183,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/question")
     public void updateQuestion(@RequestBody Question question) {
         try {
@@ -209,7 +192,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/question/{id}")
     public void deleteQuestionById(@PathVariable BigInteger id) {
         try {
@@ -219,7 +201,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/question/{id}")
     public Question getQuestionById(@PathVariable BigInteger id) {
         try {
@@ -229,7 +210,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/question/test/{id}")
     public List<Question> getAllQuestionInTest(@PathVariable BigInteger id) {
         try {
@@ -239,7 +219,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/answer")
     public BigInteger createAnswer(@RequestBody Answer newAnswer) {
         try {
@@ -249,7 +228,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/answer")
     public void updateAnswer(@RequestBody Answer newAnswer) {
         try {
@@ -259,7 +237,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/answer/{id}")
     public void deleteAnswerById(@PathVariable BigInteger id) {
         try {
@@ -269,7 +246,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/answer/{id}")
     public Answer getAnswerById(@PathVariable BigInteger id) {
         try {
@@ -279,7 +255,6 @@ public class TestController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/answer/question/{id}")
     public List<Answer> getAllAnswerInQuestion(@PathVariable BigInteger id) {
         try {

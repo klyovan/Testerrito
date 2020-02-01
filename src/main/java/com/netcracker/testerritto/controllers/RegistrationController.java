@@ -20,7 +20,6 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping()
     public BigInteger creteUser(@RequestBody User user) {
 
@@ -31,7 +30,6 @@ public class RegistrationController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable String email) {
         try {
@@ -42,7 +40,6 @@ public class RegistrationController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/phone/{phone}")
     public User getUserByPhone(@PathVariable String phone){
 //        try {

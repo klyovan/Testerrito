@@ -16,7 +16,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable String email) {
         try {
@@ -26,7 +25,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/{id}")
     public User getUserById(@PathVariable BigInteger id) {
         try {
@@ -36,7 +34,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping()
     public User updateUser(@RequestBody User user) {
 
@@ -47,7 +44,7 @@ public class UserController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
+
     @PutMapping("/credentials")
     public User updateEmailAndPassword(@RequestBody ArrayList<User> userList) {
 
@@ -59,7 +56,6 @@ public class UserController {
         }
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/enter/{groupId}/{userId}")
     public void enterInGroup(@PathVariable BigInteger userId, @PathVariable BigInteger groupId ){
         try {
@@ -70,7 +66,6 @@ public class UserController {
 
     }
 
-    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/check/consist/{groupId}/{userId}")
     public Boolean checkUserConsistInGroup(@PathVariable BigInteger userId, @PathVariable BigInteger groupId ){
         try {
