@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ public class PassTestController {
 
     private List<Answer> newReplyList = new ArrayList<>();
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("{userId}/test/{id}")
     public Test getTest(@PathVariable BigInteger userId, @PathVariable BigInteger id) {
 
@@ -62,6 +64,7 @@ public class PassTestController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/reply")
     public List<Result> getReplies() {
         try {
@@ -83,6 +86,7 @@ public class PassTestController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/reply")
     public BigInteger createReply(@RequestBody Reply reply) {
         try {
@@ -158,6 +162,7 @@ public class PassTestController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/remark")
     public BigInteger createRemark(@RequestBody Remark remark) throws IllegalArgumentException, ServiceException {
         try {
@@ -167,6 +172,7 @@ public class PassTestController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("{userId}/test/finish/{testId}")
     public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {

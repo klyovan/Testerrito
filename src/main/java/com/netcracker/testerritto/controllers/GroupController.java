@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class GroupController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PostMapping("/create")
     public BigInteger createGroup(@RequestBody Group group) {
         try {
@@ -53,6 +55,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/{groupId}")
     public Group getGroupBuId(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
@@ -62,6 +65,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/{groupId}")
     public void deleteGroupById(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
@@ -71,6 +75,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
         try {
@@ -80,6 +85,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/remark/{remarkId}")
     public Remark getRemarkById(@PathVariable BigInteger remarkId) throws IllegalArgumentException, ServiceException {
         try {
@@ -89,6 +95,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/remark/{remarkId}")
     public void deleteRemark(@PathVariable BigInteger remarkId) throws IllegalArgumentException, ServiceException {
         try {
@@ -98,6 +105,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/{groupId}/alltests")
     public List<Test> getAllTestsInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
@@ -107,6 +115,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/{groupId}/users")
     public List<User> getUsersInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
@@ -116,6 +125,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/{groupId}/remarks")
     public List<Remark> getAllRemarksInGroup(@PathVariable BigInteger groupId) throws IllegalArgumentException, ServiceException {
         try {
@@ -125,6 +135,7 @@ public class GroupController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/result/{id}")
     public Result getResultPassedTest(@PathVariable BigInteger id) {
         try {
@@ -135,6 +146,7 @@ public class GroupController {
 
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/result/user/{id}")
     public List<Result> getResultsPassedTestByUser(@PathVariable BigInteger id) {
         try {
@@ -177,6 +189,7 @@ public class GroupController {
     }
 
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/result/test/{id}")
     public List<Result> getResultsPassedTestByTest(@PathVariable BigInteger id) {
         try {
@@ -186,7 +199,7 @@ public class GroupController {
         }
     }
 
-
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/invite/{link}")
     public Group inviteUser(@PathVariable String link){
 
@@ -201,7 +214,7 @@ public class GroupController {
     }
 
 
-
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/{groupId}/exitfromgroup/{userId}")
     public void exitFromGroup(@PathVariable BigInteger groupId, @PathVariable BigInteger userId ){
         try {
@@ -216,6 +229,7 @@ public class GroupController {
 
     }*/
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @PutMapping("/remarkviewed/{remarkId}")
     public void updateRemarkViewStatus(@PathVariable BigInteger remarkId){
         try {

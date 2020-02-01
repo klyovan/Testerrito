@@ -17,6 +17,7 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/userGroups/{id}")
     public List<Group> getGroups(@PathVariable BigInteger id) {
 
@@ -27,6 +28,7 @@ public class ProfileController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @GetMapping("/userCreatedGroups/{id}")
     public List<Group> getCreatedGroups(@PathVariable BigInteger id){
         try {
@@ -36,6 +38,7 @@ public class ProfileController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @Deprecated
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable BigInteger id){
@@ -46,6 +49,7 @@ public class ProfileController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("/delete/user/{id}")
     public void deleteUser(@PathVariable BigInteger id, @RequestParam String password){
         try{
@@ -55,6 +59,7 @@ public class ProfileController {
         }
     }
 
+    @CrossOrigin("https://testingtos.herokuapp.com/")
     @DeleteMapping("deleteGroup")
     public void deleteCreatedGroup(@RequestBody Group group){
         try{
