@@ -1,0 +1,17 @@
+
+<h1 mat-dialog-title>CREATE TEST</h1>
+<hr>
+<div mat-dialog-content>
+  <h4>Write name to the new test</h4>
+  <mat-form-field style="width: 400px;"  appearance="outline">
+    <mat-label>Test name</mat-label>
+    <input #input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter test name">
+    <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
+    <mat-error *ngIf="name.invalid && name.errors.required">You must enter a test name</mat-error>
+    <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+    <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
+  </mat-form-field>
+</div>
+<div> <div><button style="margin-right: 10px;" class="btn btn-success" cdkFocusInitial mat-button (click)="createTest()"><i class="glyphicon glyphicon-ok"></i></button>
+     <button style="width: 100px; margin-right: 10px;" class="btn btn-info btn-sm" (click)="navigateBack()">'Back'</button>
+</div>
