@@ -6,6 +6,8 @@ import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Question } from '../models/question.model';
 import { Answer } from '../models/answer.model';
+import { Test } from '../models/test.model';
+import { Category } from '../models/category.model';
 
 @Injectable()
 export class TestService {
@@ -48,6 +50,14 @@ export class TestService {
         )
     }
 
+    updateTest(answer: Test): Observable<Test> {
+        return this.httpClient.put<Answer>(`${environment.apiUrl}/test/update`,answer).pipe(
+            map(test => {
+                return new Test().deserialize(test);
+            })
+        )
+    }
+
     updateAnswer(answer: Answer): Observable<Answer> {
         return this.httpClient.put<Answer>(`${environment.apiUrl}/test/answer`,answer).pipe(
             map(answer => {
@@ -63,6 +73,26 @@ export class TestService {
             })
         )
     }
+
+    createTest(test:Test):Observable<BigInteger>{
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/create`, test);
+    }
+
+    createQuestion(question:Question): Observable<BigInteger>{
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/question/create`, question);
+    }
+
+    createAnswer(answer:Answer): Observable<BigInteger>{
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/answer/create`, answer);
+    }
+    createCategory(category:Category):Observable<BigInteger>{
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/category/create`, category);
+    }
+    createGradeCategory(gradecategory:GradeCategory):Observable<BigInteger>{
+        return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/category/grade/create`, gradecategory);
+    }
+
+
 
     deleteTest(id: BigInteger): Observable<{}> {
         return this.httpClient.delete(`${environment.apiUrl}/test/`+id);

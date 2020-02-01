@@ -47,7 +47,7 @@ public class TestController {
         }
     }
 
-    @PostMapping("/test")
+    @PostMapping("/create")
     public BigInteger createTest(@RequestBody Test test) {
         try {
             return testService.createTest(test);
@@ -102,7 +102,7 @@ public class TestController {
         }
     }
 
-    @PostMapping("/category")
+    @PostMapping("/category/create")
     public BigInteger createCategory(@RequestBody Category newCategory) {
         try {
             return categoryService.createCategory(newCategory);
@@ -138,7 +138,7 @@ public class TestController {
         }
     }
 
-    @PostMapping("/category/grade")
+    @PostMapping("/category/grade/create")
     public BigInteger createGradeCategory(@RequestBody GradeCategory newGradeCategory) {
         try {
             return gradeCategoryService.createGradeCategory(newGradeCategory);
@@ -174,7 +174,7 @@ public class TestController {
         }
     }
 
-    @PostMapping("/question")
+    @PostMapping("/question/create")
     public BigInteger createQuestion(@RequestBody Question newQuestion) {
         try {
             return questionService.createQuestion(newQuestion);
@@ -219,7 +219,7 @@ public class TestController {
         }
     }
 
-    @PostMapping("/answer")
+    @PostMapping("/answer/create")
     public BigInteger createAnswer(@RequestBody Answer newAnswer) {
         try {
             return answerService.createAnswer(newAnswer);

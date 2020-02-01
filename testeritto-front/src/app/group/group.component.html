@@ -9,7 +9,7 @@
           <button style="margin: 5px;" class="btn btn-info btn-sm" (click)="inviteMembers()">Invite members</button>
           <button style="margin: 5px;" class="btn btn-info btn-sm" (click)="showUsersInGroup()">Users</button>
           <button style="margin: 5px;" class="btn btn-info btn-sm" (click)="showAllRemarks()">Remarks</button>
-          <button style="margin: 5px;" class="btn btn-success btn-sm" [routerLink]="['/test']">Create Test</button>
+          <button style="margin: 5px;" class="btn btn-success btn-sm" [routerLink]="['/test/'+group.id+'/create']">Create Test</button>
         </div>        
       </div>           
      </div>

@@ -23,7 +23,7 @@ import { GrouplistComponent } from './grouplist/grouplist.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
-import { MatProgressSpinnerModule, MatTableModule, MatTabsModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableDataSource, MatSortModule  } from '@angular/material';
+import { MatProgressSpinnerModule, MatTableModule, MatTabsModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, MatTableDataSource, MatSortModule, MatSelect, MatSelectModule  } from '@angular/material';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { CreateGroupFormComponent } from './create-group-form/create-group-form.component';
 import { TestService } from './core/api/test.service';
@@ -44,6 +44,8 @@ import {ChartsModule} from 'ng2-charts';
 import { InvitationComponent } from './invitation/invitation.component';
 import { TruncateModule } from '@yellowspot/ng-truncate';
 import {RegisterComponent} from "./register/register.component";
+import { TestComponent } from './test/test.component';
+import { CreateTestComponent } from './create-test/create-test.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -61,7 +63,9 @@ import {RegisterComponent} from "./register/register.component";
         ErrorPageComponent,
         ModalRemarkComponent,
         InvitationComponent,
-        RegisterComponent
+        RegisterComponent,
+        CreateTestComponent,
+        TestComponent
     ],
     imports: [
         BrowserModule,
@@ -88,6 +92,7 @@ import {RegisterComponent} from "./register/register.component";
         MatSortModule,
         MatTabsModule,
         MatProgressSpinnerModule,
+        MatSelectModule,
         TruncateModule
     ],
     exports: [
