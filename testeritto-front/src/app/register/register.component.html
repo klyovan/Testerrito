@@ -81,6 +81,7 @@
         <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
             <div *ngIf="f.password.errors.required">Password is required</div>
             <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
+            <div *ngIf="f.password.errors.minlength">Password can not be longer then 30 characters </div>
         </div>
     </div>
 
@@ -103,4 +104,7 @@
         <!-- a-->
         <button [routerLink]="['/login']" class="btn btn-dark ">Cancel</button>
     </div>
+
 </form>
+
+

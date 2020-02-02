@@ -12,8 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 
@@ -39,6 +38,11 @@ public class UserService {
         checkParameter(user.getFirstName(), "firstName");
         checkParameter(user.getLastName(), "lastName");
         checkParameter(user.getPassword(), "password");
+        isNameValid(user.getFirstName(), "first name");
+        isNameValid(user.getLastName(), "last name");
+        isPasswordValid(user.getPassword());
+        isPhoneValid(user.getPhone());
+        isEmailValid(user.getEmail());
 
         return userDAO.createUser(user);
     }
@@ -77,7 +81,7 @@ public class UserService {
     }
 
     private void checkUserPassword(String password) {
-        if (password == null ) {
+        if (password == null) {
             try {
                 throw new IllegalArgumentException(
                     "Password is null or empty string");
@@ -134,6 +138,12 @@ public class UserService {
         checkParameter(user.getLastName(), "lastName");
         checkParameter(user.getFirstName(), "firstName");
         checkParameter(user.getPhone(), "phone");
+
+        isNameValid(user.getFirstName(), "first name");
+        isNameValid(user.getLastName(), "last name");
+        //  isPasswordValid(user.getPassword());
+        isPhoneValid(user.getPhone());
+        //  isEmailValid(user.getEmail());
 
         User oldUser = userDAO.getUser(user.getId());
 
@@ -215,7 +225,7 @@ public class UserService {
     public User getUserByEmail(String email) {
         checkParameter(email, "email");
         if (userDAO.isEmailExist(email)) {
-           User user = userDAO.getUserByEmail(email);
+            User user = userDAO.getUserByEmail(email);
             user.setGroups(userDAO.getGroups(user.getId()));
             user.setCreatedGroups(userDAO.getCreatedGroups(user.getId()));
             return user;
@@ -224,7 +234,7 @@ public class UserService {
         return null;
     }
 
-
+    //////////////////////
     public User updateEmailAndPassword(List<User> userList) throws ServiceException {
         if (userList == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Object user can't be null");
@@ -242,6 +252,9 @@ public class UserService {
                 return userDAO.updateEmailAndPassword(userList.get(0));
             }
         }
+//////
+        isPasswordValid(userList.get(1).getPassword());
+        isEmailValid(userList.get(1).getEmail());
 
         if (userList.get(0).getPassword() != null && userList.get(0).getPassword().equals(oldUser.getPassword())) {
             checkParameter(userList.get(1).getPassword(), "newPassword");
@@ -265,12 +278,12 @@ public class UserService {
 
     }
 
-    public User getUserByPhone(String phone){
+    public User getUserByPhone(String phone) {
         checkParameter(phone, "phone");
         if (userDAO.isPhoneExist(phone)) {
             return userDAO.getUserByPhone(phone);
         }
-       /// serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
+        /// serviceExceptionHandler.logAndThrowIllegalException("This phone: " + phone + "don't exist");
         return null;
     }
 
@@ -361,14 +374,77 @@ public class UserService {
     }
 
     public Boolean checkUserConsistInGroup(BigInteger userId, BigInteger groupId) {
-        if(userDAO.isUserConsistInGroup(userId, groupId)){
+        if (userDAO.isUserConsistInGroup(userId, groupId)) {
             serviceExceptionHandler.logAndThrowIllegalException("You already consist in that group!");
-        } else{
+        } else {
             return false;
         }
-                return false;
+        return false;
     }
 
+    public boolean isNameValid(String name, String param) {
+        if (name.matches("^ .*")) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                (param + " can not start with space." + "Your value \"" + name + "\"");
+        }
+        if (name.matches(".* $")) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                (param + " can not finish with space." + "Your value \"" + name + "\"");
+        }
+
+        if (!name.matches("[A-Za-z\\s]*")) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                (param + " can contain only english alphabet chars ." + "Your value \"" + name + "\"");
+
+        }
+        if (name.length() > 20) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                (param + " can not be longer than 20 chars ." + "Your value \"" + name + "\"");
+        }
+
+        return true;
+
+    }
+
+    public boolean isPasswordValid(String password) {
+        if (password.length() > 30) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                ("Password can not be longer than 20 chars ." + "Your password length: " + password.length());
+
+        }
+
+        if (password.length() > 30) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                ("Password must be at least 6 characters" + "Your password length: " + password.length());
+
+        }
+
+        return true;
+
+    }
+
+    public boolean isPhoneValid(String phone) {
+        if (phone.length() != 9) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                ("Phone must be 9 characters" + "Your password length: " + phone.length());
+        }
+
+        if (!phone.matches("[0-9]*")) {
+            serviceExceptionHandler.logAndThrowIllegalException
+                ("Phone can contain only numbers." + "Your phone : " + phone);
+        }
+        return true;
+    }
+
+    public boolean isEmailValid(String email) {
+
+        if (!email.matches("[a-z_.0-9]+@[a-z_]+\\.[a-z]{2,3}")) {
+
+            serviceExceptionHandler.logAndThrowIllegalException
+                ("Email mast be valid" + "Your email : " + email);
+        }
+        return true;
+    }
 
 }
 

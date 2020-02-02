@@ -99,7 +99,6 @@ export class UserService {
         return this.httpClient.get(
             `${environment.apiUrl}/registration/email/`+email);
     }
-
     getByPhone(phone:String):Observable<any>{
         return this.httpClient.get(
             `${environment.apiUrl}/registration/phone/`+phone);

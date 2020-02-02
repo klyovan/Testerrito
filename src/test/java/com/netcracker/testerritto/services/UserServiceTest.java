@@ -47,7 +47,7 @@ public class UserServiceTest {
     @Before
     public void init() {
         user1 = new User("Allina", "Verde",
-            "verdeShMerde.@gmail", "1111", "12345");
+            "verde.@gmail.com", "111111", "677990674");
 
         user1Id = userService.createUser(user1);
 
@@ -59,7 +59,7 @@ public class UserServiceTest {
         group1Id = groupService.createGroup(group1);
 
         user2 = new User("Gena", "Bukin",
-            "gukinn.@gmail", "1111", "56783222190");
+            "gukinn.@gmail.com", "111111", "567832221");
         user2Id = userService.createUser(user2);
 
         test1Id = testService.createTest(getNewTest());
@@ -74,8 +74,6 @@ public class UserServiceTest {
         userService.deleteUser(user2Id);
         testService.deleteTest(test1Id);
     }
-
-
 
 
     @Test
@@ -97,7 +95,7 @@ public class UserServiceTest {
     @Test
     public void updateUser() {
         User newUser = new User("Badoeva", "Zhana",
-            "banana@gmail", "1111", "1234560987798899098899");
+            "banana@gmail.com", "111111", "123456089");
         newUser.setId(user1Id);
         user1 = userService.updateUser(newUser);
         assertTrue(user1.equals(newUser));
@@ -157,7 +155,7 @@ public class UserServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void createUserWithNullFirstName() {
-        user1.setEmail("verdeShMerde.@gmailll");
+        user1.setEmail("verdeShMerde.@gmail.com");
         user1.setPhone("123451488");
         user1.setFirstName(null);
         userService.createUser(user1);
@@ -182,7 +180,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void deleteUserTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.getUser(id);
@@ -193,7 +191,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void getUserWithBadId() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.getUser(id);
@@ -203,7 +201,7 @@ public class UserServiceTest {
     @Test
     public void getUserWithGoodId() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gmail.com", "111111", "123456787");
         BigInteger id = userService.createUser(user);
         User user1 = userService.getUser(id);
         assertTrue(user.getFirstName().equals(user1.getFirstName()));
@@ -213,7 +211,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void updateLastNameBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);    //service.delete
         userService.updateLastName(id, "Covington");
@@ -242,7 +240,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void updateFirstNameBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.updateFirstName(id, "Covington");
@@ -256,7 +254,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void updatePasswordWithBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.updatePassword(id, "Covin");
@@ -264,9 +262,9 @@ public class UserServiceTest {
 
     @Test
     public void updatePasswordTest() {
-        userService.updatePassword(user1Id, "1234");
+        userService.updatePassword(user1Id, "123456");
         User user = userService.getUser(user1Id);
-        assertTrue(user.getPassword().equals("1234"));
+        assertTrue(user.getPassword().equals("123456"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -309,7 +307,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void updatePhoneBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "134567876");
         BigInteger id = userService.createUser(user);
         userDAO.deleteUser(id);
         userService.updatePhone(id, user1.getPhone() + "ere");
@@ -335,7 +333,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getCreatedGroups(){
+    public void getCreatedGroups() {
         List<Group> groupList = userService.getCreatedGroups(user1Id);
         assertTrue(groupList.size() == 1);
 
@@ -349,7 +347,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void getGroupsBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.getGroups(id);
@@ -364,7 +362,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void getCreatedGroupsBadIdTest() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456786");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.getCreatedGroups(id);
@@ -391,7 +389,7 @@ public class UserServiceTest {
     @Test(expected = ServiceException.class)
     public void deleteCreatedGroupDeletedUserId() {
         User user = new User("Allina", "Verde",
-            "verdun@gamil", "1111", "1234567876");
+            "verdun@gamil.com", "111111", "123456787");
         BigInteger id = userService.createUser(user);
         userService.deleteUser(id);
         userService.deleteCreatedGroup(id, group1Id);
@@ -433,6 +431,51 @@ public class UserServiceTest {
         BigInteger newGroupId = groupService.createGroup(newGroup);
         groupService.deleteGroup(newGroupId);
         userService.exitFromGroup(user1Id, newGroupId);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isNameValidNameStartWithSpaceTest() {
+        String name = user1.getFirstName();
+        name = " " + name;
+        userService.isNameValid(name, "firstName ");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isNameValidNameFinishWithSpaceTest() {
+        String name = user1.getFirstName();
+        name = name + "  ";
+        userService.isNameValid(name, "firstName ");
+    }
+
+    @Test
+    public void isNameValidTest() {
+        assertTrue(userService.isNameValid(user1.getFirstName()+ " de", "first Name "));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isNameValidNameWithNoAlphabetCharsTest() {
+        String name = user1.getFirstName() +" 43";
+        userService.isNameValid(name, "firstName");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isPhoneValidWrongValueTest(){
+        userService.isPhoneValid("f23456789");
+    }
+
+    @Test
+    public void isPhoneValidTest(){
+        userService.isPhoneValid("987654321");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void isEmailValidWrongValueTest(){
+        userService.isEmailValid("vas.09gmail.com");
+    }
+
+    @Test
+    public void isEmailValid(){
+        userService.isEmailValid("vas.0910@gmail.com");
     }
 
 

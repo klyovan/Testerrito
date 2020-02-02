@@ -44,6 +44,10 @@ import {ChartsModule} from 'ng2-charts';
 import { InvitationComponent } from './invitation/invitation.component';
 import { TruncateModule } from '@yellowspot/ng-truncate';
 import {RegisterComponent} from "./register/register.component";
+import {AlertService} from "./core/api/alert.service";
+
+import { RegisterAlertComponent } from './register-alert/register-alert.component';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -61,7 +65,8 @@ import {RegisterComponent} from "./register/register.component";
         ErrorPageComponent,
         ModalRemarkComponent,
         InvitationComponent,
-        RegisterComponent
+        RegisterComponent,
+        RegisterAlertComponent
     ],
     imports: [
         BrowserModule,
@@ -103,6 +108,7 @@ import {RegisterComponent} from "./register/register.component";
         MatTableDataSource,
         AuthGuard,
         NoauthGuard,
+        AlertService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: InterceptorService,
