@@ -1,0 +1,151 @@
+      <mat-tab-group>
+        <mat-tab label="Category"> <h1 mat-dialog-title>Create category</h1>
+          <h5>Questions are needed to group questions.</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write name to the new category</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Category name</mat-label>
+              <input #input style="width: 400px;" matInput [formControl]="categoryName" required placeholder="Enter category name">
+              <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
+              <mat-error *ngIf="categoryName.invalid && categoryName.errors.required">You must enter a category name</mat-error>
+              <mat-error *ngIf="categoryName.invalid && categoryName.errors.maxlength">Maximum 30 characters</mat-error>
+              <mat-error *ngIf="categoryName.invalid && categoryName.errors.changeName">{{error}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div><button class="btn btn-success" [disabled]="categoryName.invalid"  cdkFocusInitial mat-button (click)="createCategory()"><i class="glyphicon glyphicon-ok"></i></button>
+          <h2 style="color:green">{{this.succesfull}}</h2>
+              </div> </mat-tab>
+
+
+        <mat-tab label="Grade category"> <h1 mat-dialog-title>Create grade category</h1>
+          <h5 style = "margin-right: 100px;">{{grCategoryText}}</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write name to the new grade category</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Grade category name</mat-label>
+              <input #input style="width: 400px;" matInput [formControl]="gradeCategoryName" required placeholder="Enter grade category name">
+              <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.required">You must enter a category name</mat-error>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.maxlength">Maximum 30 characters</mat-error>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.changeName">{{error}}</mat-error>
+              <mat-error *ngIf="selectCategories.invalid">Select category! </mat-error>
+            </mat-form-field>
+          </div>
+          <h4>Enter min score</h4>
+          <mat-form-field style="width: 400px;"  appearance="outline">
+            <mat-label>Enter score</mat-label>
+            <input #input style="width: 400px;" matInput [formControl]="gradeCategoryMinScore" required placeholder="Enter score">
+            <mat-hint style="text-align: end">{{input.value?.length || 0}}/10</mat-hint>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.required">You must enter a grade category  minimum score</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.maxlength">Maximum 10 characters</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.hasError('pattern')">Score can contain only number chars</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.changeName">{{error}}</mat-error>
+          </mat-form-field>
+        <h4>Enter max score</h4>
+        <mat-form-field style="width: 400px;"  appearance="outline">
+          <mat-label>Enter score</mat-label>
+          <input #input style="width: 400px;" matInput [formControl]="gradeCategoryMaxScore" required placeholder="Enter score">
+          <mat-hint style="text-align: end">{{input.value?.length || 0}}/10</mat-hint>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.required">You must enter a grade category  maximum score</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.maxlength">Maximum 10 characters</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.changeName">{{error}}</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.hasError('pattern')">Score can contain only number chars</mat-error>
+        </mat-form-field>
+          
+
+            <h4>Select category</h4>
+            <mat-form-field style ="width: 400px;">
+              <mat-label>Select category</mat-label>
+              <mat-select style ="width: 400px;" required [formControl]="selectCategories" [(ngModel)]="selectedCategoryId">
+                <mat-option style ="width: 400px;" *ngFor="let category of categories" [value]="category.id">
+                  {{category.nameCategory}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div><button style = "margin-right: 10px;" class="btn btn-success" [disabled]="gradeCategoryName.invalid && gradeCategoryMinScore.invalid && gradeCategoryMaxScore.invalid" cdkFocusInitial mat-button (click)="createGradeCategory()"><i class="glyphicon glyphicon-ok"></i></button>
+            <h2 style="color:green">{{this.succesfull}}</h2>
+          </div> </mat-tab>
+
+
+        <mat-tab label="Questions"> <h1 mat-dialog-title>Create Questions</h1>
+          <h5>In this tab, you can ask a question by writing the text of the question</h5>
+          <h5> and choosing the type.</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write text to question</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Question text</mat-label>
+              <input #input style="width: 400px;" matInput [formControl]="question_name" required placeholder="Enter grade question text">
+              <mat-hint style="text-align: end">{{input.value?.length || 0}}/150</mat-hint>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.required">You must enter a question name</mat-error>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.maxlength">Maximum 150 characters</mat-error>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.changeName">{{error}}</mat-error>
+              <mat-error *ngIf="selectCategories.invalid">Select category! </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-radio-group   name="radio" required [formControl]="radioForm"  [(ngModel)]="this.typeQuestion">
+              <mat-radio-button  style ="margin-right: 16px;" value="ONE_ANSWER" color="primary">One answer</mat-radio-button>
+              <mat-radio-button style ="margin-right: 16px;"  value="MULTIPLE_ANSWER" color="primary">Multiple answer</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <h4>Select category</h4>
+        <mat-form-field style ="width: 400px;">
+          <mat-label>Select category</mat-label>
+          <mat-select style ="width: 400px;" required [formControl]="selectCategories" [(ngModel)]="selectedCategoryId">
+            <mat-option style ="width: 400px;" *ngFor="let category of categories" [value]="category.id">
+              {{category.nameCategory}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+           <div> <button style="margin-right: 10px;" class="btn btn-success"  [disabled]="question_name.invalid && radioForm.invalid" cdkFocusInitial mat-button (click)="createQuestions()"><i class="glyphicon glyphicon-ok"></i></button>
+            <h2 style="color:green">{{this.succesfull}}</h2>
+          </div> </mat-tab>
+
+
+        <mat-tab label="Answers"> <h1 mat-dialog-title>Create answers</h1>
+          <h5>Please create an answer to the question by writing the text of the answer, </h5>
+          <h5>its weight, and to which question do you want to attach it</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write answer`s text</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Answer`s text</mat-label>
+              <input #input style="width: 400px;" matInput [formControl]="answers_name" required placeholder="Enter answer`s text">
+              <mat-hint style="text-align: end">{{input.value?.length || 0}}/200</mat-hint>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.required">You must enter a answer`s name</mat-error>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.maxlength">Maximum 200 characters</mat-error>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.changeName">{{error}}</mat-error>
+            </mat-form-field>
+            <h4>Enter score</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Enter score</mat-label>
+              <input #input style="width: 400px;" matInput [formControl]="score" required placeholder="Enter score">
+              <mat-hint style="text-align: end">{{input.value?.length || 0}}/10</mat-hint>
+              <mat-error *ngIf="score.invalid && score.errors.required">You must enter score of answer</mat-error>
+              <mat-error *ngIf="score.invalid && score.errors.maxlength">Maximum 10 characters</mat-error>
+              <mat-error *ngIf="score.invalid && score.errors.changeName">{{error}}</mat-error>
+              <mat-error *ngIf="score.hasError('pattern')">Score can contain only number chars</mat-error>
+              <mat-error *ngIf="selectQuestion.invalid">Select question! </mat-error>
+            </mat-form-field>
+          </div>
+          <h4>Select question</h4>
+          <mat-form-field style ="width: 400px;">
+            <mat-label>Select question</mat-label>
+            <mat-select style ="width: 400px;"  required [formControl]="selectQuestion" [(ngModel)]="selectedQuestionId">
+              <mat-option style ="width: 400px;" *ngFor="let question of questions" [value]="question.id">
+                {{question.textQuestion}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div><button style="margin-right: 10px;" class="btn btn-success"  [disabled]="answers_name.invalid && score.invalid " cdkFocusInitial mat-button (click)="createAnswers()"><i class="glyphicon glyphicon-ok"></i></button>
+               <button style="width: 100px; margin-right: 10px;" class="btn btn-danger" [disabled]="answers_name.invalid && score.invalid" (click)="navigateFinish()">'Finish'</button>
+               <h2 style="color:green">{{this.succesfull}}</h2>
+          </div> </mat-tab>
+      </mat-tab-group>
+
+
+
+

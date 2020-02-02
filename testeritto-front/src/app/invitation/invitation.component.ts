@@ -17,6 +17,7 @@ export class InvitationComponent implements OnInit {
     link: string;
     errorMsg: string;
     isConsist: boolean;
+    wrongLinkErr = false;
 
     constructor(private route: ActivatedRoute, private groupService: GroupService, private invitationService: InvitationService,
                 private userService: UserService, private router: Router) {
@@ -37,12 +38,14 @@ export class InvitationComponent implements OnInit {
                         this.errorMsg = error.error.message;
                     });
 
-            });
+            }, () => this.wrongLinkErr = true);
         });
     }
 
     enterGroup(): void {
-        this.userService.enterUserInGroup(this.user.id, this.group.id).subscribe();
+        this.userService.enterUserInGroup(this.user.id, this.group.id).subscribe(() => {
+            this.router.navigate(['/group', this.group.id]);
+        });
     }
 
     noEnterGroup(): void {

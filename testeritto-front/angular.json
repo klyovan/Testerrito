@@ -11,7 +11,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:browser",          
           "options": {
             "outputPath": "dist/testeritto-front",
             "index": "src/index.html",
@@ -19,6 +19,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
+            "showCircularDependencies": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"

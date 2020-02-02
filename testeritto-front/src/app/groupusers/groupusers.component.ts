@@ -28,11 +28,11 @@ export class GroupusersComponent implements OnInit {
   value = 50;
   loading: Boolean = false;
 
-  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
-  @ViewChildren(MatSort) sort = new QueryList<MatSort>();
+  @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>()[3];
+  @ViewChildren(MatSort) sort = new QueryList<MatSort>()[3];
   usersDataSource = new MatTableDataSource<User>();
   testsDataSource = new MatTableDataSource<Test>();
-  resultsDataSource = new MatTableDataSource<Result>();
+  resultsDataSource = new MatTableDataSource<Result>(this.userResults);
   displayedUsersColumns: string[] = ['lastName','firstName','seeTests','kickOut']
   displayedTestsColumns: string[] = ['nameTest','seeResults']
   displayedResultsColumns: string[] = ['date', 'status', 'action'];
@@ -47,7 +47,7 @@ export class GroupusersComponent implements OnInit {
     }
    }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.groupService.getUsersInGroup(this.groupId).subscribe(data => {
       this.groupService.users = data;
       this.usersDataSource = new MatTableDataSource<User>(data);
@@ -65,12 +65,13 @@ export class GroupusersComponent implements OnInit {
     }
     else if(this.selectedIndex == 1) {
       this.testsDataSource.paginator = this.paginator.toArray()[1];
-      this.testsDataSource.sort = this.sort.toArray()[1];
+      this.testsDataSource.sort = this.sort.toArray()[1];  
     }
     else {
       this.resultsDataSource.paginator = this.paginator.toArray()[2];
       this.resultsDataSource.sort = this.sort.toArray()[2];
     }
+    console.log(this.selectedIndex)
   }
 
   seeAllPassedTestsByUser(id: BigInteger) {
@@ -98,24 +99,21 @@ export class GroupusersComponent implements OnInit {
     var testsToDisplay = new Array();
     this.tests.forEach(test => testsToDisplay.push(test))
     this.testsDataSource = new MatTableDataSource<Test>(testsToDisplay);
-    this.testsDataSource.paginator = this.paginator.toArray()[1];
-      this.testsDataSource.sort = this.sort.toArray()[1];
     this.selectedIndex = 1;
     this.showResults = false;
   }
 
   seeResultsForTest(id: BigInteger) {
     this.selectedTest = id;
+    this.userResults = new Array();
     var result = this.groupService.users.find(user => user.id = this.selectedUser).results.filter(element => element.testId == this.selectedTest);
     result.forEach(element => {
       if(this.userResults.find(elem => elem.status == element.status && elem.date == element.date) == undefined) {
         this.userResults.push(element);
+        this.resultsDataSource.data.push(element);
       }
     });
     this.showResults = true;
-    this.resultsDataSource = new MatTableDataSource<Result>(this.userResults);
-    this.resultsDataSource.paginator = this.paginator.toArray()[2];
-    this.resultsDataSource.sort = this.sort.toArray()[2];
     this.selectedIndex = 2;
   }
 

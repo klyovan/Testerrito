@@ -1,8 +1,9 @@
 <div *ngIf="isConsist == false && group">
     <div class="card w-75 shadow p-3 mb-5 bg-white rounded mx-auto">
         <div class="card-body">
-            <h3 class="card-title">Hi {{user.firstName}}</h3>
+            <h3 class="card-title"><strong>Hi {{user.firstName}}!</strong></h3>
             <hr>
+            <p>Looks like you went to our site at the link of a friend.</p>
             <p class="card-text">Do you want to enter in {{group.name}}? </p>
             <button (click)="noEnterGroup()" type="button" class="btn btn-danger card-link"><i class="glyphicon glyphicon-remove"></i></button>
             <button (click)="enterGroup()" type="button" class="btn btn-success card-link"><i class="glyphicon glyphicon-ok"></i></button>
@@ -10,7 +11,7 @@
     </div>
 </div>
 
-<div *ngIf="!group">
+<div *ngIf="!group && !wrongLinkErr">
     <mat-spinner class="mt-4 center-block"></mat-spinner>
 </div>
 
@@ -21,11 +22,16 @@
             <hr>
             <h4 class="card-text"><strong>{{errorMsg}}</strong> </h4>
             <div class="card-link float-right">
-            <button  [routerLink]="['group']" type="button" class="btn  btn-info ">Return to main page</button>
+                <button  [routerLink]="['/group']" type="button" class="btn  btn-info ">Return to main page</button>
             <!--<button [routerLink]="['group', group.id]" type="button" class="btn btn- btn-success card-link"><i class="glyphicon glyphicon-ok"></i></button>-->
             </div>
         </div>
     </div>
+</div>
+
+<div *ngIf="wrongLinkErr">
+    <h1>Your link is invalid !</h1>
+    <button  [routerLink]="['/group']" type="button" class="btn  btn-info ">Return to main page</button>
 </div>
 
 

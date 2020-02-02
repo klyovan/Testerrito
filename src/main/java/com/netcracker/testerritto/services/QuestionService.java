@@ -52,8 +52,6 @@ public class QuestionService {
     }
 
     public BigInteger createQuestion(Question newQuestion) throws ServiceException{
-        if (newQuestion.getId() == null)
-            serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
         try {
             return questionDAO.createQuestion(newQuestion);
         } catch (DataAccessException exception) {

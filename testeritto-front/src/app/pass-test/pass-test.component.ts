@@ -1,7 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PassTestService} from '../core/api/pass-test.service';
-import {UserService} from '../core/api/user.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {Result} from '../core/models/result.model';
 import {User} from '../core/models/user.model';
 import {Test} from '../core/models/test.model';
@@ -11,6 +10,7 @@ import {Reply} from '../core/models/reply.model';
 import {MatDialog} from '@angular/material';
 import {ModalRemarkComponent} from '../modal-remark/modal-remark.component';
 import {FormControl, Validators} from '@angular/forms';
+import {browserRefresh} from '../app.component';
 
 
 @Component({
@@ -18,7 +18,7 @@ import {FormControl, Validators} from '@angular/forms';
     templateUrl: './pass-test.component.html',
     styleUrls: ['./pass-test.component.css']
 })
-export class PassTestComponent implements OnInit {
+export class PassTestComponent implements OnInit, OnDestroy {
     id: BigInteger;
     test: Test;
     userId: BigInteger;
@@ -41,6 +41,8 @@ export class PassTestComponent implements OnInit {
     selectionForm = new FormControl(null, Validators.required);
     radioForm = new FormControl(null, [Validators.required]);
     markedAnswers: Map<BigInteger, Array<Answer>> = new Map();
+    browserRefresh: boolean;
+
 
     // openAnswerForm = new FormControl('', [Validators.required]);
 
@@ -52,12 +54,20 @@ export class PassTestComponent implements OnInit {
             this.userId = params.userId;
         });
 
+
     }
 
     ngOnInit() {
-        if (this.passTestService.notPassedTest === undefined) {
+        this.browserRefresh = browserRefresh;
+        if (this.browserRefresh === true) {
+            this.router.navigate(['/group']);
+        }
+
+
+        if (this.passTestService.notPassedTest === undefined && this.browserRefresh === false) {
             this.passTestService.getTest(this.userId, this.id).subscribe((test: Test) => {
                 this.test = test;
+
                 // this.test.questions.forEach((question: Question) => {
                 //     // if (question.typeQuestion === 'OPEN') {
                 //     //     this.isTestNeedExpert = true;
@@ -65,19 +75,17 @@ export class PassTestComponent implements OnInit {
                 // });
             });
         } else {
-            this.test = this.passTestService.notPassedTest;
-            console.log(this.test);
-            this.passTestService.notPassedTest = undefined;
+            {
+                this.test = this.passTestService.notPassedTest;
+                this.passTestService.notPassedTest = undefined;
+            }
         }
 
-        window.addEventListener('beforeunload', function(e) {
-            const confirmationMessage = '\o/';
-            console.log('refresh..');
-            e.returnValue = confirmationMessage;
-            return confirmationMessage;
-        });
 
 
+    }
+
+    ngOnDestroy(): void {
     }
 
 
@@ -139,7 +147,6 @@ export class PassTestComponent implements OnInit {
 
             this.buttonType = 2;
 
-            // this.questionId++;
 
             // } else if (this.openAnswer !== null && this.selectedAnswers === undefined) {
             //     this.answer = new Answer();
@@ -192,20 +199,23 @@ export class PassTestComponent implements OnInit {
 
     decrementIndex() {
         if (this.questionId > 0) {
-            if (this.selectedAnswer !== undefined) {
-                this.selectedAnswers.push(this.selectedAnswer);
-            }
+            if (this.selectedAnswer !== undefined || this.selectedAnswers.length !== 0) {
+                if (this.selectedAnswer !== undefined) {
+                    this.selectedAnswers.push(this.selectedAnswer);
+                }
 
-            this.reply.replyList = this.selectedAnswers.slice();
-            this.passTestService.addReply(this.reply).subscribe(() => {
-                this.markedAnswers.set(this.selectedAnswers[0].questionId, this.selectedAnswers);
+                this.reply.replyList = this.selectedAnswers.slice();
+                this.passTestService.addReply(this.reply).subscribe(() => {
+                    this.markedAnswers.set(this.selectedAnswers[0].questionId, this.selectedAnswers);
+                    this.questionId--;
+                    this.checkIfAnswerExist();
+
+                });
+            } else {
+                console.log('prostoDDecr');
                 this.questionId--;
                 this.checkIfAnswerExist();
-
-            });
-
-            console.log('decrement');
-            console.log(this.markedAnswers);
+            }
 
 
         }
@@ -225,10 +235,14 @@ export class PassTestComponent implements OnInit {
     testEnd() {
         this.isFirst = true;
 
-        this.passTestService.getReplies().subscribe((results) => this.results = results);
+        this.passTestService.getReplies().subscribe((results) => {
+            this.results = results;
+            this.router.navigate(['/group', this.test.groupId]);
+            this.test = undefined;
+        });
         this.isQuestions = false;
         this.buttonType = undefined;
-        this.router.navigate(['result', this.test.groupId, 'results']);
+
 
     }
 

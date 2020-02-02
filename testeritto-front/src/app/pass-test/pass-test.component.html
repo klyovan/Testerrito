@@ -5,7 +5,7 @@
         </div>
 
 
-        <div *ngIf="!results" class="row">
+        <div style="" *ngIf="!results" class="row report">
             <h3 class="col-sm-9">{{test.nameTest}}</h3>
             <button  (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report</button>
         </div>
@@ -23,7 +23,7 @@
                     <mat-radio-group [disabled] = "buttonType == 2 "   name="radio" required [formControl]="radioForm"  [(ngModel)]="selectedAnswer">
                             <!--<p>{{markedAnswers.get(test.questions[questionId].id) !== false}}</p>-->
                             <!--<mat-radio-button [checked]=" answer ===this.markedAnswers.get(this.test.questions[this.questionId].id)[0]"  style="margin-bottom: 2px" *ngFor="let answer of test.questions[questionId].answers"  [value]="answer" color="primary"> {{answer.textAnswer}}  </mat-radio-button>-->
-                        <div class="form-check mb-2" *ngFor="let answer of test.questions[questionId].answers" >
+                        <div class="form-check " *ngFor="let answer of test.questions[questionId].answers" >
                         <mat-radio-button  [checked]="markedAnswers.get(test.questions[questionId].id) != undefined && answer.id === markedAnswers.get(test.questions[questionId].id)[0].id"    [value]="answer" color="primary"> {{answer.textAnswer}}</mat-radio-button>
                         </div>
                         <!--<mat-error *ngIf="radioForm.invalid" > {{getRadioErrorMessage()}}</mat-error>-->
@@ -37,10 +37,12 @@
                     <h4 class="card-title">{{test.questions[questionId].textQuestion}}</h4>
 
                     <mat-selection-list [disabled] = "buttonType == 2 "  name="select" [formControl]="selectionForm" required  [(ngModel)]="selectedAnswers">
-                        <mat-list-option [selected]="markedAnswers.get(test.questions[questionId].id) != undefined && markedAnswers.get(test.questions[questionId].id).includes(answer)"  checkboxPosition="before" color="primary" *ngFor="let answer of test.questions[questionId].answers;
-                         let i = index" [value]="answer">
+                        <div class="form-check " *ngFor="let answer of test.questions[questionId].answers" >
+                        <mat-list-option [selected]="markedAnswers.get(test.questions[questionId].id) != undefined && markedAnswers.get(test.questions[questionId].id).includes(answer)"  checkboxPosition="before" color="primary"
+                                          [value]="answer">
                             {{answer.textAnswer}}
                         </mat-list-option>
+                        </div>
                         <!--<mat-error *ngIf="selectionForm.invalid " > {{getSelectionErrorMessage()}}</mat-error>-->
                     </mat-selection-list>
 
@@ -63,7 +65,7 @@
 
         <div   style="margin-top: 8px" class="row">
             <div *ngIf="!isFirst" class="col-sm-1">
-                <button [disabled]="selectionForm.invalid && radioForm.invalid" (click)="decrementIndex()" class="btn btn-secondary btn-lg">
+                <button  (click)="decrementIndex()" class="btn btn-secondary btn-lg">
                     <i class="glyphicon glyphicon-arrow-left"></i>
                 </button>
             </div>
