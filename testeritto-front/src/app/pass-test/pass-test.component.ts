@@ -234,10 +234,9 @@ export class PassTestComponent implements OnInit, OnDestroy {
 
     testEnd() {
         this.isFirst = true;
+        this.router.navigate(['/group', this.test.groupId]);
 
-        this.passTestService.getReplies().subscribe((results) => {
-            this.results = results;
-            this.router.navigate(['/group', this.test.groupId]);
+        this.passTestService.getReplies().subscribe(() => {
             this.test = undefined;
         });
         this.isQuestions = false;

@@ -29,6 +29,7 @@ export class ResultComponent implements OnInit {
 
     radarChartOptions: RadialChartOptions = {
         responsive: true,
+        animation: {duration: 2000}
     };
     radarChartLabels: Label[] = [];
 
@@ -38,6 +39,15 @@ export class ResultComponent implements OnInit {
     radarChartType: ChartType = 'radar'; // if categories<3 'pie'
     scores = [];
     dataSet: ChartDataSets[] = [];
+    radarColors = [
+        {
+            backgroundColor: [
+                '#2e8b57',
+                '#ffae51',
+                '#007777'
+            ]
+        }
+    ];
 
 
     constructor(private route: ActivatedRoute,

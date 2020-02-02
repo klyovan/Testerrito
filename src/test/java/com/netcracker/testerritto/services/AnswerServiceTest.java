@@ -48,23 +48,23 @@ public class AnswerServiceTest {
         answerService.getAnswerById(new BigInteger("-555"));
     }
 
-    @Ignore
-    @Test(expected = IllegalArgumentException.class)
-    public void createAnswerTextNull() throws Exception {
-        Answer answer = new Answer();
-        answer.setTextAnswer(null);
-        answer.setScore(0);
-        answerService.createAnswer(answer);
-    }
 
-    @Ignore
-    @Test(expected = IllegalArgumentException.class)
-    public void createAnswerTextEmpty() throws Exception {
-        Answer answer = new Answer();
-        answer.setTextAnswer("");
-        answer.setScore(0);
-        answerService.createAnswer(answer);
-    }
+//    @Test(expected = IllegalArgumentException.class)
+//    public void createAnswerTextNull() throws Exception {
+//        Answer answer = new Answer();
+//        answer.setTextAnswer(null);
+//        answer.setScore(0);
+//        answerService.createAnswer(answer);
+//    }
+
+
+//    @Test(expected = IllegalArgumentException.class)
+//    public void createAnswerTextEmpty() throws Exception {
+//        Answer answer = new Answer();
+//        answer.setTextAnswer("");
+//        answer.setScore(0);
+//        answerService.createAnswer(answer);
+//    }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateAnswerNull() throws Exception {

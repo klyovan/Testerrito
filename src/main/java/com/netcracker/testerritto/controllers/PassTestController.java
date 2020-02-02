@@ -63,7 +63,7 @@ public class PassTestController {
     }
 
     @GetMapping("/reply")
-    public List<Result> getReplies() {
+    public Boolean getReplies() {
         try {
             List<Result> results = new ArrayList<>();
 
@@ -75,9 +75,9 @@ public class PassTestController {
                 result.setStatus(Status.PASSED);
                 resultService.updateResult(result);
             }
-            createdReplies = new ArrayList<>();
-            createdResults = new ArrayList<>();
-            return results;
+//            createdReplies = new ArrayList<>();
+//            createdResults = new ArrayList<>();
+            return true;
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
