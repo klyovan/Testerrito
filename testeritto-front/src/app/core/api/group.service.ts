@@ -81,4 +81,8 @@ export class GroupService {
     setViewedStatus(remarkId: BigInteger): Observable<{}> {
         return this.httpClient.put(`${environment.apiUrl}/group/remarkviewed/`+remarkId, null);
     }
+
+    deleteRemark(remarkId: BigInteger): Observable<{}> {
+        return this.httpClient.delete(`${environment.apiUrl}/group/remark/`+remarkId);
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { GroupService } from '../core/api/group.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Test } from '../core/models/test.model';
@@ -27,12 +27,13 @@ export class GroupusersComponent implements OnInit {
   mode = 'indeterminate';
   value = 50;
   loading: Boolean = false;
-
+  
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>()[3];
   @ViewChildren(MatSort) sort = new QueryList<MatSort>()[3];
+  @ViewChild(MatSort, {static: false}) sort3 : MatSort;
   usersDataSource = new MatTableDataSource<User>();
   testsDataSource = new MatTableDataSource<Test>();
-  resultsDataSource = new MatTableDataSource<Result>(this.userResults);
+  resultsDataSource = new MatTableDataSource<Result>();
   displayedUsersColumns: string[] = ['lastName','firstName','seeTests','kickOut']
   displayedTestsColumns: string[] = ['nameTest','seeResults']
   displayedResultsColumns: string[] = ['date', 'status', 'action'];
@@ -54,7 +55,7 @@ export class GroupusersComponent implements OnInit {
       this.usersDataSource.paginator = this.paginator.toArray()[0];
       this.usersDataSource.sort = this.sort.toArray()[0];
       this.loading = true;
-    });    
+    });        
   }
 
   tabChanged(tabChangeEvent: MatTabChangeEvent) {
@@ -68,10 +69,8 @@ export class GroupusersComponent implements OnInit {
       this.testsDataSource.sort = this.sort.toArray()[1];  
     }
     else {
-      this.resultsDataSource.paginator = this.paginator.toArray()[2];
-      this.resultsDataSource.sort = this.sort.toArray()[2];
+      this.resultsDataSource.sort = this.sort3;
     }
-    console.log(this.selectedIndex)
   }
 
   seeAllPassedTestsByUser(id: BigInteger) {
@@ -88,7 +87,7 @@ export class GroupusersComponent implements OnInit {
 
   sortTests() {
     this.tests = new Set();
-    this.groupService.users.find(user=>user.id == this.selectedUser).results.forEach(result => {
+    this.groupService.users.find(user=>user.id == this.selectedUser).results.filter(element => element.status == "PASSED").forEach(result => {
       this.tests.add(this.groupService.tests.find(test => test.id == result.testId))
     })
     this.showTabPassedTests = true;
@@ -106,15 +105,15 @@ export class GroupusersComponent implements OnInit {
   seeResultsForTest(id: BigInteger) {
     this.selectedTest = id;
     this.userResults = new Array();
-    var result = this.groupService.users.find(user => user.id = this.selectedUser).results.filter(element => element.testId == this.selectedTest);
+    var result = this.groupService.users.find(user => user.id = this.selectedUser).results.filter(element => element.testId == this.selectedTest && element.status == "PASSED");
     result.forEach(element => {
       if(this.userResults.find(elem => elem.status == element.status && elem.date == element.date) == undefined) {
         this.userResults.push(element);
-        this.resultsDataSource.data.push(element);
+        this.resultsDataSource.data = this.userResults;                 
       }
     });
-    this.showResults = true;
-    this.selectedIndex = 2;
+    this.selectedIndex = 2;  
+    this.showResults = true; 
   }
 
   showDetailsOnResult(date: Date) {

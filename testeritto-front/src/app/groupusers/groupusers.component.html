@@ -78,7 +78,7 @@
             </ng-container>
           
             <ng-container  matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Status</h4></th>
+                <th mat-header-cell *matHeaderCellDef><h4>Status</h4></th>
                 <td style="padding-right: 10px;" mat-cell *matCellDef="let element">{{element.status}}</td>
             </ng-container>   
             
@@ -92,7 +92,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedResultsColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedResultsColumns;"></tr>
           </table>
-          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        <!--   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
         </div>
       </ng-template>       
     </mat-tab>

@@ -56,7 +56,8 @@
       <div class="col-2">
         <button style="margin-top: 12px;" class="btn btn-success" cdkFocusInitial mat-button (click)="onCopy()">Copy</button>
       </div>
-    </div >        
+    </div >   
+    <div [hidden]="!copied" class="alert alert-success"><h4>Link was copied</h4></div>     
   </div>
   <div class="row justify-content-end" mat-dialog-actions>
     <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
@@ -78,18 +79,29 @@
   <h1 mat-dialog-title>CHANGE QUESION</h1>
   <hr>
   <div mat-dialog-content>
-    <mat-form-field style="width: 380px;"  appearance="outline">
+    <mat-form-field style="width: 350px;"  appearance="outline">
       <mat-label>Question</mat-label>
-      <textarea  style="width: 380px;" required  matInput [(ngModel)]="data.question.textQuestion"></textarea>
+      <textarea #input style="width: 350px;" required [formControl]="question" matInput ></textarea>
+      <mat-hint style="text-align: end">{{input.value?.length || 0}}/150</mat-hint>
+      <mat-error *ngIf="question.invalid && question.errors.required">You must enter a question</mat-error>
+      <mat-error *ngIf="question.invalid && question.errors.maxlength">Maximum 150 characters</mat-error>
     </mat-form-field>
-    <div *ngIf="answersReady">
-      <div *ngFor="let answer of answers; let i = index">
-        <mat-form-field style="width: 330px; margin-left: 50px;"  appearance="outline">
-          <mat-label>Answer {{i+1}}</mat-label>
-          <textarea style="width: 330px;" matInput [(ngModel)]="answer.textAnswer"></textarea>
-        </mat-form-field>
+    <div [formGroup]="answerForm" >
+      <div  formArrayName="answers" *ngIf="answersReady">
+        <div *ngFor="let answer of answerForm.controls['answers'].controls; let i = index">
+          <mat-form-field style="width: 280px; margin-left: 50px;"  appearance="outline">
+            <mat-label>Answer {{i+1}}</mat-label>  
+            <textarea #input style="width: 280px;" required matInput formControlName="{{i}}"></textarea>
+            <mat-hint style="text-align: end">{{input.value?.length || 0}}/200</mat-hint>
+            <mat-error *ngIf="answer.invalid && answer.errors.required">You must enter an answer</mat-error>
+            <div *ngIf="input.value?.length > 200">
+              <mat-error >Maximum 200 characters</mat-error>
+            </div>            
+          </mat-form-field>
+        </div>
       </div>
     </div>
+   
     <div class="row justify-content-end" mat-dialog-actions>
       <button class="btn btn-danger" cdkFocusInitial mat-button (click)="onNoClick()"><i class="glyphicon glyphicon-remove"></i></button>
       <button class="btn btn-success" cdkFocusInitial mat-button (click)="questionUpdate()"><i class="glyphicon glyphicon-ok"></i></button>

@@ -6,6 +6,7 @@ import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent, MatDialog
 import { Remark } from '../core/models/remark.model';
 import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
 import { Question } from '../core/models/question.model';
+import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 
 @Component({
   selector: 'app-remark',
@@ -31,6 +32,9 @@ export class RemarkComponent implements OnInit {
               public dialog: MatDialog,
               private route: ActivatedRoute) {
     route.params.subscribe(params=>this.groupId=params['groupId']);  
+    if(this.groupService.remarks == undefined){      
+      this.router.navigateByUrl('/group/'+this.groupId);
+    }
   }
 
   ngOnInit() {
@@ -128,5 +132,23 @@ export class RemarkComponent implements OnInit {
       remark.remarkLimit = remark.text.length;      
     else 
       remark.remarkLimit = 20;
-}
+  }
+
+  deleteRemark(id: BigInteger) {
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
+      data: {title: "DELETE REMARK", text: "Are You sure that you want to delete this remark?"}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.groupService.deleteRemark(id).subscribe();
+        var index = this.ViewedDataSource.data.findIndex(remark => remark.id == id);
+        if(index != -1) {
+          this.groupService.remarks.splice(index,1);
+          this.changeViewedDataSource();
+        }    
+      }
+    })
+    
+  }
 }
