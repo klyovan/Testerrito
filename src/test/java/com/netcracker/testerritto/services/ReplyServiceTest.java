@@ -71,8 +71,8 @@ public class ReplyServiceTest {
     @Before
     public void init() {
 
-        User user = new User("ln", "fn", "email",
-            "password", "8800555");
+        User user = new User("ln", "fn", "email@gamil.com",
+            "password", "880099417");
 
         userId = userService.createUser(user);
         groupId = groupService.createGroup(getNewGroup());
@@ -415,4 +415,3 @@ public class ReplyServiceTest {
     }
 
 }
-//
