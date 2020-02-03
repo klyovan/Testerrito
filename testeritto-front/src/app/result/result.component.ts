@@ -29,6 +29,7 @@ export class ResultComponent implements OnInit {
 
     radarChartOptions: RadialChartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         animation: {duration: 2000}
     };
     radarChartLabels: Label[] = [];

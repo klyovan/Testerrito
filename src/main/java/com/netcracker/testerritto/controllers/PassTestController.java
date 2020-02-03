@@ -170,7 +170,6 @@ public class PassTestController {
     @GetMapping("{userId}/test/finish/{testId}")
     public Test finishTest(@PathVariable BigInteger userId, @PathVariable BigInteger testId) {
         try {
-            System.out.println("ZAHALO");
             List<Result> results = resultService.getResultsByTest(testId);
             createdResults = new ArrayList<>();
 

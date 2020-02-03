@@ -132,7 +132,6 @@ export class PassTestComponent implements OnInit, OnDestroy {
 
         } else {
 
-            // if (this.selectedAnswer !== undefined || this.selectedAnswers !== undefined) {
             if (this.selectedAnswer !== undefined) {
                 this.selectedAnswers.push(this.selectedAnswer);
             }

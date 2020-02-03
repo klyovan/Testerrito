@@ -4,10 +4,9 @@
             <strong>Success!</strong> {{remarkAnswer}}
         </div>
 
-
         <div style="" *ngIf="!results" class="row report">
             <h3 class="col-sm-9">{{test.nameTest}}</h3>
-            <button  (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report</button>
+            <button id="report" (click)="showReport()" class="btn btn-danger btn-md col-sm-1 w-100 h-100">Report <i class="glyphicon glyphicon-exclamation-sign"></i></button>
         </div>
 
         <div *ngIf="isQuestions" class="row">
