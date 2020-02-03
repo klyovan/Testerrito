@@ -159,6 +159,10 @@ export class GroupComponent implements OnInit {
     })    
   }
 
+  /*updateTest(id: BigInteger){
+    this.router.navigateByUrl('test/'+ this.group.id+'/update/'+ this.test.id);
+  }*/
+
   deleteTest(id: BigInteger) {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       data: {title: "DELETE TEST", text: "Are You sure that you want to delete this test?" }

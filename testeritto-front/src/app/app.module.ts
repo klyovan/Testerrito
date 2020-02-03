@@ -48,6 +48,7 @@ import { TestComponent } from './test/test.component';
 import { CreateTestComponent } from './create-test/create-test.component';
 import {RegisterAlertComponent} from "./register-alert/register-alert.component";
 import {AlertService} from "./core/api/alert.service";
+import { UpdateTestComponent } from './updateTest/updateTest.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -68,7 +69,8 @@ import {AlertService} from "./core/api/alert.service";
         RegisterComponent,
         CreateTestComponent,
         TestComponent,
-        RegisterAlertComponent
+        RegisterAlertComponent,
+        UpdateTestComponent
     ],
     imports: [
         BrowserModule,

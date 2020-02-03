@@ -61,12 +61,14 @@ export class UpdateTestComponent implements OnInit {
     isQuestionEmpty: Boolean = false;
     isAnswerEmpty: Boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder,
-    private testService: TestService, private userService: UserService,private groupService: GroupService,private passTestService: PassTestService) { 
-      this.route.params.subscribe((params) => {
-        this.testId = params['testId'];
-    });
-  }
+    constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder,
+      private testService: TestService, private userService: UserService,private groupService: GroupService,private passTestService: PassTestService) { 
+        this.route.params.subscribe((params) => {
+          this.testId = params['testId'];
+          this.userId = params['userId'];
+          this.groupId = params['groupId'];
+      });
+    }
 
   ngOnInit() {
     this.testService.getTest(this.testId).subscribe(test => this.testId = test.id);

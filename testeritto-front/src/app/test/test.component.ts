@@ -13,6 +13,7 @@ import { PassTestService } from '../core/api/pass-test.service';
 import { FormBuilder,FormGroup, Validators, FormControl } from '@angular/forms';
 import { Category } from '../core/models/category.model';
 import { MatTableDataSource } from '@angular/material';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-test',
@@ -51,7 +52,7 @@ export class TestComponent implements OnInit {
     questionId: BigInteger;
     buff:any;
     categoryName = new FormControl(this.category_name, [Validators.required, Validators.maxLength(50)]);
-    gradeCategoryName = new FormControl(this.gr_cat_name, [Validators.required, Validators.maxLength(50)]);
+    gradeCategoryName = new FormControl(this.gr_cat_name, [Validators.required, Validators.maxLength(150)]);
     gradeCategoryMinScore = new FormControl(this.gr_min_score, [Validators.required, Validators.maxLength(10), Validators.pattern('[0-9]*')]);
     gradeCategoryMaxScore = new FormControl(this.gr_max_score, [Validators.required, Validators.maxLength(10), Validators.pattern('[0-9]*')]);
     question_name = new FormControl(this.text_question, [Validators.required, Validators.maxLength(150)]);
@@ -60,11 +61,22 @@ export class TestComponent implements OnInit {
     radioForm = new FormControl('', [Validators.required]);
     selectQuestion = new FormControl('', [Validators.required]);
     selectCategories = new FormControl('', [Validators.required]);
-
+    displayedColumns: string[] = ['categories'];
+    displayedColumnsGrCat: string[] = ['grade categories'];
+    displayedColumnsQuest: string[] = ['questions'];
+    displayedColumnsAnswer: string[] = ['answers'];
+    consistTestDataSourse = new MatTableDataSource<Category>(this.categories); 
+    consistGrCatDataSourse = new MatTableDataSource<GradeCategory>(this.gradesCategory); 
+    consistQustionDataSourse = new MatTableDataSource<Question>(this.questions); 
+    consistAnswerDataSourse = new MatTableDataSource<Answer>(this.answers); 
     selectedCategoryId : BigInteger;
     selectedQuestionId : BigInteger;
     grCategoryText = "Grade category is needed in order to draw conclusions on a specific category at the end.";
     succesfull = '';
+    errorAddedGrCat = '';
+    errorAddedCat ='';
+    errorAddedQuest = '';
+    errorAddedAnsw ='';
 
 
   constructor(private route: ActivatedRoute, private router: Router,private formBuilder: FormBuilder,
@@ -85,10 +97,19 @@ export class TestComponent implements OnInit {
   this.category = new Category();
   this.category.nameCategory = this.categoryName.value;
   console.log(this.category)
-  this.testService.createCategory(this.category).subscribe(id => {this.category.id = id;});
-  this.categories.push(this.category);
+
+  if(this.categories.find(elem => elem.nameCategory == this.category.nameCategory)== undefined){
+    this.categories.push(this.category);
+    this.consistTestDataSourse = new MatTableDataSource(this.categories);
+    this.testService.createCategory(this.category).subscribe(id => {this.category.id = id;});
+    this.succesfull = "Category added";
+}
+  else{this.errorAddedCat = "Category with this name already exist!";
+    console.log("name already exist!")
+  }
+  console.log(this.answers)
   console.log(this.categories)
-  this.succesfull = "Category added";
+  console.log(this.consistTestDataSourse)
   this.categoryName.reset();
  }
 
@@ -101,9 +122,17 @@ export class TestComponent implements OnInit {
   this.gradeCategory.categoryId = this.selectedCategoryId;
   console.log(this.gradeCategory)
   console.log(this.selectedCategoryId)
-  this.testService.createGradeCategory(this.gradeCategory).subscribe();
+  if(this.gradesCategory.find(elem => elem.meaning == this.gradeCategory.meaning)== undefined){
   this.gradesCategory.push(this.gradeCategory);
+  this.consistGrCatDataSourse = new MatTableDataSource(this.gradesCategory);
+  this.testService.createGradeCategory(this.gradeCategory).subscribe();
   this.succesfull = "Grade category added";
+}
+  else{
+    console.log("name already exist!")
+    this.errorAddedGrCat ="Grade Categry with this meaning already exist!";
+  }
+  console.log(this.consistGrCatDataSourse)
   this.gradeCategoryName.reset();
   this.gradeCategoryMinScore.reset();
   this.gradeCategoryMaxScore.reset();
@@ -115,11 +144,20 @@ public createQuestions(){
   this.question.textQuestion = this.question_name.value;
   this.question.typeQuestion = this.typeQuestion;
   this.question.categoryId = this.selectedCategoryId;
+
+  if(this.questions.find(elem => elem.textQuestion == this.question.textQuestion)== undefined){
+    this.questions.push(this.question);
+    this.consistQustionDataSourse = new MatTableDataSource(this.questions);
+    this.testService.createQuestion(this.question).subscribe(id => {this.question.id = id;});
+    this.succesfull = "Question added";
+  }
+    else{
+      this.errorAddedQuest = "Question with this names already exist!";
+      console.log("name already exist!")}
+  
   console.log(this.question)
   console.log(this.selectedCategoryId)
-  this.testService.createQuestion(this.question).subscribe(id => {this.question.id = id;});
-  this.questions.push(this.question);
-  this.succesfull = "Question added";
+  console.log(this.consistQustionDataSourse)
   this.question_name.reset();
  }
 
@@ -130,9 +168,16 @@ public createQuestions(){
   this.answer.questionId = this.selectedQuestionId;
   console.log(this.answer)
   console.log(this.selectedQuestionId)
-  this.testService.createAnswer(this.answer).subscribe();
-  this.answers.push(this.answer);
-  this.succesfull = "Answer added ";
+  if(this.answers.find(elem => elem.textAnswer == this.answer.textAnswer)== undefined){
+      this.answers.push(this.answer);
+      this.consistAnswerDataSourse = new MatTableDataSource(this.answers);
+      this.testService.createAnswer(this.answer).subscribe();
+      this.succesfull = "Answer added ";
+}
+    else{
+      this.errorAddedAnsw = "Answer with this name already exist!";
+      console.log("name already exist!")
+    console.log(this.answers)}
   this.answers_name.reset();
   this.score.reset();
  }
@@ -140,5 +185,4 @@ public createQuestions(){
  navigateFinish(){
   this.router.navigateByUrl('group/'+ this.groupId);
  }
-
 }

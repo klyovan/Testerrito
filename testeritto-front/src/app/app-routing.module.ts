@@ -15,6 +15,7 @@ import {InvitationComponent} from './invitation/invitation.component';
 import {RegisterComponent} from "./register/register.component";
 import { TestComponent } from './test/test.component';
 import { CreateTestComponent } from './create-test/create-test.component';
+import { UpdateTestComponent } from './updateTest/updateTest.component';
 const routes: Routes = [
     {path: 'login', component: LoginComponent, canActivate: [NoauthGuard]},
     {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
@@ -27,11 +28,12 @@ const routes: Routes = [
     {path: 'pass-test/:userId/test/finish/:id', component: PassTestComponent, canActivate: [AuthGuard]},
     {path: 'test/:groupId/create', component: CreateTestComponent, canActivate: [AuthGuard]},
     {path: 'test/:groupId/create/:testId', component: TestComponent, canActivate: [AuthGuard]},
-    { path: 'error-page/:status', component: ErrorPageComponent },
+    {path: 'test/:groupId/update/:testId', component: UpdateTestComponent, canActivate: [AuthGuard]},
+    {path: 'error-page/:status', component: ErrorPageComponent },
     {path: 'invite/:link', component: InvitationComponent,  canActivate: [AuthGuard]},
-    { path: 'registration', component: RegisterComponent, canActivate: [NoauthGuard] },
-    { path: 'registration/**', component: RegisterComponent, canActivate: [NoauthGuard] },
-    { path: '**', redirectTo: '/error-page/404', pathMatch: 'full'}
+    {path: 'registration', component: RegisterComponent, canActivate: [NoauthGuard] },
+    {path: 'registration/**', component: RegisterComponent, canActivate: [NoauthGuard] },
+    {path: '**', redirectTo: '/error-page/404', pathMatch: 'full'}
 ];
 
 @NgModule({
