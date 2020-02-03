@@ -142,7 +142,7 @@ public class GroupService {
     }
 
     private void checkPattern(String string) {
-        if(!string.matches("^([A-Za-z0-9]+((\\s)?[A-Za-z0-9]*(\\s)?)*)([A-Za-z0-9]+)$"))
+        if(!string.matches("^([A-Za-z0-9]+((\\s){0,1}[A-Za-z0-9]+)*)$"))
             serviceExceptionHandler.logAndThrowIllegalException("Not correct pattern");
     }
 }

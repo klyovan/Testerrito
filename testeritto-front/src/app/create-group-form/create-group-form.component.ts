@@ -13,9 +13,9 @@ import { TestService } from '../core/api/test.service';
 })
 export class CreateGroupFormComponent implements OnInit {
   error: String;
-  name = new FormControl(this.data.groupName, [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.pattern('^([A-Za-z0-9]+((\\s){0,1}[A-Za-z0-9]*(\\s){0,1})*)([A-Za-z0-9]+)$')]);
+  name = new FormControl(this.data.groupName, [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.pattern('^([A-Za-z0-9]+((\\s){0,1}[A-Za-z0-9]+)*)$')]);
   link = new FormControl(this.data.link);
-  question = new FormControl(this.data.question.textQuestion, [Validators.required, Validators.maxLength(150)])
+  question = new FormControl('', [Validators.required, Validators.maxLength(150)])
   answerForm: FormGroup;
   answerArray: Array<Answer> = new Array();
   answersReady: Boolean = false;
@@ -31,6 +31,7 @@ export class CreateGroupFormComponent implements OnInit {
   ngOnInit() {
     this.name.setErrors({ changeName: false})
     if(this.data.action == "changeQuestion" && this.data.question.typeQuestion != "OPEN") {
+      this.question = new FormControl(this.data.question.textQuestion, [Validators.required, Validators.maxLength(150)])
       this.testService.getAllAnswerInQuestion(this.data.question.id)
         .subscribe(answers => {    
           answers.forEach(answer => {
@@ -89,14 +90,24 @@ export class CreateGroupFormComponent implements OnInit {
   }
 
   questionUpdate() { 
-    var i = 0;
-    this.answerArray.forEach(answer => {
-      answer.textAnswer = (<FormArray>this.answerForm.controls["answers"]).controls[i].value;
-      this.testService.updateAnswer(answer).subscribe();
-      i++;
-    });
-    this.data.question.textQuestion = this.question.value;
-    this.testService.updateQuestion(this.data.question).subscribe();
-    this.dialogRef.close(this.data.question);
+    if(this.answerForm.valid && this.question.valid) {
+      var check = true;
+      (<FormArray>this.answerForm.controls["answers"]).controls.forEach(answer => {
+        if(answer.value.length > 200) {
+          check = false;
+        }
+      })
+      if(check) {
+        var i = 0;
+        this.answerArray.forEach(answer => {
+          answer.textAnswer = (<FormArray>this.answerForm.controls["answers"]).controls[i].value;
+          this.testService.updateAnswer(answer).subscribe();
+          i++;
+        });
+        this.data.question.textQuestion = this.question.value;
+        this.testService.updateQuestion(this.data.question).subscribe();
+        this.dialogRef.close(this.data.question);
+      }      
+    }    
   }
 }

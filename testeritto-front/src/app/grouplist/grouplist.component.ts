@@ -26,6 +26,12 @@ export class GrouplistComponent implements OnInit {
   isConstistEmpty: Boolean = false;
   isCreatedGroupsEmpty: Boolean = false;
   selectedIndex: Number = 0;
+
+  leavedOld: Boolean = false;
+  createdNew: Boolean =  false;
+  updatedOld: Boolean =  false;
+  deletedOld: Boolean =  false;
+  actionWithThisGroup: String;
   color = 'primary';
   mode = 'indeterminate';
   value = 50;
@@ -48,6 +54,13 @@ export class GrouplistComponent implements OnInit {
     });    
   }
   
+  changeBoolean() {
+    this.leavedOld  = false;
+    this.createdNew  =  false;
+    this.updatedOld  =  false;
+    this.deletedOld =  false;
+  }
+
   tabChanged(tabChangeEvent: MatTabChangeEvent) {
     this.selectedIndex = tabChangeEvent.index;
     if(this.selectedIndex == 0) {
@@ -93,7 +106,10 @@ export class GrouplistComponent implements OnInit {
       if(result) 
         this.groupService.getGroup(result).subscribe(group => {
           this.user.createdGroups.push(group);
-          this.changeCreatedGroupsDataSourse();
+          this.actionWithThisGroup = group.name;
+          this.changeBoolean()
+          this.createdNew = true;    
+          this.changeCreatedGroupsDataSourse();            
         })
     })
   }
@@ -110,6 +126,9 @@ export class GrouplistComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
         this.user.createdGroups.find(group => group.id == result.id).name = result.name;
+        this.actionWithThisGroup = result.name;
+        this.changeBoolean();
+        this.updatedOld = true;
         this.changeCreatedGroupsDataSourse();
       }
     })
@@ -124,6 +143,9 @@ export class GrouplistComponent implements OnInit {
       if(result) {
         this.groupService.deleteGroup(id).subscribe();
         var index = this.user.createdGroups.findIndex(group => group.id == id);
+        this.actionWithThisGroup = this.user.createdGroups.find(group => group.id == id).name;
+        this.changeBoolean();
+        this.deletedOld = true;
         if(index != -1) {
           this.user.createdGroups.splice(index, 1);
           this.changeCreatedGroupsDataSourse();
@@ -141,6 +163,9 @@ export class GrouplistComponent implements OnInit {
       if(result) {
         this.groupService.exitFromGroup(this.user.id, id).subscribe();
         var index = this.user.groups.findIndex(group => group.id == id);
+        this.actionWithThisGroup = this.user.createdGroups.find(group => group.id == id).name;
+        this.changeBoolean();
+        this.leavedOld = true;
         if(index != -1) {
           this.user.groups.splice(index, 1); 
           this.changeConsistGroupsDataSourse();

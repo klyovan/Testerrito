@@ -10,7 +10,7 @@
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.minlength">Minimum 3 characters</mat-error>
-      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 2spaces between words)</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 1-space between words)</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
     </mat-form-field>
   </div>
@@ -32,7 +32,7 @@
       <mat-error *ngIf="name.invalid && name.errors.required">You must enter a group name</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.minlength">Minimum 3 characters</mat-error>
-      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 2spaces between words)</mat-error>
+      <mat-error *ngIf="name.invalid && name.errors.pattern">Can not starts/ends on space (max 1-spaces between words)</mat-error>
       <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
     </mat-form-field>
   </div>
@@ -93,7 +93,9 @@
             <mat-label>Answer {{i+1}}</mat-label>  
             <textarea #input style="width: 280px;" required matInput formControlName="{{i}}"></textarea>
             <mat-hint style="text-align: end">{{input.value?.length || 0}}/200</mat-hint>
-            <mat-error *ngIf="answer.invalid && answer.errors.required">You must enter an answer</mat-error>
+            <div *ngIf="answer.invalid && answer.errors.required">
+              <mat-error >You must enter an answer</mat-error>
+            </div>            
             <div *ngIf="input.value?.length > 200">
               <mat-error >Maximum 200 characters</mat-error>
             </div>            

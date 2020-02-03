@@ -1,4 +1,17 @@
 
+
+<div [hidden]="!createdNew" class="alert alert-success">
+    New group: '{{actionWithThisGroup}}' was created!
+</div>
+<div [hidden]="!updatedOld" class="alert alert-warning">
+    Group: '{{actionWithThisGroup}}' changed her name!
+</div>
+<div [hidden]="!deletedOld" class="alert alert-danger">
+    Group: '{{actionWithThisGroup}}' was deleted!
+</div>
+<div [hidden]="!leavedOld" class="alert alert-danger">
+    You leaved from group: '{{actionWithThisGroup}}' =(
+</div>
 <div [hidden]="!loading">
     <mat-tab-group style="text-align: -webkit-center;" [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChanged($event)" animationDuration="1000ms" dynamicHeight mat-align-tabs="center">
         <mat-tab label="My created groups">
