@@ -1,15 +1,15 @@
 
 
-<div [hidden]="!createdNew" class="alert alert-success">
+<div [hidden]="!createdNew" class="alert alert-success col-6 offset-3">
     New group: '{{actionWithThisGroup}}' was created!
 </div>
-<div [hidden]="!updatedOld" class="alert alert-warning">
+<div [hidden]="!updatedOld" class="alert alert-warning col-6 offset-3">
     Group: '{{actionWithThisGroup}}' changed her name!
 </div>
-<div [hidden]="!deletedOld" class="alert alert-danger">
+<div [hidden]="!deletedOld" class="alert alert-danger col-6 offset-3">
     Group: '{{actionWithThisGroup}}' was deleted!
 </div>
-<div [hidden]="!leavedOld" class="alert alert-danger">
+<div [hidden]="!leavedOld" class="alert alert-danger col-6 offset-3">
     You leaved from group: '{{actionWithThisGroup}}' =(
 </div>
 <div [hidden]="!loading">

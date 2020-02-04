@@ -22,6 +22,8 @@ export class GroupusersComponent implements OnInit {
   showTabPassedTests: Boolean = false;
   showTableTests: Boolean = false;
   showResults: Boolean = false;
+  kickOk: Boolean = false;
+  userKicked: String;
   selectedIndex: number;
   color = 'primary';
   mode = 'indeterminate';
@@ -71,6 +73,7 @@ export class GroupusersComponent implements OnInit {
     else {
       this.resultsDataSource.sort = this.sort3;
     }
+    this.kickOk = false;
   }
 
   seeAllPassedTestsByUser(id: BigInteger) {
@@ -105,7 +108,7 @@ export class GroupusersComponent implements OnInit {
   seeResultsForTest(id: BigInteger) {
     this.selectedTest = id;
     this.userResults = new Array();
-    var result = this.groupService.users.find(user => user.id = this.selectedUser).results.filter(element => element.testId == this.selectedTest && element.status == "PASSED");
+    var result = this.groupService.users.find(user => user.id == this.selectedUser).results.filter(element => element.testId == this.selectedTest && element.status == "PASSED");
     result.forEach(element => {
       if(this.userResults.find(elem => elem.status == element.status && elem.date == element.date) == undefined) {
         this.userResults.push(element);
@@ -134,8 +137,14 @@ export class GroupusersComponent implements OnInit {
       if(result) {
         this.groupService.exitFromGroup(id, this.groupId).subscribe();
         var index = this.groupService.users.findIndex(user => user.id == id);
-        if(index != -1)
+        if(index != -1) {
+          this.userKicked = this.groupService.users[index].lastName + " " + this.groupService.users[index].firstName;
           this.groupService.users.splice(index, 1); 
+          this.usersDataSource = new MatTableDataSource<User>(this.groupService.users);
+          this.usersDataSource.paginator = this.paginator.toArray()[0];
+          this.usersDataSource.sort = this.sort.toArray()[0];
+          this.kickOk = true;           
+        }          
       }
     });
   }

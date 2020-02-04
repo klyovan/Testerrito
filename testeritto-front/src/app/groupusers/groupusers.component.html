@@ -1,4 +1,7 @@
 <button class="btn btn-info btn-sm" (click)="goBackToGroup()"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
+<div [hidden]="!kickOk" class="alert alert-danger col-6 offset-3">
+  User: '{{userKicked}}' was kicked out from group. It is sad (
+</div>
 
 <div [hidden]="!loading">
   <mat-tab-group dynamicHeight [selectedIndex]="selectedIndex" (selectedTabChange)="tabChanged($event)"  animationDuration="1000ms">
