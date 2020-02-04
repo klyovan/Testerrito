@@ -6,6 +6,8 @@ export class GradeCategory implements Deserializable {
   meaning: string;
   categoryId: BigInteger;
   testId: BigInteger;
+  categoryName: string;
+  id: BigInteger;
 
 
   deserialize(input: any): this {

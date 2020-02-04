@@ -1,24 +1,228 @@
-  <h1 mat-dialog-title>Update test</h1>
-  <hr>
-  <div mat-dialog-content>
-    <h4>Write name to the updated test</h4>
-    <mat-form-field style="width: 400px;"  appearance="outline">
-      <mat-label>Test name</mat-label>
-      <input #input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter test name">
-      <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
-      <mat-error *ngIf="name.invalid && name.errors.required">You must enter a test name</mat-error>
-      <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
-      <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
-    </mat-form-field>
-  </div>
-  <div><button class="btn btn-success" cdkFocusInitial mat-button (click)="updateTest()" ><i class="glyphicon glyphicon-ok"></i></button></div>
-
+<div><button style="width: 100px; margin-right: 10px;" class="btn btn-danger" (click)="navigateFinish()">Finish</button>
+<button style="margin-right: 10px;" class="btn btn-success" (click)="navigeToCreate()">Added elements</button></div>
   <mat-tab-group>
-    <mat-tab label="Test"> Content 1 </mat-tab>
-    <mat-tab label="Categories"> Content 2 </mat-tab>
-    <mat-tab label="Grade categories"> Content 3 </mat-tab>
-    <mat-tab label="Questions"> Content 3 </mat-tab>
-    <mat-tab label="Answers"> Content 3 </mat-tab>
+    <mat-tab label="Test"> 
+      <h1 mat-dialog-title>Update test</h1>
+      <hr>
+      <div mat-dialog-content>
+        <h4>Write name to the updated test</h4>
+        <mat-form-field style="width: 400px;"  appearance="outline">
+          <mat-label>Test name</mat-label>
+          <input #input style="width: 400px;" matInput [formControl]="name" required placeholder="Enter test name">
+          <mat-hint style="text-align: end">{{input.value?.length || 0}}/30</mat-hint>
+          <mat-error *ngIf="name.invalid && name.errors.required">You must enter a test name</mat-error>
+          <mat-error *ngIf="name.invalid && name.errors.maxlength">Maximum 30 characters</mat-error>
+          <mat-error *ngIf="name.invalid && name.errors.changeName">{{error}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div><button class="btn btn-success" cdkFocusInitial mat-button (click)="updateTest()" ><i class="glyphicon glyphicon-ok"></i></button></div> </mat-tab>
+    
+      <mat-tab label="Categories"> 
+        <div [hidden]="!windowUpdateCat">
+          <h5>Categories are needed to group questions.</h5>
+              <hr>
+              <div mat-dialog-content>
+                <h4>Write name to the update category</h4>
+                <mat-form-field style="width: 400px;"  appearance="outline">
+                  <mat-label>Category name</mat-label>
+                  <input #input1 style="width: 400px;" matInput [formControl]="categoryName" required placeholder="Enter category name">
+                  <mat-hint style="text-align: end">{{input1.value?.length || 0}}/50</mat-hint>
+                  <mat-error *ngIf="categoryName.invalid && categoryName.errors.required">You must enter a category name</mat-error>
+                  <mat-error *ngIf="categoryName.invalid && categoryName.errors.maxlength">Maximum 50 characters</mat-error>
+                  <mat-error *ngIf="categoryName.invalid && categoryName.errors.changeName">{{error}}</mat-error>
+                </mat-form-field>
+              
+              </div>        
+              <button class="btn btn-success" [disabled]="categoryName.invalid"  cdkFocusInitial mat-button (click)="updateCategory()"><i class="glyphicon glyphicon-ok"></i></button>
+         </div>
+        
+      <table  mat-table [dataSource]="createdCategoryDataSourse" class="mat-elevation-z8">
+        <ng-container matColumnDef="categories">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;padding-right: 20px;"> Categories </th>
+          <td mat-cell style = "text-align: center;padding-right: 10px;" *matCellDef="let element" > {{element.nameCategory}} </td>
+        </ng-container>
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Update </th>
+          <td mat-cell style ="padding-right: 20px;" *matCellDef="let element">
+            <button  class="btn btn-warning btn-sm"  (click)="openWindowForUpdateCategory(element)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Delete </th>
+          <td mat-cell *matCellDef="let element">
+          <button  class="btn btn-danger btn-sm" (click)="deleteCategory(element.id)"><i class="glyphicon glyphicon-trash"></i></button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsCategories"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsCategories;"></tr>
+      </table> 
+   </mat-tab>
+    
+   <mat-tab label="Grade categories">
+    <div [hidden]="!windowUpdateGrCat">
+      <h5 style = "margin-right: 100px;">{{grCategoryText}}</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write meaning to the new grade category</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Grade category meaning</mat-label>
+              <input #input2 style="width: 400px;" matInput [formControl]="gradeCategoryName" required placeholder="Enter grade category meaning">
+              <mat-hint style="text-align: end">{{input2.value?.length || 0}}/150</mat-hint>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.required">You must enter a category name</mat-error>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.maxlength">Maximum 150 characters</mat-error>
+              <mat-error *ngIf="gradeCategoryName.invalid && gradeCategoryName.errors.changeName">{{error}}</mat-error>
+            </mat-form-field>
+          </div>
+          <h4>Enter min score</h4>
+          <mat-form-field style="width: 400px;"  appearance="outline">
+            <mat-label>Enter score</mat-label>
+            <input #input3 style="width: 400px;" matInput [formControl]="gradeCategoryMinScore" required placeholder="Enter score">
+            <mat-hint style="text-align: end">{{input3.value?.length || 0}}/10</mat-hint>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.required">You must enter a grade category  minimum score</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.maxlength">Maximum 10 characters</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.hasError('pattern')">Score can contain only number chars</mat-error>
+            <mat-error *ngIf="gradeCategoryMinScore.invalid && gradeCategoryMinScore.errors.changeName">{{error}}</mat-error>
+          </mat-form-field>
+        <h4>Enter max score</h4>
+        <mat-form-field style="width: 400px;"  appearance="outline">
+          <mat-label>Enter score</mat-label>
+          <input #input4 style="width: 400px;" matInput [formControl]="gradeCategoryMaxScore" required placeholder="Enter score">
+          <mat-hint style="text-align: end">{{input4.value?.length || 0}}/10</mat-hint>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.required">You must enter a grade category  maximum score</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.maxlength">Maximum 10 characters</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.invalid && gradeCategoryMaxScore.errors.changeName">{{error}}</mat-error>
+          <mat-error *ngIf="this.gradeCategoryMaxScore.value < this.gradeCategoryMinScore.value">Value max score can`t be larger than min score</mat-error>
+          <mat-error *ngIf="gradeCategoryMaxScore.hasError('pattern')">Score can contain only number chars</mat-error>
+        </mat-form-field>
+        <div><button style = "margin-right: 10px;" class="btn btn-success" disabled  *ngIf = "!(gradeCategoryName.valid && (gradeCategoryMinScore.valid && gradeCategoryMaxScore.valid) && (gradeCategoryMaxScore.value > gradeCategoryMinScore.value))"cdkFocusInitial mat-button (click)="updateGradeCategory()"><i class="glyphicon glyphicon-ok"></i></button></div>
+        <div><button style = "margin-right: 10px;" class="btn btn-success" *ngIf = "gradeCategoryName.valid && (gradeCategoryMinScore.valid && gradeCategoryMaxScore.valid && gradeCategoryMaxScore.value > gradeCategoryMinScore.value )"  cdkFocusInitial mat-button (click)="updateGradeCategory()"><i class="glyphicon glyphicon-ok"></i></button></div>
+        </div>
+       <table  mat-table [dataSource]="createdGradeCategoryDataSourse" class="mat-elevation-z8">
+        <ng-container matColumnDef="categories">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Сategories </th>
+          <td mat-cell style = "text-align: center;padding-right: 10px;" *matCellDef="let element" > {{element.categoryName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="grade categories">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Grade categories </th>
+          <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.meaning}} </td>
+        </ng-container>
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Update </th>
+          <td mat-cell style ="padding-right: 20px;" *matCellDef="let element">
+            <button  class="btn btn-warning btn-sm"  (click)="openWindowForUpdateGradeCategory(element)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Delete </th>
+          <td mat-cell *matCellDef="let element">
+          <button  class="btn btn-danger btn-sm" (click)="deleteGradeCategory(element.id)"><i class="glyphicon glyphicon-trash"></i></button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsGradeCategories"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsGradeCategories;"></tr>
+        
+      </table>  
+      </mat-tab>
+    <mat-tab label="Questions"> 
+      <div [hidden]="!windowUpdateQuestion">
+        <h5>In this tab, you can ask a question by writing the text of the question</h5>
+          <h5> and choosing the type.</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write text to question</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Question text</mat-label>
+              <input #input5 style="width: 400px;" matInput [formControl]="question_name" required placeholder="Enter grade question text">
+              <mat-hint style="text-align: end">{{input5.value?.length || 0}}/150</mat-hint>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.required">You must enter a question name</mat-error>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.maxlength">Maximum 150 characters</mat-error>
+              <mat-error *ngIf="question_name.invalid && question_name.errors.changeName">{{error}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-radio-group   name="radio" required [formControl]="radioForm"  [(ngModel)]="this.typeQuestion">
+              <mat-radio-button  style ="margin-right: 16px;" value="ONE_ANSWER" color="primary">One answer</mat-radio-button>
+              <mat-radio-button style ="margin-right: 16px;"  value="MULTIPLE_ANSWER" color="primary">Multiple answer</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <button style="margin-right: 10px;" class="btn btn-success"  disabled *ngIf="!(question_name.valid && radioForm.valid)" cdkFocusInitial mat-button (click)="updateQuestion()"><i class="glyphicon glyphicon-ok"></i></button>
+          <button style="margin-right: 10px;" class="btn btn-success"  *ngIf="question_name.valid && radioForm.valid" cdkFocusInitial mat-button (click)="updateQuestion()"><i class="glyphicon glyphicon-ok"></i></button>
+          </div>
+         
+      
+        
+      <table  mat-table [dataSource]="createdQuestionsDataSourse" class="mat-elevation-z8">
+        <ng-container matColumnDef="categories">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Сategories </th>
+          <td mat-cell style = "text-align: center;padding-right: 10px;" *matCellDef="let element" > {{element.categoryName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="questions">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Questions </th>
+          <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.textQuestion}} </td>
+        </ng-container>
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Update </th>
+          <td mat-cell *matCellDef="let element">
+            <button  class="btn btn-warning btn-sm"  (click)="openWindowForUpdateQuestions(element)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Delete </th>
+          <td mat-cell *matCellDef="let element">
+          <button  class="btn btn-danger btn-sm" (click)="deleteQuestion(element.id)"><i class="glyphicon glyphicon-trash"></i></button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsQuestions"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsQuestions;"></tr>
+      </table> 
+       </mat-tab>
+
+    <mat-tab label="Answers"> 
+      <div [hidden]="!windowUpdateAnswer">
+        <h5>Please create an answer to the question by writing the text of the answer, </h5>
+          <h5>its weight, and to which question do you want to attach it</h5>
+          <hr>
+          <div mat-dialog-content>
+            <h4>Write answer`s text</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Answer`s text</mat-label>
+              <input #input6 style="width: 400px;" matInput [formControl]="answers_name" required placeholder="Enter answer`s text">
+              <mat-hint style="text-align: end">{{input6.value?.length || 0}}/200</mat-hint>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.required">You must enter a answer`s name</mat-error>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.maxlength">Maximum 200 characters</mat-error>
+              <mat-error *ngIf="answers_name.invalid && answers_name.errors.changeName">{{error}}</mat-error>
+            </mat-form-field>
+            <h4>Enter score</h4>
+            <mat-form-field style="width: 400px;"  appearance="outline">
+              <mat-label>Enter score</mat-label>
+              <input #input7 style="width: 400px;" matInput [formControl]="score" required placeholder="Enter score">
+              <mat-hint style="text-align: end">{{input7.value?.length || 0}}/10</mat-hint>
+              <mat-error *ngIf="score.invalid && score.errors.required">You must enter score of answer</mat-error>
+              <mat-error *ngIf="score.invalid && score.errors.maxlength">Maximum 10 characters</mat-error>
+              <mat-error *ngIf="score.invalid && score.errors.changeName">{{error}}</mat-error>
+              <mat-error *ngIf="score.hasError('pattern')">Score can contain only number chars</mat-error>
+            </mat-form-field>
+          </div>
+          <div><button style="margin-right: 10px;" class="btn btn-success"  disabled *ngIf="!(answers_name.valid && score.valid ) " cdkFocusInitial mat-button (click)="updateAnswer()"><i class="glyphicon glyphicon-ok"></i></button>
+            <button style="margin-right: 10px;" class="btn btn-success"  *ngIf="answers_name.valid && score.valid " cdkFocusInitial mat-button (click)="updateAnswer()"><i class="glyphicon glyphicon-ok"></i></button></div>
+        </div>
+      <table  mat-table [dataSource]="createdAnswersDataSourse" class="mat-elevation-z8">
+        <ng-container matColumnDef="questions">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Question </th>
+          <td mat-cell style = "text-align: center;padding-right: 10px;" *matCellDef="let element" > {{element.questionText}} </td>
+        </ng-container>
+        <ng-container matColumnDef="answers">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Answers </th>
+          <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.textAnswer}} </td>
+        </ng-container>
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 20px;"> Update </th>
+          <td mat-cell *matCellDef="let element">
+            <button  class="btn btn-warning btn-sm"  (click)="openWindowForUpdateAnswers(element)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;padding-right: 10px;"> Delete </th>
+          <td mat-cell *matCellDef="let element">
+          <button  class="btn btn-danger btn-sm" (click)="deleteAnswer(element.id)"><i class="glyphicon glyphicon-trash"></i></button></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsAnswers"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsAnswers;"></tr>
+      </table>  
+      </mat-tab>
   </mat-tab-group>
 
 

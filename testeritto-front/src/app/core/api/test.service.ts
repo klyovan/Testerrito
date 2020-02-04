@@ -40,6 +40,14 @@ export class TestService {
         )
     }
 
+    getCategoryById(id: BigInteger): Observable<Category>{
+        return this.httpClient.get<Category>(`${environment.apiUrl}/test/category/` + id).pipe(
+            map((category: Category) => {             
+                return new Category().deserialize(category);
+            })
+        )
+    }
+
     getAllAnswerInQuestion(id: BigInteger): Observable<Answer[]> {
         return this.httpClient.get<Answer[]>(`${environment.apiUrl}/test/answer/question/`+id).pipe(
             map(answers => {
@@ -50,10 +58,34 @@ export class TestService {
         )
     }
 
-    updateTest(answer: Test): Observable<Test> {
-        return this.httpClient.put<Answer>(`${environment.apiUrl}/test/update`,answer).pipe(
+
+
+
+    updateTest(test: Test): Observable<Test> {
+        return this.httpClient.put<Test>(`${environment.apiUrl}/test/update`,test).pipe(
             map(test => {
                 return new Test().deserialize(test);
+            })
+        )
+    }
+    updateCategory(category: Category): Observable<Category> {
+        return this.httpClient.put<Category>(`${environment.apiUrl}/test/category`,category).pipe(
+            map(category => {
+                return new Category().deserialize(category);
+            })
+        )
+    }
+    updateGradeCategory(grCat: GradeCategory): Observable<GradeCategory> {
+        return this.httpClient.put<GradeCategory>(`${environment.apiUrl}/test/category/grade`,grCat).pipe(
+            map(grCat => {
+                return new GradeCategory().deserialize(grCat);
+            })
+        )
+    }
+    updateQuestion(question: Question): Observable<Question> {
+        return this.httpClient.put<Question>(`${environment.apiUrl}/test/question`,question).pipe(
+            map(question => {
+                return new Question().deserialize(question);
             })
         )
     }
@@ -66,13 +98,9 @@ export class TestService {
         )
     }
 
-    updateQuestion(question: Question): Observable<Question> {
-        return this.httpClient.put<Question>(`${environment.apiUrl}/test/question`,question).pipe(
-            map(question => {
-                return new Question().deserialize(question);
-            })
-        )
-    }
+   
+
+
 
     createTest(test:Test):Observable<BigInteger>{
         return this.httpClient.post<BigInteger>(`${environment.apiUrl}/test/create`, test);
@@ -94,7 +122,23 @@ export class TestService {
 
 
 
+
+
+
     deleteTest(id: BigInteger): Observable<{}> {
-        return this.httpClient.delete(`${environment.apiUrl}/test/`+id);
+        return this.httpClient.delete(`${environment.apiUrl}/test/`+ id);
+    }
+    deleteCategory(id: BigInteger): Observable<{}> {
+        return this.httpClient.delete(`${environment.apiUrl}/test/category/`+ id);
+    }
+
+    deleteGradeCategory(id: BigInteger): Observable<{}> {
+        return this.httpClient.delete(`${environment.apiUrl}/test/category/grade/`+ id);
+    }
+    deleteQuestion(id: BigInteger): Observable<{}> {
+        return this.httpClient.delete(`${environment.apiUrl}/test/question/`+ id);
+    }
+    deleteAnswer(id: BigInteger): Observable<{}> {
+        return this.httpClient.delete(`${environment.apiUrl}/test/answer/`+ id);
     }
 }

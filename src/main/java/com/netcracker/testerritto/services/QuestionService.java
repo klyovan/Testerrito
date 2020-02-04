@@ -37,18 +37,20 @@ public class QuestionService {
             return questionDAO.getAllQuestionInTest(testId);
         } catch (DataAccessException e) {
             serviceExceptionHandler.logAndThrowServiceException("Getting question by categoryId was failed.", e);
+            return null;
         }
-        return null;
+
     }
 
-    public void updateQuestion(Question question) throws ServiceException{
+    public Question updateQuestion(Question question) throws ServiceException{
         if (question.getId() == null)
             serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
         try {
-            questionDAO.updateQuestion(question);
+            return questionDAO.updateQuestion(question);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed updateQuestion().", exception);
         }
+        return null;
     }
 
     public BigInteger createQuestion(Question newQuestion) throws ServiceException{

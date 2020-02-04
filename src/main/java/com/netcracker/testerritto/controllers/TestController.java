@@ -56,7 +56,7 @@ public class TestController {
         }
     }
 
-    @PutMapping("/test")
+    @PutMapping("/update")
     public Test updateTest(@RequestBody Test test) {
         try {
             return testService.updateTest(test);
@@ -148,9 +148,9 @@ public class TestController {
     }
 
     @PutMapping("/category/grade")
-    public void updateGradeCategory(@RequestBody GradeCategory updateGradeCategory) {
+    public GradeCategory updateGradeCategory(@RequestBody GradeCategory updateGradeCategory) {
         try {
-            gradeCategoryService.updateGradeCategory(updateGradeCategory);
+            return gradeCategoryService.updateGradeCategory(updateGradeCategory);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
@@ -184,9 +184,9 @@ public class TestController {
     }
 
     @PutMapping("/question")
-    public void updateQuestion(@RequestBody Question question) {
+    public Question updateQuestion(@RequestBody Question question) {
         try {
-            questionService.updateQuestion(question);
+            return questionService.updateQuestion(question);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }
@@ -229,9 +229,9 @@ public class TestController {
     }
 
     @PutMapping("/answer")
-    public void updateAnswer(@RequestBody Answer newAnswer) {
+    public Answer updateAnswer(@RequestBody Answer newAnswer) {
         try {
-            answerService.updateAnswer(newAnswer);
+           return answerService.updateAnswer(newAnswer);
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);
         }

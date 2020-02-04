@@ -85,16 +85,18 @@ public class GradeCategoryService {
         }
     }
 
-    public void updateGradeCategory(GradeCategory updatedGradeCategory) {
+    public GradeCategory updateGradeCategory(GradeCategory updatedGradeCategory) {
         checkParamsForCreateUpdate(updatedGradeCategory);
         if (updatedGradeCategory.getId() == null) {
             serviceExceptionHandler.logAndThrowIllegalException("Parameter(id) can't be null");
         }
         try {
-            gradeCategoryDAO.updateGradeCategory(updatedGradeCategory);
+            return gradeCategoryDAO.updateGradeCategory(updatedGradeCategory);
         } catch (DataAccessException e) {
             serviceExceptionHandler.logAndThrowServiceException("Updating grade category was failed.", e);
+            return null;
         }
+
     }
 
     private void checkParamsForCreateUpdate(GradeCategory checkedCategory) {

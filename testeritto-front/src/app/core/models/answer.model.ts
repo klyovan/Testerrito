@@ -7,6 +7,7 @@ export class Answer implements Deserializable {
     questionId: BigInteger;
     nextQuestionId: BigInteger;
     replyId: BigInteger;
+    questionText:string;
   
 
   deserialize(input: any): this {

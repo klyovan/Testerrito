@@ -18,8 +18,8 @@
               <h4 style="color:red">{{this.errorAddedCat}}</h4>
             <table  mat-table [dataSource]="consistTestDataSourse" class="mat-elevation-z8">
               <ng-container matColumnDef="categories">
-                <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;"> Categories </th>
-                <td mat-cell style = "text-align: center;font-size:20px;" *matCellDef="let element" > {{element.nameCategory}} </td>
+                <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px; padding-right: 10px;"> Categories </th>
+                <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.nameCategory}} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -78,7 +78,7 @@
             <table  mat-table [dataSource]="consistGrCatDataSourse" class="mat-elevation-z8">
               <ng-container matColumnDef="grade categories">
                 <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;"> Grade categories </th>
-                <td mat-cell style = "text-align: center;font-size:20px;" *matCellDef="let element" > {{element.meaning}} </td>
+                <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.meaning}} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumnsGrCat"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumnsGrCat;"></tr>
@@ -124,7 +124,7 @@
           <table  mat-table [dataSource]="consistQustionDataSourse" class="mat-elevation-z8">
               <ng-container matColumnDef="questions">
                 <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;"> Questions </th>
-                <td mat-cell style = "text-align: center;font-size:20px;" *matCellDef="let element" > {{element.textQuestion}} </td>
+                <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.textQuestion}} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumnsQuest"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumnsQuest;"></tr>
@@ -169,14 +169,14 @@
           </mat-form-field>
           <div><button style="margin-right: 10px;" class="btn btn-success"  disabled *ngIf="!(answers_name.valid && score.valid && selectQuestion.valid) " cdkFocusInitial mat-button (click)="createAnswers()"><i class="glyphicon glyphicon-ok"></i></button>
             <button style="margin-right: 10px;" class="btn btn-success"  *ngIf="answers_name.valid && score.valid && selectQuestion.valid " cdkFocusInitial mat-button (click)="createAnswers()"><i class="glyphicon glyphicon-ok"></i></button>
-               <button style="width: 100px; margin-right: 10px;" class="btn btn-danger" disabled *ngIf="categories.length == 0 && gradesCategory.length == 0 && questions.length == 0 && answers.length == 0" (click)="navigateFinish()">'Finish'</button>
-               <button style="width: 100px; margin-right: 10px;" class="btn btn-danger"  *ngIf="(categories.length > 0 && gradesCategory.length > 0 && questions.length > 0 && answers.length > 0)" (click)="navigateFinish()">'Finish'</button>
+               <button style="width: 100px; margin-right: 10px;" class="btn btn-danger" disabled *ngIf="categories.length == 0 && gradesCategory.length == 0 && questions.length == 0 && answers.length == 0" (click)="navigateFinish()">Finish</button>
+               <button style="width: 100px; margin-right: 10px;" class="btn btn-danger"  *ngIf="(categories.length > 0 && gradesCategory.length > 0 && questions.length > 0 && answers.length > 0)" (click)="navigateFinish()">Finish</button>
                <h4 style="color:red">{{errorAddedAnsw}} </h4>
           </div> 
           <table  mat-table [dataSource]="consistAnswerDataSourse" class="mat-elevation-z8">
               <ng-container matColumnDef="answers">
                 <th mat-header-cell *matHeaderCellDef style = "text-align: center;font-size:20px;"> Answers </th>
-                <td mat-cell style = "text-align: center;font-size:20px;" *matCellDef="let element" > {{element.textAnswer}} </td>
+                <td mat-cell style = "text-align: center;" *matCellDef="let element" > {{element.textAnswer}} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumnsAnswer"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumnsAnswer;"></tr>

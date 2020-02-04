@@ -183,6 +183,6 @@ public createQuestions(){
  }
 
  navigateFinish(){
-  this.router.navigateByUrl('group/'+ this.groupId);
+  this.router.navigateByUrl('test/'+ this.groupId+'/update/' + this.testId);
  }
 }

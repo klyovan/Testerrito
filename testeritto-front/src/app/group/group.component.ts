@@ -159,9 +159,9 @@ export class GroupComponent implements OnInit {
     })    
   }
 
-  /*updateTest(id: BigInteger){
-    this.router.navigateByUrl('test/'+ this.group.id+'/update/'+ this.test.id);
-  }*/
+  updateTest(id: BigInteger){
+    this.router.navigateByUrl('test/'+ this.group.id+'/update/'+id);
+  }
 
   deleteTest(id: BigInteger) {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {

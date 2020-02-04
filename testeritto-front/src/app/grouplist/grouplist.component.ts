@@ -162,15 +162,18 @@ export class GrouplistComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
-        this.groupService.exitFromGroup(this.user.id, id).subscribe();
-        var index = this.user.groups.findIndex(group => group.id == id);
-        this.actionWithThisGroup = this.user.groups.find(group => group.id == id).name;
-        this.changeBoolean();
-        this.leavedOld = true;
-        if(index != -1) {
+        this.groupService.exitFromGroup(this.user.id, id).subscribe(()=>{
+          var index = this.user.groups.findIndex(group => group.id == id);
+          this.actionWithThisGroup = this.user.groups.find(group => group.id == id).name;
+          this.changeBoolean();
+          this.leavedOld = true;
+          if(index != -1) {
+            console.log(index)
           this.user.groups.splice(index, 1); 
           this.changeConsistGroupsDataSourse();
         }
+        });
+        
       }
     });
     

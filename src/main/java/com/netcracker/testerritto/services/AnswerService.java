@@ -54,13 +54,14 @@ public class AnswerService {
         return null;
     }
 
-    public void updateAnswer (Answer answer) throws ServiceException {
+    public Answer updateAnswer (Answer answer) throws ServiceException {
         if (answer.getId() == null)
             serviceExceptionHandler.logAndThrowIllegalException("Parameter ID can not be NULL");
         try {
-            answerDAO.updateAnswer(answer);
+           return answerDAO.updateAnswer(answer);
         } catch (DataAccessException exception) {
             serviceExceptionHandler.logAndThrowServiceException("Failed updateAnswer().", exception);
+            return null;
         }
     }
 
