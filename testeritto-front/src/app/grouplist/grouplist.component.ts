@@ -69,6 +69,7 @@ export class GrouplistComponent implements OnInit {
     else {
       this.updateSortAndPaginator(1, this.consistGroupsDataSourse);
     }
+    this.changeBoolean();
   }
 
   updateSortAndPaginator(index: number, dataSource: MatTableDataSource<Group>) {
@@ -163,7 +164,7 @@ export class GrouplistComponent implements OnInit {
       if(result) {
         this.groupService.exitFromGroup(this.user.id, id).subscribe();
         var index = this.user.groups.findIndex(group => group.id == id);
-        this.actionWithThisGroup = this.user.createdGroups.find(group => group.id == id).name;
+        this.actionWithThisGroup = this.user.groups.find(group => group.id == id).name;
         this.changeBoolean();
         this.leavedOld = true;
         if(index != -1) {

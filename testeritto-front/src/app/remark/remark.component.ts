@@ -5,7 +5,6 @@ import { TestService } from '../core/api/test.service';
 import { MatPaginator, MatTableDataSource, MatSort, MatTabChangeEvent, MatDialog } from '@angular/material';
 import { Remark } from '../core/models/remark.model';
 import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
-import { Question } from '../core/models/question.model';
 import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.component';
 
 @Component({
@@ -23,6 +22,11 @@ export class RemarkComponent implements OnInit {
   ViewedDataSource = new MatTableDataSource<Remark>();
   selectedIndex: Number = 0;
   loading: Boolean = false;
+
+  remarkThatWeManipulateWith: String;
+  markedAsViewed: Boolean = false;
+  changedQuestion: Boolean = false;
+  deletedRemark: Boolean = false;
   color = 'primary';
   mode = 'indeterminate';
   value = 50;
@@ -86,11 +90,15 @@ export class RemarkComponent implements OnInit {
     else {
       this.updateSortAndPaginator(1, this.ViewedDataSource);
     }
+    this.updateBoolean();
   }
 
   checkedAsViewed(id: BigInteger) {
       this.groupService.setViewedStatus(id).subscribe(() => {
         this.groupService.remarks.find(remark => remark.id == id).viewed = true;
+        this.remarkThatWeManipulateWith = this.groupService.remarks.find(remark => remark.id == id).text;
+        this.updateBoolean();
+        this.markedAsViewed = true;
         this.changeNotViewedDataSource();
         this.changeViewedDataSource();
       });      
@@ -110,8 +118,11 @@ export class RemarkComponent implements OnInit {
         this.NotViewedDataSource.data.filter(remarks => remarks.questionId == questionId).forEach(
           remark => {
             remark.questionText = result.textQuestion;
+            this.remarkThatWeManipulateWith = remark.text;
+            this.updateBoolean();
+            this.changedQuestion = true;
           }
-        )
+        )        
       }
     })
   }
@@ -142,13 +153,22 @@ export class RemarkComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
         this.groupService.deleteRemark(id).subscribe();
-        var index = this.ViewedDataSource.data.findIndex(remark => remark.id == id);
+        var index = this.groupService.remarks.findIndex(remark => remark.id == id);
         if(index != -1) {
+          this.remarkThatWeManipulateWith = this.groupService.remarks[index].text;
+          this.updateBoolean();
+          this.deletedRemark = true;
           this.groupService.remarks.splice(index,1);
           this.changeViewedDataSource();
         }    
       }
     })
     
+  }
+
+  updateBoolean() {
+    this.markedAsViewed = false;
+    this.changedQuestion = false;
+    this.deletedRemark= false;
   }
 }
