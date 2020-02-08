@@ -4,6 +4,6 @@
     <mat-error *ngIf="remarkForm.invalid" > {{getErrorMessage()}}</mat-error>
 </mat-form-field>
 <div mat-dialog-actions>
-    <button mat-button  (click)="onNoClick()">No Thanks</button>
-    <button mat-button [disabled] = "remarkForm.invalid" [mat-dialog-close]="data.remarkText">Ok</button>
+    <button style="margin-right: 4px" class="btn btn-danger"  (click)="onNoClick()">No Thanks</button>
+    <button class="btn btn-success" [disabled] = "remarkForm.invalid" [mat-dialog-close]="data.remarkText">Ok</button>
 </div>

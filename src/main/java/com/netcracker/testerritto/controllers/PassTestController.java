@@ -75,8 +75,8 @@ public class PassTestController {
                 result.setStatus(Status.PASSED);
                 resultService.updateResult(result);
             }
-//            createdReplies = new ArrayList<>();
-//            createdResults = new ArrayList<>();
+            createdReplies = new ArrayList<>();
+            createdResults = new ArrayList<>();
             return true;
         } catch (IllegalArgumentException | ServiceException e) {
             throw new ApiRequestException(e.getMessage(), e);

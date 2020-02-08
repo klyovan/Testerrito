@@ -33,6 +33,7 @@ const routes: Routes = [
     {path: 'invite/:link', component: InvitationComponent,  canActivate: [AuthGuard]},
     {path: 'registration', component: RegisterComponent, canActivate: [NoauthGuard] },
     {path: 'registration/**', component: RegisterComponent, canActivate: [NoauthGuard] },
+    {path: '', redirectTo: 'login', pathMatch: 'full'},
     {path: '**', redirectTo: '/error-page/404', pathMatch: 'full'}
 ];
 

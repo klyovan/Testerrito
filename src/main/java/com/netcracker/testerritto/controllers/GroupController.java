@@ -154,8 +154,8 @@ public class GroupController {
                     reply.getReplyList().forEach(answer -> {
                         scores.forEach((categoryId, score) -> {
                             if (categoryId.equals(result.getCategoryId())) {
-                                int newvalue = score + answer.getScore();
-                                scores.put(categoryId, newvalue);
+                                int newValue = score + answer.getScore();
+                                scores.put(categoryId, newValue);
                             }
                         });
                     });
@@ -191,7 +191,6 @@ public class GroupController {
     public Group inviteUser(@PathVariable String link){
 
         try {
-            System.out.println(link);
               Group group =  groupService.getGroupByLink(link);
               return group;
         } catch (IllegalArgumentException | ServiceException e) {

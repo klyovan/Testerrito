@@ -4,7 +4,8 @@
             <h3 class="card-title"><strong>Hi {{user.firstName}}!</strong></h3>
             <hr>
             <p>Looks like you went to our site at the link of a friend.</p>
-            <p class="card-text">Do you want to enter in {{group.name}}? </p>
+            <p><strong>Testerrito</strong> is application where you can create or pass created test. But tests are stored in groups that can be access a limited number of people.</p>
+            <p class="card-text">Do you want to enter in group "{{group.name}}"? </p>
             <button (click)="noEnterGroup()" type="button" class="btn btn-danger card-link"><i class="glyphicon glyphicon-remove"></i></button>
             <button (click)="enterGroup()" type="button" class="btn btn-success card-link"><i class="glyphicon glyphicon-ok"></i></button>
         </div>
