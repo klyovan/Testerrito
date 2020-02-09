@@ -1,10 +1,13 @@
-<div *ngIf="test.questions.length === 0" >
-    <button *ngIf="test" class="btn btn-info btn-sm" [routerLink]= "['/group',test.groupId]"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
-    <h1>This test is not created correctly.</h1>
-</div>
 
-<div *ngIf="!test.questions.length === 0" >
+
+
 <div *ngIf="test">
+    <div *ngIf="test.questions.length === 0" >
+        <button *ngIf="test" class="btn btn-info btn-sm" [routerLink]= "['/group',test.groupId]"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
+        <h1>This test is not created correctly.</h1>
+    </div>
+
+    <div *ngIf="test.questions.length !== 0" >
     <div class="container">
         <div *ngIf="remarkAnswer" [ngClass]="{fade: !remarkAnswer}" class="alert alert-success alert-dismissible">
             <strong>Success!</strong> {{remarkAnswer}}
@@ -92,12 +95,11 @@
 
 
 
-
+</div>
 </div>
 
 <div *ngIf="!test" #testLoading>
     <mat-spinner class="mt-4 center-block"></mat-spinner>
-</div>
 </div>
 <!--</div>-->
 <!--<div *ngIf="isTestNeedExpert && results">-->

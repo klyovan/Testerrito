@@ -164,8 +164,9 @@ public class GroupController {
 
             results.forEach(result -> {
                 scores.forEach((bigInteger, integer) -> {
-                    if (bigInteger.equals(result.getCategoryId())) {
+                    if (bigInteger.equals(result.getCategoryId())) { // десь оно сумирует вообще со всех резалтов этого юзера по всем датам походу
                         result.setScore(integer);
+                        System.out.println(integer);
                     }
                 });
             });

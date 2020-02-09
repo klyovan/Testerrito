@@ -3,9 +3,9 @@
 <!--<mat-spinner class="mt-4 center-block"></mat-spinner>-->
 <!--</div>-->
 <!--<div *ngIf="categories">-->
-<button *ngIf="test" class="btn btn-info btn-sm" [routerLink]= "['/group',test.groupId]"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
+<button *ngIf="user" class="btn btn-info btn-sm" [routerLink]= "['/group',test.groupId]"><i class="glyphicon glyphicon-menu-left"></i> Back</button>
 
-<div *ngIf="test">
+<div *ngIf="user">
 <h2 class="row">This is your result {{user.firstName}}</h2>
 <div class="container row" *ngFor="let category of categories;">
     <p class="col-2"><strong>{{category.nameCategory}}</strong></p>  <div class="col-8" *ngFor="let gradeCategory of test.gradesCategory">
@@ -59,6 +59,6 @@
 
 </div>
 </div>
-<div *ngIf="!test" #testLoading>
+<div *ngIf="!user" #testLoading>
     <mat-spinner class="mt-4 center-block"></mat-spinner>
 </div>

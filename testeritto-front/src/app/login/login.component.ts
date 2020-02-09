@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
     private onSuccess() {
         if (this.authService.url !== undefined) {
             this.router.navigate([this.authService.url]);
+            this.authService.url = undefined;
         } else {
             this.router.navigate(['/group']);
         }
