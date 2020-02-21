@@ -54,7 +54,8 @@ public class PassTestController {
     public Test getTest(@PathVariable BigInteger userId, @PathVariable BigInteger id) {
 
         try {
-
+//            createdReplies = new ArrayList<>();
+//            createdResults = new ArrayList<>();
             createdResults = resultService.createResultsByCategories(id, userId);
             return testService.getTest(id);
         } catch (IllegalArgumentException | ServiceException e) {
